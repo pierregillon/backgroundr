@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using backgroundr.cqrs;
-using backgroundr.domain;
 using backgroundr.infrastructure;
 using FlickrNet;
 
@@ -12,18 +11,13 @@ namespace backgroundr.application
 {
     public class RandomlyChangeOsBackgroundImageHander : ICommandHandler<RandomlyChangeOsBackgroundImage>
     {
-        private const string TOKEN_FILE_PATH = ".flickr";
-
-        private readonly IFileService _fileService;
         private readonly ImageBackgroundManager _backgroundManager;
         private readonly BackgroundrParameters _parameters;
 
         public RandomlyChangeOsBackgroundImageHander(
-            IFileService fileService,
             ImageBackgroundManager backgroundManager,
             BackgroundrParameters parameters)
         {
-            _fileService = fileService;
             _backgroundManager = backgroundManager;
             _parameters = parameters;
         }
@@ -49,9 +43,9 @@ namespace backgroundr.application
                     Tags = _parameters.Tags,
                     UserId = _parameters.UserId,
                     PerPage = 500,
-                    Extras = PhotoSearchExtras.Large2048Url,
                     ContentType = ContentTypeSearch.PhotosOnly,
-                    MediaType = MediaType.Photos
+                    MediaType = MediaType.Photos,
+                    SortOrder = PhotoSearchSortOrder.Relevance
                 });
 
                 if (photoCollection.Any() == false) {
@@ -61,7 +55,7 @@ namespace backgroundr.application
                 var random = new Random((int) DateTime.Now.Ticks);
                 var imageIndex = random.Next(photoCollection.Count);
                 var photo = photoCollection.ElementAt(imageIndex);
-                return photo.Large2048Url;
+                return photo.Large2048Url ?? photo.LargeUrl;
             });
         }
         private static async Task<string> DownloadImage(string photoUrl)
