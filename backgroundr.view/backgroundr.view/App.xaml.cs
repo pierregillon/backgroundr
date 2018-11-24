@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.IO;
+using System.Windows;
 using backgroundr.application;
 using backgroundr.cqrs;
 using backgroundr.domain;
@@ -19,12 +20,19 @@ namespace backgroundr.view
                 configuration.For<IFileService>().Use<FileService>();
                 configuration.For<ICommandDispatcher>().Use<CommandDispatcher>().Singleton();
                 configuration.For<ICommandHandler<RandomlyChangeOsBackgroundImage>>().Use<RandomlyChangeOsBackgroundImageHander>();
+                configuration.For<BackgroundrParameters>().Singleton();
             });
 
             base.OnStartup(e);
 
             _notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
             _notifyIcon.DataContext = container.GetInstance<NotifyIconViewModel>();
+
+            if (File.Exists(".flickr")) {
+                var fileService = container.GetInstance<IFileService>();
+                var parameters = fileService.Deserialize<BackgroundrParameters>(".flickr");
+                container.Inject(parameters);
+            }
         }
 
         protected override void OnExit(ExitEventArgs e)

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using backgroundr.application;
@@ -8,6 +9,7 @@ namespace backgroundr.view.viewmodels
 {
     public class NotifyIconViewModel
     {
+        private readonly StructureMap.IContainer _container;
         private readonly ICommandDispatcher _commandDispatcher;
 
         public ICommand RandomlyChangeBackgroundImageCommand
@@ -27,7 +29,7 @@ namespace backgroundr.view.viewmodels
                 return new DelegateCommand {
                     CanExecuteFunc = () => Application.Current.MainWindow == null,
                     CommandAction = () => {
-                        Application.Current.MainWindow = new MainWindow();
+                        Application.Current.MainWindow = _container.GetInstance<ParametersWindow>();
                         Application.Current.MainWindow.Show();
                     }
                 };
@@ -38,14 +40,20 @@ namespace backgroundr.view.viewmodels
             get { return new DelegateCommand { CommandAction = () => Application.Current.Shutdown() }; }
         }
 
-        public NotifyIconViewModel(ICommandDispatcher commandDispatcher)
+        public NotifyIconViewModel(StructureMap.IContainer container, ICommandDispatcher commandDispatcher)
         {
+            _container = container;
             _commandDispatcher = commandDispatcher;
         }
 
         public async Task RandomlyChangeBackgroundImage()
         {
-            await _commandDispatcher.Dispatch(new RandomlyChangeOsBackgroundImage());
+            try {
+                await _commandDispatcher.Dispatch(new RandomlyChangeOsBackgroundImage());
+            }
+            catch (Exception ex) {
+                MessageBox.Show(ex.Message);
+            }
         }
     }
 }

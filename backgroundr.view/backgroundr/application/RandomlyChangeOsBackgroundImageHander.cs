@@ -39,10 +39,9 @@ namespace backgroundr.application
         private async Task<string> FindImage()
         {
             return await Task.Run(() => {
-                var accesToken = _fileService.Deserialize<OAuthAccessToken>(TOKEN_FILE_PATH);
-                var flickr = new Flickr(_parameters.Token, _parameters.Secret) {
-                    OAuthAccessToken = accesToken.Token,
-                    OAuthAccessTokenSecret = accesToken.TokenSecret
+                var flickr = new Flickr(_parameters.Token, _parameters.TokenSecret) {
+                    OAuthAccessToken = _parameters.OAuthAccessToken,
+                    OAuthAccessTokenSecret = _parameters.OAuthAccessTokenSecret
                 };
                 flickr.AuthOAuthCheckToken();
 
