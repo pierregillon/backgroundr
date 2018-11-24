@@ -52,6 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="application\BackgroundrParameters.cs" />
     <Compile Include="cqrs\CommandDispatcher.cs" />
     <Compile Include="cqrs\ICommandDispatcher.cs" />
     <Compile Include="cqrs\ICommandHandler.cs" />

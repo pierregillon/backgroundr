@@ -15,25 +15,40 @@ namespace backgroundr.application
         private const string TOKEN_FILE_PATH = ".flickr";
 
         private readonly IFileService _fileService;
+        private readonly ImageBackgroundManager _backgroundManager;
+        private readonly BackgroundrParameters _parameters;
 
-        public RandomlyChangeOsBackgroundImageHander(IFileService fileService)
+        public RandomlyChangeOsBackgroundImageHander(
+            IFileService fileService,
+            ImageBackgroundManager backgroundManager,
+            BackgroundrParameters parameters)
         {
             _fileService = fileService;
+            _backgroundManager = backgroundManager;
+            _parameters = parameters;
         }
 
         public async Task Handle(RandomlyChangeOsBackgroundImage command)
         {
-            var accesToken = _fileService.Deserialize<OAuthAccessToken>(TOKEN_FILE_PATH);
-            var flickr = new Flickr("a023233ad75a2e7ae38a1b1aa92ff751", "abd048b37b9e44f9") {
-                OAuthAccessToken = accesToken.Token,
-                OAuthAccessTokenSecret = accesToken.TokenSecret
-            };
-            flickr.AuthOAuthCheckToken();
+            var photoUrl = await FindImage();
+            var localUrl = await DownloadImage(photoUrl);
 
-            await Task.Run(() => {
+            _backgroundManager.ChangeBackground(localUrl, PicturePosition.Center);
+        }
+
+        private async Task<string> FindImage()
+        {
+            return await Task.Run(() => {
+                var accesToken = _fileService.Deserialize<OAuthAccessToken>(TOKEN_FILE_PATH);
+                var flickr = new Flickr(_parameters.Token, _parameters.Secret) {
+                    OAuthAccessToken = accesToken.Token,
+                    OAuthAccessTokenSecret = accesToken.TokenSecret
+                };
+                flickr.AuthOAuthCheckToken();
+
                 var photoCollection = flickr.PhotosSearch(new PhotoSearchOptions {
-                    Tags = "best",
-                    UserId = "148722902@N07",
+                    Tags = _parameters.Tags,
+                    UserId = _parameters.UserId,
                     PerPage = 500,
                     Extras = PhotoSearchExtras.Large2048Url,
                     ContentType = ContentTypeSearch.PhotosOnly,
@@ -41,27 +56,23 @@ namespace backgroundr.application
                 });
 
                 if (photoCollection.Any() == false) {
-                    return;
+                    return null;
                 }
 
                 var random = new Random((int) DateTime.Now.Ticks);
                 var imageIndex = random.Next(photoCollection.Count);
                 var photo = photoCollection.ElementAt(imageIndex);
-                var localUrl = DownloadImage(photo.Large2048Url);
-
-                var imageBackgroundManager = new ImageBackgroundManager();
-                imageBackgroundManager.ChangeBackground(localUrl, PicturePosition.Center);
+                return photo.Large2048Url;
             });
         }
-
-        private static string DownloadImage(string photoUrl)
+        private static async Task<string> DownloadImage(string photoUrl)
         {
             var httpWebRequest = (HttpWebRequest) WebRequest.Create(photoUrl);
             var httpWebReponse = (HttpWebResponse) httpWebRequest.GetResponse();
             var stream = httpWebReponse.GetResponseStream();
             var tempFilePath = Path.GetTempFileName();
             using (var fileStream = File.Create(tempFilePath)) {
-                stream.CopyTo(fileStream);
+                await stream.CopyToAsync(fileStream);
             }
             return tempFilePath;
         }
