@@ -4,8 +4,8 @@
                     xmlns:view="clr-namespace:backgroundr.view">
 
     <ContextMenu x:Shared="false" x:Key="SysTrayMenu">
-        <MenuItem Header="Show Window" Command="{Binding ShowWindowCommand}" />
-        <MenuItem Header="Hide Window" Command="{Binding HideWindowCommand}" />
+        <MenuItem Header="Change background image" Command="{Binding RandomlyChangeBackgroundImageCommand}" />
+        <MenuItem Header="Parameters" Command="{Binding OpenParametersWindowCommand}" />
         <Separator />
         <MenuItem Header="Exit" Command="{Binding ExitApplicationCommand}" />
     </ContextMenu>
@@ -14,7 +14,7 @@
     <tb:TaskbarIcon x:Key="NotifyIcon"
                     IconSource="./images/backpack.ico"
                     ToolTipText="Double-click for window, right-click for menu"
-                    DoubleClickCommand="{Binding ShowWindowCommand}"
+                    DoubleClickCommand="{Binding OpenParametersWindowCommand}"
                     ContextMenu="{StaticResource SysTrayMenu}">
 
         <tb:TaskbarIcon.DataContext>
