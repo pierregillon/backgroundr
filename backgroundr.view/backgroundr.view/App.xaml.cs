@@ -12,7 +12,7 @@ namespace backgroundr.view
 {
     public partial class App : Application
     {
-        private TaskbarIcon _notifyIcon;
+        private TaskbarIcon _taskbar;
 
         protected override void OnStartup(StartupEventArgs e)
         {
@@ -25,8 +25,8 @@ namespace backgroundr.view
 
             base.OnStartup(e);
 
-            _notifyIcon = (TaskbarIcon)FindResource("NotifyIcon");
-            _notifyIcon.DataContext = container.GetInstance<NotifyIconViewModel>();
+            _taskbar = (TaskbarIcon)FindResource("Taskbar");
+            _taskbar.DataContext = container.GetInstance<TaskBarViewModel>();
 
             if (File.Exists(".flickr")) {
                 var fileService = container.GetInstance<IFileService>();
@@ -37,7 +37,7 @@ namespace backgroundr.view
 
         protected override void OnExit(ExitEventArgs e)
         {
-            _notifyIcon.Dispose(); 
+            _taskbar.Dispose(); 
             base.OnExit(e);
         }
     }

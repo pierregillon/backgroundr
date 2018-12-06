@@ -13,7 +13,7 @@
         <MenuItem Header="Exit" Command="{Binding ExitApplicationCommand}" />
     </ContextMenu>
 
-    <tb:TaskbarIcon x:Key="NotifyIcon"
+    <tb:TaskbarIcon x:Key="Taskbar"
                     IconSource="./images/backpack.ico"
                     ToolTipText="Double-click for window, right-click for menu"
                     DoubleClickCommand="{Binding OpenParametersWindowCommand}"

@@ -8,7 +8,7 @@ using backgroundr.cqrs;
 
 namespace backgroundr.view.viewmodels
 {
-    public class NotifyIconViewModel : ViewModelBase
+    public class TaskBarViewModel : ViewModelBase
     {
         private readonly StructureMap.IContainer _container;
         private readonly ICommandDispatcher _commandDispatcher;
@@ -46,7 +46,7 @@ namespace backgroundr.view.viewmodels
             set { SetNotifiableProperty<bool>(value); }
         }
 
-        public NotifyIconViewModel(StructureMap.IContainer container, ICommandDispatcher commandDispatcher)
+        public TaskBarViewModel(StructureMap.IContainer container, ICommandDispatcher commandDispatcher)
         {
             _container = container;
             _commandDispatcher = commandDispatcher;
