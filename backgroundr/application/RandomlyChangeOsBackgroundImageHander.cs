@@ -1,74 +1,47 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Net;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using backgroundr.cqrs;
+using backgroundr.domain;
 using backgroundr.infrastructure;
-using FlickrNet;
 
 namespace backgroundr.application
 {
     public class RandomlyChangeOsBackgroundImageHander : ICommandHandler<RandomlyChangeOsBackgroundImage>
     {
-        private readonly ImageBackgroundManager _backgroundManager;
-        private readonly BackgroundrParameters _parameters;
+        private readonly IDesktopBackgroundImageUpdater _desktopBackgroundImageUpdater;
+        private readonly IImageProvider _imageProvider;
+        private readonly IFileDownloader _fileDownloader;
+        private readonly IRandom _random;
 
         public RandomlyChangeOsBackgroundImageHander(
-            ImageBackgroundManager backgroundManager,
-            BackgroundrParameters parameters)
+            IDesktopBackgroundImageUpdater desktopBackgroundImageUpdater,
+            IImageProvider imageProvider,
+            IFileDownloader fileDownloader,
+            IRandom random)
         {
-            _backgroundManager = backgroundManager;
-            _parameters = parameters;
+            _desktopBackgroundImageUpdater = desktopBackgroundImageUpdater;
+            _imageProvider = imageProvider;
+            _fileDownloader = fileDownloader;
+            _random = random;
         }
 
         public async Task Handle(RandomlyChangeOsBackgroundImage command)
         {
-            var photoUrl = await FindImage();
+            var photoUrl = await FindNextImage();
             if (string.IsNullOrEmpty(photoUrl) == false) {
-                var localUrl = await DownloadImage(photoUrl);
-                _backgroundManager.ChangeBackground(localUrl, PicturePosition.Center);
+                var localFilePath = await _fileDownloader.Download(photoUrl);
+                _desktopBackgroundImageUpdater.ChangeBackgroundImage(localFilePath, PicturePosition.Center);
             }
         }
 
-        private async Task<string> FindImage()
+        private async Task<string> FindNextImage()
         {
-            return await Task.Run(() => {
-                var flickr = new Flickr(_parameters.Token, _parameters.TokenSecret) {
-                    OAuthAccessToken = _parameters.OAuthAccessToken,
-                    OAuthAccessTokenSecret = _parameters.OAuthAccessTokenSecret
-                };
-                flickr.AuthOAuthCheckToken();
-
-                var photoCollection = flickr.PhotosSearch(new PhotoSearchOptions {
-                    Tags = _parameters.Tags,
-                    UserId = _parameters.UserId,
-                    PerPage = 500,
-                    ContentType = ContentTypeSearch.PhotosOnly,
-                    MediaType = MediaType.Photos,
-                    SortOrder = PhotoSearchSortOrder.Relevance
-                });
-
-                if (photoCollection.Any() == false) {
-                    return null;
-                }
-
-                var random = new Random((int) DateTime.Now.Ticks);
-                var imageIndex = random.Next(photoCollection.Count);
-                var photo = photoCollection.ElementAt(imageIndex);
-                return photo.Large2048Url ?? photo.LargeUrl;
-            });
-        }
-        private static async Task<string> DownloadImage(string photoUrl)
-        {
-            var httpWebRequest = (HttpWebRequest) WebRequest.Create(photoUrl);
-            var httpWebReponse = (HttpWebResponse) httpWebRequest.GetResponse();
-            var stream = httpWebReponse.GetResponseStream();
-            var tempFilePath = Path.GetTempFileName();
-            using (var fileStream = File.Create(tempFilePath)) {
-                await stream.CopyToAsync(fileStream);
+            var images = await _imageProvider.GetImageUrls();
+            if (images.Any() == false) {
+                return null;
             }
-            return tempFilePath;
+            var imageIndex = _random.RandomInteger(images.Count);
+            return images.ElementAt(imageIndex);
         }
     }
 }

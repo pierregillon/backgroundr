@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{610D5518-A232-42CB-8FDF-2D439DCAA890}</ProjectGuid>
+    <ProjectGuid>{2386CBF7-6181-4E00-9D15-A1725784FB95}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>backgroundr</RootNamespace>
-    <AssemblyName>backgroundr</AssemblyName>
+    <RootNamespace>backgroundr.tests</RootNamespace>
+    <AssemblyName>backgroundr.tests</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,49 +30,42 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="FlickrNet, Version=3.25.0.0, Culture=neutral, PublicKeyToken=2491df59efa5d132, processorArchitecture=MSIL">
-      <HintPath>..\packages\FlickrNet.3.25.0\lib\net20\FlickrNet.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="StructureMap, Version=4.7.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\StructureMap.4.7.0\lib\net45\StructureMap.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="NSubstitute">
+      <HintPath>..\packages\NSubstitute.3.1.0\lib\net45\NSubstitute.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Threading.Tasks.Extensions">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.3.0\lib\portable-net45+win8+wp8+wpa81\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="xunit.abstractions">
+      <HintPath>..\packages\xunit.abstractions.2.0.1\lib\net35\xunit.abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="xunit.assert">
+      <HintPath>..\packages\xunit.assert.2.3.1\lib\netstandard1.1\xunit.assert.dll</HintPath>
+    </Reference>
+    <Reference Include="xunit.core">
+      <HintPath>..\packages\xunit.extensibility.core.2.3.1\lib\netstandard1.1\xunit.core.dll</HintPath>
+    </Reference>
+    <Reference Include="xunit.execution.desktop">
+      <HintPath>..\packages\xunit.core.2.3.1\build\xunit.execution.desktop.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="application\BackgroundrParameters.cs" />
-    <Compile Include="infrastructure\HttpFileDownloader.cs" />
-    <Compile Include="domain\IFileDownloader.cs" />
-    <Compile Include="domain\IRandom.cs" />
-    <Compile Include="infrastructure\PseudoRandom.cs" />
-    <Compile Include="infrastructure\FlickrImageProvider.cs" />
-    <Compile Include="domain\IImageProvider.cs" />
-    <Compile Include="cqrs\CommandDispatcher.cs" />
-    <Compile Include="cqrs\ICommandDispatcher.cs" />
-    <Compile Include="cqrs\ICommandHandler.cs" />
-    <Compile Include="application\RandomlyChangeOsBackgroundImage.cs" />
-    <Compile Include="application\RandomlyChangeOsBackgroundImageHander.cs" />
-    <Compile Include="domain\IFileService.cs" />
-    <Compile Include="infrastructure\FileService.cs" />
-    <Compile Include="domain\IDesktopBackgroundImageUpdater.cs" />
-    <Compile Include="infrastructure\WindowDesktopBackgroundImageUpdater.cs" />
-    <Compile Include="infrastructure\PicturePosition.cs" />
+    <Compile Include="ChangeDesktopBackground.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <ProjectReference Include="..\backgroundr\backgroundr.csproj">
+      <Project>{610D5518-A232-42CB-8FDF-2D439DCAA890}</Project>
+      <Name>backgroundr</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

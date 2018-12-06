@@ -18,6 +18,10 @@ namespace backgroundr.view
         {
             var container = new Container(configuration => {
                 configuration.For<IFileService>().Use<FileService>();
+                configuration.For<IDesktopBackgroundImageUpdater>().Use<WindowDesktopBackgroundImageUpdater>();
+                configuration.For<IImageProvider>().Use<FlickrImageProvider>();
+                configuration.For<IFileDownloader>().Use<HttpFileDownloader>();
+                configuration.For<IRandom>().Use<PseudoRandom>();
                 configuration.For<ICommandDispatcher>().Use<CommandDispatcher>().Singleton();
                 configuration.For<ICommandHandler<RandomlyChangeOsBackgroundImage>>().Use<RandomlyChangeOsBackgroundImageHander>();
                 configuration.For<BackgroundrParameters>().Singleton();

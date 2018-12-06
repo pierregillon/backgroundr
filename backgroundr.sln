@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "backgroundr.view", "backgro
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "backgroundr", "backgroundr\backgroundr.csproj", "{610D5518-A232-42CB-8FDF-2D439DCAA890}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "backgroundr.tests", "backgroundr.tests\backgroundr.tests.csproj", "{2386CBF7-6181-4E00-9D15-A1725784FB95}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{610D5518-A232-42CB-8FDF-2D439DCAA890}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{610D5518-A232-42CB-8FDF-2D439DCAA890}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{610D5518-A232-42CB-8FDF-2D439DCAA890}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2386CBF7-6181-4E00-9D15-A1725784FB95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2386CBF7-6181-4E00-9D15-A1725784FB95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2386CBF7-6181-4E00-9D15-A1725784FB95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2386CBF7-6181-4E00-9D15-A1725784FB95}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

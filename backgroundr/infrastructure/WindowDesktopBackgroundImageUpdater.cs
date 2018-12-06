@@ -1,10 +1,11 @@
 using System;
 using System.Runtime.InteropServices;
+using backgroundr.domain;
 using Microsoft.Win32;
 
 namespace backgroundr.infrastructure
 {
-    public class ImageBackgroundManager
+    public class WindowDesktopBackgroundImageUpdater : IDesktopBackgroundImageUpdater
     {
         internal sealed class NativeMethods
         {
@@ -16,7 +17,7 @@ namespace backgroundr.infrastructure
                 int fuWinIni);
         }
 
-        public void ChangeBackground(string backgroundPath, PicturePosition style)
+        public void ChangeBackgroundImage(string backgroundPath, PicturePosition style)
         {
             RegistryKey key = Registry.CurrentUser.OpenSubKey(@"Control Panel\Desktop", true);
             switch (style) {
