@@ -1,16 +1,23 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using backgroundr.application;
 using backgroundr.domain;
 using backgroundr.infrastructure;
 using NSubstitute;
-using NSubstitute.Core;
 using Xunit;
 
 namespace backgroundr.tests
 {
     public class ChangeDesktopBackground
     {
+        private static readonly Task<IReadOnlyCollection<string>> NO_IMAGES = Task.FromResult<IReadOnlyCollection<string>>(new string[0]);
+        private static readonly Task<IReadOnlyCollection<string>> SOME_IMAGES = Task.FromResult<IReadOnlyCollection<string>>(new[] {
+            "https://mywebsite/plane.jpg",
+            "https://mywebsite/boat.jpg",
+            "https://mywebsite/car.jpg",
+        });
+
         private readonly IDesktopBackgroundImageUpdater _desktopImageBackgroundUpdater;
         private readonly IImageProvider _imageProvider;
         private readonly IFileDownloader _fileDownloader;
@@ -37,7 +44,7 @@ namespace backgroundr.tests
             // Arranges
             _imageProvider
                 .GetImageUrls()
-                .Returns(x => (object) Task.FromResult<IReadOnlyCollection<string>>(new string[0]));
+                .Returns(x => NO_IMAGES);
 
             // Acts
             await _handler.Handle(new ChangeDesktopBackgroundImageRandomly());
@@ -46,6 +53,47 @@ namespace backgroundr.tests
             _desktopImageBackgroundUpdater
                 .Received(0)
                 .ChangeBackgroundImage(Arg.Any<string>(), Arg.Any<PicturePosition>());
+        }
+
+        [Fact]
+        public async Task change_background_image_to_a_new_random_one()
+        {
+            // Data
+            var availableImages = new[] {
+                "https://mywebsite/plane.jpg",
+                "https://mywebsite/boat.jpg",
+                "https://mywebsite/car.jpg",
+            };
+
+            // Arranges
+            _imageProvider
+                .GetImageUrls()
+                .Returns(x => Task.FromResult<IReadOnlyCollection<string>>(availableImages));
+
+            // Acts
+            await _handler.Handle(new ChangeDesktopBackgroundImageRandomly());
+
+            // Asserts
+            _desktopImageBackgroundUpdater
+                .Received(1)
+                .ChangeBackgroundImage(Arg.Is<string>(value => availableImages.Contains(value)), Arg.Any<PicturePosition>());
+        }
+
+        [Fact]
+        public async Task fill_new_background_image()
+        {
+            // Arranges
+            _imageProvider
+                .GetImageUrls()
+                .Returns(x => SOME_IMAGES);
+
+            // Acts
+            await _handler.Handle(new ChangeDesktopBackgroundImageRandomly());
+
+            // Asserts
+            _desktopImageBackgroundUpdater
+                .Received(1)
+                .ChangeBackgroundImage(Arg.Any<string>(), PicturePosition.Fill);
         }
     }
 }

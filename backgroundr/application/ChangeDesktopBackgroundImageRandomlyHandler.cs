@@ -27,10 +27,10 @@ namespace backgroundr.application
 
         public async Task Handle(ChangeDesktopBackgroundImageRandomly command)
         {
-            var photoUrl = await FindNextImage();
-            if (string.IsNullOrEmpty(photoUrl) == false) {
-                var localFilePath = await _fileDownloader.Download(photoUrl);
-                _desktopBackgroundImageUpdater.ChangeBackgroundImage(localFilePath, PicturePosition.Center);
+            var imageUrl = await FindNextImage();
+            if (string.IsNullOrEmpty(imageUrl) == false) {
+                var localFilePath = await _fileDownloader.Download(imageUrl);
+                _desktopBackgroundImageUpdater.ChangeBackgroundImage(localFilePath, PicturePosition.Fill);
             }
         }
 
