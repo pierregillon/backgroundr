@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using backgroundr.application;
 using backgroundr.cqrs;
 
 namespace backgroundr.view.viewmodels
 {
-    public class NotifyIconViewModel
+    public class NotifyIconViewModel : ViewModelBase
     {
         private readonly StructureMap.IContainer _container;
         private readonly ICommandDispatcher _commandDispatcher;
@@ -39,6 +40,11 @@ namespace backgroundr.view.viewmodels
         {
             get { return new DelegateCommand { CommandAction = () => Application.Current.Shutdown() }; }
         }
+        public bool ChangingBackground
+        {
+            get { return GetNotifiableProperty<bool>(); }
+            set { SetNotifiableProperty<bool>(value); }
+        }
 
         public NotifyIconViewModel(StructureMap.IContainer container, ICommandDispatcher commandDispatcher)
         {
@@ -49,10 +55,14 @@ namespace backgroundr.view.viewmodels
         public async Task RandomlyChangeBackgroundImage()
         {
             try {
+                ChangingBackground = true;
                 await _commandDispatcher.Dispatch(new RandomlyChangeOsBackgroundImage());
             }
             catch (Exception ex) {
                 MessageBox.Show(ex.Message);
+            }
+            finally {
+                ChangingBackground = false;
             }
         }
     }

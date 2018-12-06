@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 using backgroundr.application;
@@ -8,7 +5,7 @@ using backgroundr.domain;
 
 namespace backgroundr.view.viewmodels
 {
-    public class ParametersViewModel : INotifyPropertyChanged
+    public class ParametersViewModel : ViewModelBase
     {
         private readonly BackgroundrParameters _parameters;
         private readonly IFileService _fileService;
@@ -84,31 +81,6 @@ namespace backgroundr.view.viewmodels
             TokenSecret = _parameters.TokenSecret;
             OAuthAccessToken = _parameters.OAuthAccessToken;
             OAuthAccessTokenSecret = _parameters.OAuthAccessTokenSecret;
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        private readonly IDictionary<string, object> _properties = new Dictionary<string, object>();
-        protected virtual T GetNotifiableProperty<T>([CallerMemberName] string propertyName = null)
-        {
-            if (_properties.ContainsKey(propertyName)) {
-                return (T) _properties[propertyName];
-            }
-            return default(T);
-        }
-        protected virtual void SetNotifiableProperty<T>(object value, [CallerMemberName] string propertyName = null)
-        {
-            if (_properties.ContainsKey(propertyName) == false) {
-                _properties.Add(propertyName, value);
-            }
-            else {
-                _properties[propertyName] = value;
-            }
-            OnPropertyChanged(propertyName);
         }
     }
 }

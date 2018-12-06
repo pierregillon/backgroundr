@@ -63,7 +63,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="viewmodels\ParametersViewModel.cs" />
+    <Compile Include="viewmodels\ViewModelBase.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
