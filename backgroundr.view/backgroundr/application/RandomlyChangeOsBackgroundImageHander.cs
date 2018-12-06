@@ -25,9 +25,10 @@ namespace backgroundr.application
         public async Task Handle(RandomlyChangeOsBackgroundImage command)
         {
             var photoUrl = await FindImage();
-            var localUrl = await DownloadImage(photoUrl);
-
-            _backgroundManager.ChangeBackground(localUrl, PicturePosition.Center);
+            if (string.IsNullOrEmpty(photoUrl) == false) {
+                var localUrl = await DownloadImage(photoUrl);
+                _backgroundManager.ChangeBackground(localUrl, PicturePosition.Center);
+            }
         }
 
         private async Task<string> FindImage()
