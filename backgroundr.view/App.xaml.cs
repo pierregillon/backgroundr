@@ -23,7 +23,7 @@ namespace backgroundr.view
                 configuration.For<IFileDownloader>().Use<HttpFileDownloader>();
                 configuration.For<IRandom>().Use<PseudoRandom>();
                 configuration.For<ICommandDispatcher>().Use<CommandDispatcher>().Singleton();
-                configuration.For<ICommandHandler<RandomlyChangeOsBackgroundImage>>().Use<RandomlyChangeOsBackgroundImageHander>();
+                configuration.For<ICommandHandler<ChangeDesktopBackgroundImageRandomly>>().Use<ChangeDesktopBackgroundImageRandomlyHandler>();
                 configuration.For<BackgroundrParameters>().Singleton();
             });
 

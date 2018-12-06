@@ -1,6 +1,6 @@
 ﻿namespace backgroundr.application
 {
-    public class RandomlyChangeOsBackgroundImage
+    public class ChangeDesktopBackgroundImageRandomly
     {
     }
 }

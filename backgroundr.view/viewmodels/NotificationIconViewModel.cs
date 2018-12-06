@@ -56,7 +56,7 @@ namespace backgroundr.view.viewmodels
         {
             try {
                 ChangingBackground = true;
-                await _commandDispatcher.Dispatch(new RandomlyChangeOsBackgroundImage());
+                await _commandDispatcher.Dispatch(new ChangeDesktopBackgroundImageRandomly());
             }
             catch (Exception ex) {
                 MessageBox.Show(ex.Message);

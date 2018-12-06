@@ -6,14 +6,14 @@ using backgroundr.infrastructure;
 
 namespace backgroundr.application
 {
-    public class RandomlyChangeOsBackgroundImageHander : ICommandHandler<RandomlyChangeOsBackgroundImage>
+    public class ChangeDesktopBackgroundImageRandomlyHandler : ICommandHandler<ChangeDesktopBackgroundImageRandomly>
     {
         private readonly IDesktopBackgroundImageUpdater _desktopBackgroundImageUpdater;
         private readonly IImageProvider _imageProvider;
         private readonly IFileDownloader _fileDownloader;
         private readonly IRandom _random;
 
-        public RandomlyChangeOsBackgroundImageHander(
+        public ChangeDesktopBackgroundImageRandomlyHandler(
             IDesktopBackgroundImageUpdater desktopBackgroundImageUpdater,
             IImageProvider imageProvider,
             IFileDownloader fileDownloader,
@@ -25,7 +25,7 @@ namespace backgroundr.application
             _random = random;
         }
 
-        public async Task Handle(RandomlyChangeOsBackgroundImage command)
+        public async Task Handle(ChangeDesktopBackgroundImageRandomly command)
         {
             var photoUrl = await FindNextImage();
             if (string.IsNullOrEmpty(photoUrl) == false) {

@@ -14,7 +14,7 @@ namespace backgroundr.tests
         private readonly IDesktopBackgroundImageUpdater _desktopImageBackgroundUpdater;
         private readonly IImageProvider _imageProvider;
         private readonly IFileDownloader _fileDownloader;
-        private readonly RandomlyChangeOsBackgroundImageHander _handler;
+        private readonly ChangeDesktopBackgroundImageRandomlyHandler _handler;
 
         public ChangeDesktopBackground()
         {
@@ -23,7 +23,7 @@ namespace backgroundr.tests
             _fileDownloader = Substitute.For<IFileDownloader>();
             _fileDownloader.Download(Arg.Any<string>()).Returns(x => x.Arg<string>());
 
-            _handler = new RandomlyChangeOsBackgroundImageHander(
+            _handler = new ChangeDesktopBackgroundImageRandomlyHandler(
                 _desktopImageBackgroundUpdater,
                 _imageProvider,
                 _fileDownloader,
@@ -40,7 +40,7 @@ namespace backgroundr.tests
                 .Returns(x => (object) Task.FromResult<IReadOnlyCollection<string>>(new string[0]));
 
             // Acts
-            await _handler.Handle(new RandomlyChangeOsBackgroundImage());
+            await _handler.Handle(new ChangeDesktopBackgroundImageRandomly());
 
             // Asserts
             _desktopImageBackgroundUpdater

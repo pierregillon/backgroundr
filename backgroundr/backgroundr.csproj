@@ -62,8 +62,8 @@
     <Compile Include="cqrs\CommandDispatcher.cs" />
     <Compile Include="cqrs\ICommandDispatcher.cs" />
     <Compile Include="cqrs\ICommandHandler.cs" />
-    <Compile Include="application\RandomlyChangeOsBackgroundImage.cs" />
-    <Compile Include="application\RandomlyChangeOsBackgroundImageHander.cs" />
+    <Compile Include="application\ChangeDesktopBackgroundImageRandomly.cs" />
+    <Compile Include="application\ChangeDesktopBackgroundImageRandomlyHandler.cs" />
     <Compile Include="domain\IFileService.cs" />
     <Compile Include="infrastructure\FileService.cs" />
     <Compile Include="domain\IDesktopBackgroundImageUpdater.cs" />
