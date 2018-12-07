@@ -37,6 +37,7 @@ namespace backgroundr.tests
         public async Task change_background_instantly_if_at_least_1_day_passed_since_last_refresh(int dayPassed)
         {
             // Arrange
+            _parameters.RefreshPeriod = TimeSpan.FromDays(1);
             _parameters.BackgroundImageLastRefreshDate = SOME_DATE;
             _clock.Now().Returns(SOME_DATE.AddDays(dayPassed));
 
@@ -56,6 +57,7 @@ namespace backgroundr.tests
         public async Task do_not_change_background_instantly_if_within_the_day_of_last_refresh(int hourPassed)
         {
             // Arrange
+            _parameters.RefreshPeriod = TimeSpan.FromDays(1);
             _parameters.BackgroundImageLastRefreshDate = SOME_DATE;
             _clock.Now().Returns(SOME_DATE.AddHours(hourPassed));
 
@@ -91,8 +93,9 @@ namespace backgroundr.tests
             const int timeBeforeChange = 500;
 
             // Arrange
+            _parameters.RefreshPeriod = TimeSpan.FromDays(1);
             _parameters.BackgroundImageLastRefreshDate = SOME_DATE;
-            _clock.Now().Returns(SOME_DATE.Add(TimeSpan.FromDays(1).Subtract(TimeSpan.FromMilliseconds(timeBeforeChange))));
+            _clock.Now().Returns(SOME_DATE.Add(_parameters.RefreshPeriod.Subtract(TimeSpan.FromMilliseconds(timeBeforeChange))));
 
             // Act
             await _handler.Handle(new StartDesktopBackgroundImageTimer());

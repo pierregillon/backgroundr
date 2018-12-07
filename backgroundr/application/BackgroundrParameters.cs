@@ -11,5 +11,6 @@ namespace backgroundr.application
         public string OAuthAccessToken { get; set; }
         public string OAuthAccessTokenSecret { get; set; }
         public DateTime? BackgroundImageLastRefreshDate { get; set; }
+        public TimeSpan RefreshPeriod { get; set; } = TimeSpan.FromDays(1);
     }
 }
