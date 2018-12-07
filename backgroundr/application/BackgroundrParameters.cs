@@ -1,3 +1,5 @@
+using System;
+
 namespace backgroundr.application
 {
     public class BackgroundrParameters
@@ -8,5 +10,6 @@ namespace backgroundr.application
         public string TokenSecret { get; set; }
         public string OAuthAccessToken { get; set; }
         public string OAuthAccessTokenSecret { get; set; }
+        public DateTime? BackgroundImageLastRefreshDate { get; set; }
     }
 }

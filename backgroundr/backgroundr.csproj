@@ -53,6 +53,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="application\BackgroundrParameters.cs" />
+    <Compile Include="application\StartDesktopBackgroundImageTimer.cs" />
+    <Compile Include="application\StartDesktopBackgroundImageTimerHandler.cs" />
+    <Compile Include="domain\IClock.cs" />
     <Compile Include="infrastructure\HttpFileDownloader.cs" />
     <Compile Include="domain\IFileDownloader.cs" />
     <Compile Include="domain\IRandom.cs" />

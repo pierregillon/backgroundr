@@ -37,6 +37,9 @@ namespace backgroundr.view
                 var parameters = fileService.Deserialize<BackgroundrParameters>(".flickr");
                 container.Inject(parameters);
             }
+
+            var dispatcher = container.GetInstance<ICommandDispatcher>();
+            dispatcher.Dispatch(new StartDesktopBackgroundImageTimer());
         }
 
         protected override void OnExit(ExitEventArgs e)
