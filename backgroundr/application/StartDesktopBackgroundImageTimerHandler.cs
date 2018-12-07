@@ -27,6 +27,14 @@ namespace backgroundr.application
                 if (remainingSeconds.TotalSeconds <= 0) {
                     await _commandDispatcher.Dispatch(new ChangeDesktopBackgroundImageRandomly());
                 }
+                else {
+#pragma warning disable 4014
+                    Task.Run(async () => {
+#pragma warning restore 4014
+                        await Task.Delay(remainingSeconds);
+                        await _commandDispatcher.Dispatch(new ChangeDesktopBackgroundImageRandomly());
+                    });
+                }
             }
         }
     }

@@ -38,7 +38,7 @@ namespace backgroundr.tests
         {
             // Arrange
             _parameters.BackgroundImageLastRefreshDate = SOME_DATE;
-            _clock.Now().Returns(_parameters.BackgroundImageLastRefreshDate.Value.AddDays(dayPassed));
+            _clock.Now().Returns(SOME_DATE.AddDays(dayPassed));
 
             // Act
             await _handler.Handle(new StartDesktopBackgroundImageTimer());
@@ -57,7 +57,7 @@ namespace backgroundr.tests
         {
             // Arrange
             _parameters.BackgroundImageLastRefreshDate = SOME_DATE;
-            _clock.Now().Returns(_parameters.BackgroundImageLastRefreshDate.Value.AddHours(hourPassed));
+            _clock.Now().Returns(SOME_DATE.AddHours(hourPassed));
 
             // Act
             await _handler.Handle(new StartDesktopBackgroundImageTimer());
@@ -81,6 +81,26 @@ namespace backgroundr.tests
             // Assert
             await _commandDispatcher
                 .Received(0)
+                .Dispatch(Arg.Any<ChangeDesktopBackgroundImageRandomly>());
+        }
+
+        [Fact]
+        public async Task change_background_when_1_day_passed()
+        {
+            // Data
+            const int timeBeforeChange = 500;
+
+            // Arrange
+            _parameters.BackgroundImageLastRefreshDate = SOME_DATE;
+            _clock.Now().Returns(SOME_DATE.Add(TimeSpan.FromDays(1).Subtract(TimeSpan.FromMilliseconds(timeBeforeChange))));
+
+            // Act
+            await _handler.Handle(new StartDesktopBackgroundImageTimer());
+            await Task.Delay(timeBeforeChange);
+
+            // Assert
+            await _commandDispatcher
+                .Received(1)
                 .Dispatch(Arg.Any<ChangeDesktopBackgroundImageRandomly>());
         }
     }
