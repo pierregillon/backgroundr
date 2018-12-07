@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using backgroundr.cqrs;
 using backgroundr.domain;
@@ -8,6 +10,8 @@ namespace backgroundr.application
 {
     public class ChangeDesktopBackgroundImageRandomlyHandler : ICommandHandler<ChangeDesktopBackgroundImageRandomly>
     {
+        private static readonly object _locker = new object();
+
         private readonly IDesktopBackgroundImageUpdater _desktopBackgroundImageUpdater;
         private readonly IImageProvider _imageProvider;
         private readonly IFileDownloader _fileDownloader;
@@ -27,10 +31,17 @@ namespace backgroundr.application
 
         public async Task Handle(ChangeDesktopBackgroundImageRandomly command)
         {
-            var imageUrl = await FindNextImage();
-            if (string.IsNullOrEmpty(imageUrl) == false) {
-                var localFilePath = await _fileDownloader.Download(imageUrl);
-                _desktopBackgroundImageUpdater.ChangeBackgroundImage(localFilePath, PicturePosition.Fill);
+            if (Monitor.TryEnter(_locker)) {
+                try {
+                    var imageUrl = await FindNextImage();
+                    if (string.IsNullOrEmpty(imageUrl) == false) {
+                        var localFilePath = await _fileDownloader.Download(imageUrl);
+                        _desktopBackgroundImageUpdater.ChangeBackgroundImage(localFilePath, PicturePosition.Fill);
+                    }
+                }
+                finally {
+                    Monitor.Exit(_locker);
+                }
             }
         }
 

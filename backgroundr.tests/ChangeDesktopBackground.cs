@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using backgroundr.application;
 using backgroundr.domain;
@@ -82,18 +83,50 @@ namespace backgroundr.tests
         [Fact]
         public async Task fill_new_background_image()
         {
-            // Arranges
+            // Arrange
             _imageProvider
                 .GetImageUrls()
                 .Returns(x => SOME_IMAGES);
 
-            // Acts
+            // Act
             await _handler.Handle(new ChangeDesktopBackgroundImageRandomly());
 
-            // Asserts
+            // Assert
             _desktopImageBackgroundUpdater
                 .Received(1)
                 .ChangeBackgroundImage(Arg.Any<string>(), PicturePosition.Fill);
+        }
+
+        [Fact]
+        public async Task do_not_process_concurrent_requests()
+        {
+            // Arrange
+            _imageProvider
+                .GetImageUrls()
+                .Returns(x => SOME_IMAGES)
+                .AndDoes(x => {
+                    Thread.Sleep(50);
+                });
+
+            // Act
+            var tasks = new[] {
+                Task.Run(async () => {
+                    await _handler.Handle(new ChangeDesktopBackgroundImageRandomly());
+                }),
+                Task.Run(async () => {
+                    await _handler.Handle(new ChangeDesktopBackgroundImageRandomly());
+                }),
+                Task.Run(async () => {
+                    await _handler.Handle(new ChangeDesktopBackgroundImageRandomly());
+                }),
+            };
+
+            await Task.WhenAll(tasks);
+
+            // Assert
+            _desktopImageBackgroundUpdater
+                .Received(1)
+                .ChangeBackgroundImage(Arg.Any<string>(), Arg.Any<PicturePosition>());
         }
     }
 }
