@@ -31,11 +31,13 @@ namespace backgroundr.infrastructure
                     PerPage = 500,
                     ContentType = ContentTypeSearch.PhotosOnly,
                     MediaType = MediaType.Photos,
-                    SortOrder = PhotoSearchSortOrder.Relevance
+                    SortOrder = PhotoSearchSortOrder.Relevance,
+                    Extras = PhotoSearchExtras.Large2048Url | PhotoSearchExtras.Large1600Url | PhotoSearchExtras.LargeUrl
                 });
 
                 return photoCollection
-                    .Select(x => x.Large2048Url ?? x.LargeUrl)
+                    .Select(x => x.Large2048Url ?? x.Large1600Url ?? x.LargeUrl)
+                    .Where(x => string.IsNullOrEmpty(x) == false)
                     .ToArray();
             });
         }
