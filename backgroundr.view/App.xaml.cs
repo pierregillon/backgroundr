@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Windows;
 using backgroundr.application;
 using backgroundr.cqrs;
@@ -43,7 +44,7 @@ namespace backgroundr.view
             }
 
             var dispatcher = container.GetInstance<ICommandDispatcher>();
-            dispatcher.Dispatch(new StartDesktopBackgroundImageTimer());
+            dispatcher.Dispatch(new StartDesktopBackgroundImageTimer()).Wait();
         }
 
         protected override void OnExit(ExitEventArgs e)
