@@ -53,6 +53,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="application\BackgroundrParameters.cs" />
+    <Compile Include="application\BackgroundrTimer.cs" />
+    <Compile Include="application\RearmTimerListener.cs" />
     <Compile Include="cqrs\StructureMapEventEmitter.cs" />
     <Compile Include="cqrs\IEventListener.cs" />
     <Compile Include="application\StartDesktopBackgroundImageTimer.cs" />

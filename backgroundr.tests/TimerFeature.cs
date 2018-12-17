@@ -12,7 +12,7 @@ namespace backgroundr.tests
     {
         private static readonly DateTime SOME_DATE = new DateTime(2018, 12, 07, 12, 0, 0);
 
-        private readonly StartDesktopBackgroundImageTimerHandler _handler;
+        private readonly BackgroundrTimer _timer;
         private readonly BackgroundrParameters _parameters;
         private readonly IClock _clock;
         private readonly ICommandDispatcher _commandDispatcher;
@@ -23,7 +23,7 @@ namespace backgroundr.tests
             _clock = Substitute.For<IClock>();
             _commandDispatcher = Substitute.For<ICommandDispatcher>();
 
-            _handler = new StartDesktopBackgroundImageTimerHandler(
+            _timer = new BackgroundrTimer(
                 _parameters,
                 _clock,
                 _commandDispatcher
@@ -42,7 +42,7 @@ namespace backgroundr.tests
             _clock.Now().Returns(SOME_DATE.Add(_parameters.RefreshPeriod));
 
             // Act
-            await _handler.Handle(new StartDesktopBackgroundImageTimer());
+            await _timer.Start();
 
             // Assert
             await _commandDispatcher
@@ -65,7 +65,7 @@ namespace backgroundr.tests
             _clock.Now().Returns(SOME_DATE.Add(halfPeriod));
 
             // Act
-            await _handler.Handle(new StartDesktopBackgroundImageTimer());
+            await _timer.Start();
 
             // Assert
             await _commandDispatcher
@@ -81,7 +81,7 @@ namespace backgroundr.tests
             _clock.Now().Returns(SOME_DATE);
 
             // Act
-            await _handler.Handle(new StartDesktopBackgroundImageTimer());
+            await _timer.Start();
 
             // Assert
             await _commandDispatcher
@@ -102,7 +102,7 @@ namespace backgroundr.tests
             _clock.Now().Returns(SOME_DATE.Add(remainingDuration));
 
             // Act
-            await _handler.Handle(new StartDesktopBackgroundImageTimer());
+            await _timer.Start();
             await Task.Delay(timeBeforeChange);
 
             // Assert
@@ -120,11 +120,11 @@ namespace backgroundr.tests
             _clock.Now().Returns(SOME_DATE);
 
             // Act
-            await _handler.Handle(new StartDesktopBackgroundImageTimer());
+            await _timer.Start();
             await Task.Delay(_parameters.RefreshPeriod.Divide(2));
-            await _handler.On(new DesktopBackgroundChanged());
+            await _timer.Stop();
             await Task.Delay(_parameters.RefreshPeriod.Divide(2));
-            await _handler.On(new DesktopBackgroundChanged());
+            await _timer.Stop();
             await Task.Delay(_parameters.RefreshPeriod.Divide(2));
 
             // Assert

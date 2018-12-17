@@ -24,12 +24,13 @@ namespace backgroundr.view
                 configuration.For<IFileDownloader>().Use<HttpFileDownloader>();
                 configuration.For<IRandom>().Use<PseudoRandom>();
                 configuration.For<IClock>().Use<DefaultClock>();
-                configuration.For<ICommandDispatcher>().Use<StructureMapCommandDispatcher>().Singleton();
+                configuration.For<ICommandDispatcher>().Use<StructureMapCommandDispatcher>();
                 configuration.For<ICommandHandler<ChangeDesktopBackgroundImageRandomly>>().Use<ChangeDesktopBackgroundImageRandomlyHandler>().Singleton();
-                configuration.For<ICommandHandler<StartDesktopBackgroundImageTimer>>().Use<StartDesktopBackgroundImageTimerHandler>().Singleton();
+                configuration.For<ICommandHandler<StartDesktopBackgroundImageTimer>>().Use<StartDesktopBackgroundImageTimerHandler>();
                 configuration.For<IEventEmitter>().Use<StructureMapEventEmitter>();
-                configuration.For<IEventListener<DesktopBackgroundChanged>>().Use<StartDesktopBackgroundImageTimerHandler>();
+                configuration.For<IEventListener<DesktopBackgroundChanged>>().Use<RearmTimerListener>();
                 configuration.For<BackgroundrParameters>().Singleton();
+                configuration.For<BackgroundrTimer>().Singleton();
             });
 
             base.OnStartup(e);

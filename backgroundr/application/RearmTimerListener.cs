@@ -1,20 +1,21 @@
-using System;
 using System.Threading.Tasks;
 using backgroundr.cqrs;
+using backgroundr.domain;
 
 namespace backgroundr.application
 {
-    public class StartDesktopBackgroundImageTimerHandler : ICommandHandler<StartDesktopBackgroundImageTimer>
+    public class RearmTimerListener : IEventListener<DesktopBackgroundChanged>
     {
         private readonly BackgroundrTimer _timer;
 
-        public StartDesktopBackgroundImageTimerHandler(BackgroundrTimer timer)
+        public RearmTimerListener(BackgroundrTimer timer)
         {
             _timer = timer;
         }
 
-        public Task Handle(StartDesktopBackgroundImageTimer command)
+        public Task On(DesktopBackgroundChanged @event)
         {
+            _timer.Stop();
             return _timer.Start();
         }
     }
