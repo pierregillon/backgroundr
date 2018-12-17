@@ -1,14 +1,18 @@
+using System;
+using System.Threading;
 using System.Threading.Tasks;
 using backgroundr.cqrs;
 using backgroundr.domain;
 
 namespace backgroundr.application
 {
-    public class StartDesktopBackgroundImageTimerHandler : ICommandHandler<StartDesktopBackgroundImageTimer>
+    public class StartDesktopBackgroundImageTimerHandler : ICommandHandler<StartDesktopBackgroundImageTimer>, IEventListener<DesktopBackgroundChanged>
     {
-        private IClock _clock;
+        private readonly IClock _clock;
         private readonly ICommandDispatcher _commandDispatcher;
         private readonly BackgroundrParameters _parameters;
+        private Task _task;
+        private CancellationTokenSource _cancellationTokenSource;
 
         public StartDesktopBackgroundImageTimerHandler(
             BackgroundrParameters parameters,
@@ -28,14 +32,18 @@ namespace backgroundr.application
                     await _commandDispatcher.Dispatch(new ChangeDesktopBackgroundImageRandomly());
                 }
                 else {
-#pragma warning disable 4014
-                    Task.Run(async () => {
-#pragma warning restore 4014
-                        await Task.Delay(remainingSeconds);
+                    _cancellationTokenSource = new CancellationTokenSource();
+                    _task = Task.Run(async () => {
+                        await Task.Delay(remainingSeconds, _cancellationTokenSource.Token);
                         await _commandDispatcher.Dispatch(new ChangeDesktopBackgroundImageRandomly());
-                    });
+                    }, _cancellationTokenSource.Token);
                 }
             }
+        }
+        public Task On(DesktopBackgroundChanged @event)
+        {
+            _cancellationTokenSource?.Cancel();
+            return Task.Delay(0);
         }
     }
 }

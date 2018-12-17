@@ -94,11 +94,11 @@ namespace backgroundr.tests
         {
             // Data
             const int timeBeforeChange = 500;
-            var remainingDuration = _parameters.RefreshPeriod.Subtract(TimeSpan.FromMilliseconds(timeBeforeChange));
 
             // Arrange
             _parameters.RefreshPeriod = TimeSpan.FromDays(1);
             _parameters.BackgroundImageLastRefreshDate = SOME_DATE;
+            var remainingDuration = _parameters.RefreshPeriod.Subtract(TimeSpan.FromMilliseconds(timeBeforeChange));
             _clock.Now().Returns(SOME_DATE.Add(remainingDuration));
 
             // Act
@@ -108,6 +108,28 @@ namespace backgroundr.tests
             // Assert
             await _commandDispatcher
                 .Received(1)
+                .Dispatch(Arg.Any<ChangeDesktopBackgroundImageRandomly>());
+        }
+
+        [Fact]
+        public async Task rearm_timer_when_desktop_changed()
+        {
+            // Arrange
+            _parameters.RefreshPeriod = TimeSpan.FromMilliseconds(100);
+            _parameters.BackgroundImageLastRefreshDate = SOME_DATE;
+            _clock.Now().Returns(SOME_DATE);
+
+            // Act
+            await _handler.Handle(new StartDesktopBackgroundImageTimer());
+            await Task.Delay(_parameters.RefreshPeriod.Divide(2));
+            await _handler.On(new DesktopBackgroundChanged());
+            await Task.Delay(_parameters.RefreshPeriod.Divide(2));
+            await _handler.On(new DesktopBackgroundChanged());
+            await Task.Delay(_parameters.RefreshPeriod.Divide(2));
+
+            // Assert
+            await _commandDispatcher
+                .Received(0)
                 .Dispatch(Arg.Any<ChangeDesktopBackgroundImageRandomly>());
         }
     }
