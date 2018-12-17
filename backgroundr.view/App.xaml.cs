@@ -22,6 +22,7 @@ namespace backgroundr.view
                 configuration.For<IImageProvider>().Use<FlickrImageProvider>();
                 configuration.For<IFileDownloader>().Use<HttpFileDownloader>();
                 configuration.For<IRandom>().Use<PseudoRandom>();
+                configuration.For<IClock>().Use<DefaultClock>();
                 configuration.For<ICommandDispatcher>().Use<StructureMapCommandDispatcher>().Singleton();
                 configuration.For<ICommandHandler<ChangeDesktopBackgroundImageRandomly>>().Use<ChangeDesktopBackgroundImageRandomlyHandler>().Singleton();
                 configuration.For<ICommandHandler<StartDesktopBackgroundImageTimer>>().Use<StartDesktopBackgroundImageTimerHandler>().Singleton();

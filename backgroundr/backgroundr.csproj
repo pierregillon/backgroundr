@@ -61,6 +61,7 @@
     <Compile Include="domain\DesktopBackgroundChanged.cs" />
     <Compile Include="domain\IClock.cs" />
     <Compile Include="domain\TimeSpanExtensions.cs" />
+    <Compile Include="infrastructure\DefaultClock.cs" />
     <Compile Include="infrastructure\HttpFileDownloader.cs" />
     <Compile Include="domain\IFileDownloader.cs" />
     <Compile Include="domain\IRandom.cs" />
