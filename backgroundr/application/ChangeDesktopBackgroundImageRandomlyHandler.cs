@@ -16,17 +16,20 @@ namespace backgroundr.application
         private readonly IImageProvider _imageProvider;
         private readonly IFileDownloader _fileDownloader;
         private readonly IRandom _random;
+        private readonly IEventEmitter _eventEmitter;
 
         public ChangeDesktopBackgroundImageRandomlyHandler(
-            IDesktopBackgroundImageUpdater desktopBackgroundImageUpdater,
-            IImageProvider imageProvider,
-            IFileDownloader fileDownloader,
-            IRandom random)
+            IDesktopBackgroundImageUpdater desktopBackgroundImageUpdater, 
+            IImageProvider imageProvider, 
+            IFileDownloader fileDownloader, 
+            IRandom random, 
+            IEventEmitter eventEmitter)
         {
             _desktopBackgroundImageUpdater = desktopBackgroundImageUpdater;
             _imageProvider = imageProvider;
             _fileDownloader = fileDownloader;
             _random = random;
+            _eventEmitter = eventEmitter;
         }
 
         public async Task Handle(ChangeDesktopBackgroundImageRandomly command)
@@ -37,6 +40,7 @@ namespace backgroundr.application
                     if (string.IsNullOrEmpty(imageUrl) == false) {
                         var localFilePath = await _fileDownloader.Download(imageUrl);
                         _desktopBackgroundImageUpdater.ChangeBackgroundImage(localFilePath, PicturePosition.Fill);
+                        _eventEmitter.Emit(new DesktopBackgroundChanged());
                     }
                 }
                 finally {

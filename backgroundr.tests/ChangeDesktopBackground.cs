@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using backgroundr.application;
+using backgroundr.cqrs;
 using backgroundr.domain;
 using backgroundr.infrastructure;
 using NSubstitute;
@@ -23,6 +24,7 @@ namespace backgroundr.tests
         private readonly IImageProvider _imageProvider;
         private readonly IFileDownloader _fileDownloader;
         private readonly ChangeDesktopBackgroundImageRandomlyHandler _handler;
+        private readonly IEventEmitter _eventEmitter;
 
         public ChangeDesktopBackground()
         {
@@ -30,12 +32,14 @@ namespace backgroundr.tests
             _imageProvider = Substitute.For<IImageProvider>();
             _fileDownloader = Substitute.For<IFileDownloader>();
             _fileDownloader.Download(Arg.Any<string>()).Returns(x => x.Arg<string>());
+            _eventEmitter = Substitute.For<IEventEmitter>();
 
             _handler = new ChangeDesktopBackgroundImageRandomlyHandler(
                 _desktopImageBackgroundUpdater,
                 _imageProvider,
                 _fileDownloader,
-                new PseudoRandom()
+                new PseudoRandom(),
+                _eventEmitter
             );
         }
 
@@ -127,6 +131,23 @@ namespace backgroundr.tests
             _desktopImageBackgroundUpdater
                 .Received(1)
                 .ChangeBackgroundImage(Arg.Any<string>(), Arg.Any<PicturePosition>());
+        }
+
+        [Fact]
+        public async Task emit_desktop_background_changed()
+        {
+            // Arrange
+            _imageProvider
+                .GetImageUrls()
+                .Returns(x => SOME_IMAGES);
+
+            // Act
+            await _handler.Handle(new ChangeDesktopBackgroundImageRandomly());
+
+            // Assert
+            _eventEmitter
+                .Received(1)
+                .Emit(Arg.Any<DesktopBackgroundChanged>());
         }
     }
 }
