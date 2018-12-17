@@ -7,16 +7,18 @@ namespace backgroundr.application
     public class RearmTimerListener : IEventListener<DesktopBackgroundChanged>
     {
         private readonly BackgroundrTimer _timer;
+        private readonly ICommandDispatcher _commandDispatcher;
 
-        public RearmTimerListener(BackgroundrTimer timer)
+        public RearmTimerListener(BackgroundrTimer timer, ICommandDispatcher commandDispatcher)
         {
             _timer = timer;
+            _commandDispatcher = commandDispatcher;
         }
 
-        public Task On(DesktopBackgroundChanged @event)
+        public async Task On(DesktopBackgroundChanged @event)
         {
-            _timer.Stop();
-            return _timer.Start();
+            await _timer.Stop();
+            await _commandDispatcher.Dispatch(new StartDesktopBackgroundImageTimer());
         }
     }
 }

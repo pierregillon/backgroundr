@@ -7,15 +7,22 @@ namespace backgroundr.application
     public class StartDesktopBackgroundImageTimerHandler : ICommandHandler<StartDesktopBackgroundImageTimer>
     {
         private readonly BackgroundrTimer _timer;
+        private readonly BackgroundrParameters _parameters;
 
-        public StartDesktopBackgroundImageTimerHandler(BackgroundrTimer timer)
+        public StartDesktopBackgroundImageTimerHandler(
+            BackgroundrTimer timer,
+            BackgroundrParameters parameters)
         {
             _timer = timer;
+            _parameters = parameters;
         }
 
-        public Task Handle(StartDesktopBackgroundImageTimer command)
+        public async Task Handle(StartDesktopBackgroundImageTimer command)
         {
-            return _timer.Start();
+            if (_parameters.BackgroundImageLastRefreshDate.HasValue) {
+                var nextRefreshDate = _parameters.BackgroundImageLastRefreshDate.Value.Add(_parameters.RefreshPeriod);
+                await _timer.Start(nextRefreshDate);
+            }
         }
     }
 }

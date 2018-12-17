@@ -13,18 +13,15 @@ namespace backgroundr.tests
         private static readonly DateTime SOME_DATE = new DateTime(2018, 12, 07, 12, 0, 0);
 
         private readonly BackgroundrTimer _timer;
-        private readonly BackgroundrParameters _parameters;
         private readonly IClock _clock;
         private readonly ICommandDispatcher _commandDispatcher;
 
         public TimerFeature()
         {
-            _parameters = new BackgroundrParameters();
             _clock = Substitute.For<IClock>();
             _commandDispatcher = Substitute.For<ICommandDispatcher>();
 
             _timer = new BackgroundrTimer(
-                _parameters,
                 _clock,
                 _commandDispatcher
             );
@@ -37,12 +34,11 @@ namespace backgroundr.tests
         public async Task change_background_instantly_if_refresh_period_expired(string refreshPeriod)
         {
             // Arrange
-            _parameters.RefreshPeriod = TimeSpan.Parse(refreshPeriod);
-            _parameters.BackgroundImageLastRefreshDate = SOME_DATE;
-            _clock.Now().Returns(SOME_DATE.Add(_parameters.RefreshPeriod));
+            var nextRefreshDate = SOME_DATE.Add(TimeSpan.Parse(refreshPeriod));
+            _clock.Now().Returns(nextRefreshDate);
 
             // Act
-            await _timer.Start();
+            await _timer.Start(nextRefreshDate);
 
             // Assert
             await _commandDispatcher
@@ -51,37 +47,19 @@ namespace backgroundr.tests
         }
 
         [Theory]
-        [InlineData("00:00:01")]
+        [InlineData("00:00:05")]
         [InlineData("00:12:13")]
         [InlineData("12:00:00")]
         public async Task do_not_change_background_instantly_if_within_refresh_period(string refreshPeriod)
         {
             // Data
-            _parameters.RefreshPeriod = TimeSpan.Parse(refreshPeriod);
-            _parameters.BackgroundImageLastRefreshDate = SOME_DATE;
+            var period = TimeSpan.Parse(refreshPeriod);
 
             // Arrange
-            var halfPeriod = _parameters.RefreshPeriod.Divide(2);
-            _clock.Now().Returns(SOME_DATE.Add(halfPeriod));
+            _clock.Now().Returns(SOME_DATE.Add(period.Divide(2)));
 
             // Act
-            await _timer.Start();
-
-            // Assert
-            await _commandDispatcher
-                .Received(0)
-                .Dispatch(Arg.Any<ChangeDesktopBackgroundImageRandomly>());
-        }
-
-        [Fact]
-        public async Task do_not_change_background_image_instantly_if_no_last_refresh_date()
-        {
-            // Arrange
-            _parameters.BackgroundImageLastRefreshDate = null;
-            _clock.Now().Returns(SOME_DATE);
-
-            // Act
-            await _timer.Start();
+            await _timer.Start(SOME_DATE.Add(period));
 
             // Assert
             await _commandDispatcher
@@ -94,15 +72,13 @@ namespace backgroundr.tests
         {
             // Data
             const int timeBeforeChange = 500;
+            var nextRefreshDate = SOME_DATE.Add(TimeSpan.FromDays(1));
 
             // Arrange
-            _parameters.RefreshPeriod = TimeSpan.FromDays(1);
-            _parameters.BackgroundImageLastRefreshDate = SOME_DATE;
-            var remainingDuration = _parameters.RefreshPeriod.Subtract(TimeSpan.FromMilliseconds(timeBeforeChange));
-            _clock.Now().Returns(SOME_DATE.Add(remainingDuration));
+            _clock.Now().Returns(nextRefreshDate.Subtract(TimeSpan.FromMilliseconds(timeBeforeChange)));
 
             // Act
-            await _timer.Start();
+            await _timer.Start(nextRefreshDate);
             await Task.Delay(timeBeforeChange);
 
             // Assert
@@ -112,20 +88,18 @@ namespace backgroundr.tests
         }
 
         [Fact]
-        public async Task rearm_timer_when_desktop_changed()
+        public async Task stopping_timer_do_not_change_background()
         {
+            // Data
+            const int timeMs = 50;
+
             // Arrange
-            _parameters.RefreshPeriod = TimeSpan.FromMilliseconds(100);
-            _parameters.BackgroundImageLastRefreshDate = SOME_DATE;
-            _clock.Now().Returns(SOME_DATE);
+            _clock.Now().Returns(SOME_DATE.Subtract(TimeSpan.FromMilliseconds(timeMs)));
 
             // Act
-            await _timer.Start();
-            await Task.Delay(_parameters.RefreshPeriod.Divide(2));
+            await _timer.Start(SOME_DATE);
             await _timer.Stop();
-            await Task.Delay(_parameters.RefreshPeriod.Divide(2));
-            await _timer.Stop();
-            await Task.Delay(_parameters.RefreshPeriod.Divide(2));
+            await Task.Delay(TimeSpan.FromMilliseconds(timeMs + 10));
 
             // Assert
             await _commandDispatcher
