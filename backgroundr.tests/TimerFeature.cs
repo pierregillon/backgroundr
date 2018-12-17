@@ -90,15 +90,16 @@ namespace backgroundr.tests
         }
 
         [Fact]
-        public async Task change_background_when_1_day_passed()
+        public async Task change_background_when_refresh_period_ellapsed()
         {
             // Data
             const int timeBeforeChange = 500;
+            var remainingDuration = _parameters.RefreshPeriod.Subtract(TimeSpan.FromMilliseconds(timeBeforeChange));
 
             // Arrange
             _parameters.RefreshPeriod = TimeSpan.FromDays(1);
             _parameters.BackgroundImageLastRefreshDate = SOME_DATE;
-            _clock.Now().Returns(SOME_DATE.Add(_parameters.RefreshPeriod.Subtract(TimeSpan.FromMilliseconds(timeBeforeChange))));
+            _clock.Now().Returns(SOME_DATE.Add(remainingDuration));
 
             // Act
             await _handler.Handle(new StartDesktopBackgroundImageTimer());
