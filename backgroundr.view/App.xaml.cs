@@ -22,7 +22,7 @@ namespace backgroundr.view
                 configuration.For<IImageProvider>().Use<FlickrImageProvider>();
                 configuration.For<IFileDownloader>().Use<HttpFileDownloader>();
                 configuration.For<IRandom>().Use<PseudoRandom>();
-                configuration.For<ICommandDispatcher>().Use<CommandDispatcher>().Singleton();
+                configuration.For<ICommandDispatcher>().Use<StructureMapCommandDispatcher>().Singleton();
                 configuration.For<ICommandHandler<ChangeDesktopBackgroundImageRandomly>>().Use<ChangeDesktopBackgroundImageRandomlyHandler>();
                 configuration.For<IEventEmitter>().Use<StructureMapEventEmitter>();
                 configuration.For<BackgroundrParameters>().Singleton();

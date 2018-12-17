@@ -67,7 +67,7 @@
     <Compile Include="infrastructure\PseudoRandom.cs" />
     <Compile Include="infrastructure\FlickrImageProvider.cs" />
     <Compile Include="domain\IImageProvider.cs" />
-    <Compile Include="cqrs\CommandDispatcher.cs" />
+    <Compile Include="cqrs\StructureMapCommandDispatcher.cs" />
     <Compile Include="cqrs\ICommandDispatcher.cs" />
     <Compile Include="cqrs\ICommandHandler.cs" />
     <Compile Include="application\ChangeDesktopBackgroundImageRandomly.cs" />

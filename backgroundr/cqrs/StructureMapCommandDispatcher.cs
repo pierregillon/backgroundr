@@ -5,11 +5,11 @@ using StructureMap;
 
 namespace backgroundr.cqrs
 {
-    public class CommandDispatcher : ICommandDispatcher
+    public class StructureMapCommandDispatcher : ICommandDispatcher
     {
         private readonly IContainer _container;
 
-        public CommandDispatcher(IContainer container)
+        public StructureMapCommandDispatcher(IContainer container)
         {
             _container = container;
         }
