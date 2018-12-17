@@ -24,12 +24,13 @@ namespace backgroundr.view
                 configuration.For<IRandom>().Use<PseudoRandom>();
                 configuration.For<ICommandDispatcher>().Use<CommandDispatcher>().Singleton();
                 configuration.For<ICommandHandler<ChangeDesktopBackgroundImageRandomly>>().Use<ChangeDesktopBackgroundImageRandomlyHandler>();
+                configuration.For<IEventEmitter>().Use<StructureMapEventEmitter>();
                 configuration.For<BackgroundrParameters>().Singleton();
             });
 
             base.OnStartup(e);
 
-            _taskbar = (TaskbarIcon)FindResource("Taskbar");
+            _taskbar = (TaskbarIcon) FindResource("Taskbar");
             _taskbar.DataContext = container.GetInstance<TaskBarViewModel>();
 
             if (File.Exists(".flickr")) {
@@ -44,7 +45,7 @@ namespace backgroundr.view
 
         protected override void OnExit(ExitEventArgs e)
         {
-            _taskbar.Dispose(); 
+            _taskbar.Dispose();
             base.OnExit(e);
         }
     }
