@@ -31,15 +31,15 @@ namespace backgroundr.tests
         }
         
         [Theory]
-        [InlineData(1)]
-        [InlineData(2)]
-        [InlineData(10)]
-        public async Task change_background_instantly_if_at_least_1_day_passed_since_last_refresh(int dayPassed)
+        [InlineData("00:00:01")]
+        [InlineData("00:12:13")]
+        [InlineData("12:00:00")]
+        public async Task change_background_instantly_if_refresh_period_expired(string refreshPeriod)
         {
             // Arrange
-            _parameters.RefreshPeriod = TimeSpan.FromDays(1);
+            _parameters.RefreshPeriod = TimeSpan.Parse(refreshPeriod);
             _parameters.BackgroundImageLastRefreshDate = SOME_DATE;
-            _clock.Now().Returns(SOME_DATE.AddDays(dayPassed));
+            _clock.Now().Returns(SOME_DATE.Add(_parameters.RefreshPeriod));
 
             // Act
             await _handler.Handle(new StartDesktopBackgroundImageTimer());
