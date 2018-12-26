@@ -10,7 +10,7 @@ namespace backgroundr.application
 {
     public class ChangeDesktopBackgroundImageRandomlyHandler : ICommandHandler<ChangeDesktopBackgroundImageRandomly>
     {
-        private static readonly object _locker = new object();
+        private static readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);
 
         private readonly IDesktopBackgroundImageUpdater _desktopBackgroundImageUpdater;
         private readonly IImageProvider _imageProvider;
@@ -43,7 +43,7 @@ namespace backgroundr.application
 
         public async Task Handle(ChangeDesktopBackgroundImageRandomly command)
         {
-            if (Monitor.TryEnter(_locker)) {
+            if (await _semaphoreSlim.WaitAsync(1)) {
                 try {
                     var imageUrl = await FindNextImage();
                     if (string.IsNullOrEmpty(imageUrl) == false) {
@@ -53,7 +53,7 @@ namespace backgroundr.application
                     }
                 }
                 finally {
-                    Monitor.Exit(_locker);
+                    _semaphoreSlim.Release();
                 }
             }
         }
