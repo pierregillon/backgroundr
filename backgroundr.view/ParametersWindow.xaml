@@ -5,13 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        Title="Parameters" Height="166.902" Width="263.028">
+        Title="Parameters" Height="197.557" Width="323.657">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.25*"/>
             <ColumnDefinition Width="0.75*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -26,7 +27,8 @@
         <TextBox Grid.Row="2" Grid.Column="1" Margin="3px" Text="{Binding Path=Token, Mode=TwoWay}"/>
         <TextBlock Grid.Row="3" Grid.Column="0"  Text="Secret" HorizontalAlignment="Right" Margin="5px" />
         <TextBox Grid.Row="3" Grid.Column="1" Margin="3px" Text="{Binding Path=TokenSecret, Mode=TwoWay}"/>
-
+        <CheckBox Grid.Row="4" Grid.Column="1" Margin="3px" IsChecked="{Binding Path=AutomaticallyStart, Mode=TwoWay}" Content="Automatically start up"/>
+        
         <StackPanel Grid.Row="0" Grid.RowSpan="10" Grid.ColumnSpan="10" 
                     VerticalAlignment="Bottom" HorizontalAlignment="Right"
                     Orientation="Horizontal">

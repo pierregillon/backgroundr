@@ -1,14 +1,20 @@
+using System;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 using backgroundr.application;
 using backgroundr.domain;
+using backgroundr.view.utils;
 
 namespace backgroundr.view.viewmodels
 {
     public class ParametersViewModel : ViewModelBase
     {
+        private const string APPLICATION_NAME = "Backgroundr";
+
         private readonly BackgroundrParameters _parameters;
         private readonly IFileService _fileService;
+        private readonly StartupService _startupService;
 
         public string UserId
         {
@@ -40,6 +46,12 @@ namespace backgroundr.view.viewmodels
             get { return GetNotifiableProperty<string>(); }
             set { SetNotifiableProperty<string>(value); }
         }
+        public bool AutomaticallyStart
+        {
+            get { return GetNotifiableProperty<bool>(); }
+            set { SetNotifiableProperty<bool>(value); }
+        }
+
         public ICommand ValidateCommand
         {
             get
@@ -53,6 +65,14 @@ namespace backgroundr.view.viewmodels
                         _parameters.OAuthAccessToken = OAuthAccessToken;
                         _parameters.OAuthAccessTokenSecret = OAuthAccessTokenSecret;
                         _fileService.Serialize(_parameters, ".flickr");
+
+                        if (AutomaticallyStart) {
+                            _startupService.EnableAutomaticStartup(APPLICATION_NAME, Assembly.GetExecutingAssembly().Location);
+                        }
+                        else {
+                            _startupService.DisableAutomaticStartup(APPLICATION_NAME);
+                        }
+
                         Application.Current?.MainWindow?.Close();
                     }
                 };
@@ -70,10 +90,11 @@ namespace backgroundr.view.viewmodels
             }
         }
 
-        public ParametersViewModel(BackgroundrParameters parameters, IFileService fileService)
+        public ParametersViewModel(BackgroundrParameters parameters, IFileService fileService, StartupService startupService)
         {
             _parameters = parameters;
             _fileService = fileService;
+            _startupService = startupService;
 
             UserId = _parameters.UserId;
             Tags = _parameters.Tags;
@@ -81,6 +102,8 @@ namespace backgroundr.view.viewmodels
             TokenSecret = _parameters.TokenSecret;
             OAuthAccessToken = _parameters.OAuthAccessToken;
             OAuthAccessTokenSecret = _parameters.OAuthAccessTokenSecret;
+
+            AutomaticallyStart = _startupService.IsApplicationAutomaticallyStart(APPLICATION_NAME);
         }
     }
 }
