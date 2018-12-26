@@ -9,6 +9,13 @@ namespace backgroundr.infrastructure
     {
         public async Task<string> Download(string url)
         {
+            if (IsRemote(url)) {
+                return await DownloadUrl(url);
+            }
+            return url;
+        }
+        private static async Task<string> DownloadUrl(string url)
+        {
             var httpWebRequest = (HttpWebRequest) WebRequest.Create(url);
             var httpWebReponse = (HttpWebResponse) httpWebRequest.GetResponse();
             var stream = httpWebReponse.GetResponseStream();
@@ -17,6 +24,10 @@ namespace backgroundr.infrastructure
                 await stream.CopyToAsync(fileStream);
             }
             return tempFilePath;
+        }
+        private bool IsRemote(string url)
+        {
+            return url.StartsWith("http");
         }
     }
 }
