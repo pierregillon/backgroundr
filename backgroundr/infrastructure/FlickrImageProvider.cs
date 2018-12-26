@@ -36,6 +36,7 @@ namespace backgroundr.infrastructure
                 });
 
                 return photoCollection
+                    .Where(x => x.LargeWidth > x.LargeHeight)
                     .Select(x => x.Large2048Url ?? x.Large1600Url ?? x.LargeUrl)
                     .Where(x => string.IsNullOrEmpty(x) == false)
                     .ToArray();
