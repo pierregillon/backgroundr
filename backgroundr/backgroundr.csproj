@@ -67,6 +67,7 @@
     <Compile Include="infrastructure\HttpFileDownloader.cs" />
     <Compile Include="domain\IFileDownloader.cs" />
     <Compile Include="domain\IRandom.cs" />
+    <Compile Include="infrastructure\LocalComputerImageProvider.cs" />
     <Compile Include="infrastructure\PseudoRandom.cs" />
     <Compile Include="infrastructure\FlickrImageProvider.cs" />
     <Compile Include="domain\IImageProvider.cs" />
