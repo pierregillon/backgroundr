@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,6 +26,10 @@ namespace backgroundr.tests
         private readonly IFileDownloader _fileDownloader;
         private readonly ChangeDesktopBackgroundImageRandomlyHandler _handler;
         private readonly IEventEmitter _eventEmitter;
+        private BackgroundrParameters _parameters;
+        private IClock _clock;
+        private IFileService _fileService;
+        private static readonly DateTime NOW = new DateTime(2018, 12, 26);
 
         public ChangeDesktopBackground()
         {
@@ -33,13 +38,19 @@ namespace backgroundr.tests
             _fileDownloader = Substitute.For<IFileDownloader>();
             _fileDownloader.Download(Arg.Any<string>()).Returns(x => x.Arg<string>());
             _eventEmitter = Substitute.For<IEventEmitter>();
+            _parameters = new BackgroundrParameters();
+            _clock = Substitute.For<IClock>();
+            _fileService = Substitute.For<IFileService>();
 
             _handler = new ChangeDesktopBackgroundImageRandomlyHandler(
                 _desktopImageBackgroundUpdater,
                 _imageProvider,
                 _fileDownloader,
                 new PseudoRandom(),
-                _eventEmitter
+                _eventEmitter,
+                _parameters,
+                _clock,
+                _fileService
             );
         }
 
@@ -148,6 +159,23 @@ namespace backgroundr.tests
             _eventEmitter
                 .Received(1)
                 .Emit(Arg.Any<DesktopBackgroundChanged>());
+        }
+
+        [Fact]
+        public async Task save_parameter_last_change_date_to_now()
+        {
+            // Arrange
+            _clock.Now().Returns(NOW);
+            _imageProvider
+                .GetImageUrls()
+                .Returns(x => SOME_IMAGES);
+
+            // Act
+            await _handler.Handle(new ChangeDesktopBackgroundImageRandomly());
+
+            // Assert
+            Assert.Equal(NOW, _parameters.BackgroundImageLastRefreshDate);
+            _fileService.Received(1).Serialize(Arg.Any<BackgroundrParameters>(), ".flickr");
         }
     }
 }
