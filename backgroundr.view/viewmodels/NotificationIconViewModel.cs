@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
 using backgroundr.application;
 using backgroundr.cqrs;
+using ICommand = System.Windows.Input.ICommand;
 
 namespace backgroundr.view.viewmodels
 {

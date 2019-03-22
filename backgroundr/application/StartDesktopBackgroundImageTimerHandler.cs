@@ -6,14 +6,14 @@ namespace backgroundr.application
 {
     public class StartDesktopBackgroundImageTimerHandler : ICommandHandler<StartDesktopBackgroundImageTimer>
     {
-        private readonly BackgroundrTimer _timer;
+        private readonly CommandDispatchScheduler _commandDispatcherScheduler;
         private readonly BackgroundrParameters _parameters;
 
         public StartDesktopBackgroundImageTimerHandler(
-            BackgroundrTimer timer,
+            CommandDispatchScheduler commandDispatcherScheduler,
             BackgroundrParameters parameters)
         {
-            _timer = timer;
+            _commandDispatcherScheduler = commandDispatcherScheduler;
             _parameters = parameters;
         }
 
@@ -21,7 +21,7 @@ namespace backgroundr.application
         {
             if (_parameters.BackgroundImageLastRefreshDate.HasValue) {
                 var nextRefreshDate = _parameters.BackgroundImageLastRefreshDate.Value.Add(_parameters.RefreshPeriod);
-                await _timer.Start(nextRefreshDate);
+                await _commandDispatcherScheduler.Schedule(new ChangeDesktopBackgroundImageRandomly(), nextRefreshDate);
             }
         }
     }

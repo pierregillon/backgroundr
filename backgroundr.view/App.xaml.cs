@@ -27,10 +27,10 @@ namespace backgroundr.view
                 configuration.For<ICommandDispatcher>().Use<StructureMapCommandDispatcher>();
                 configuration.For<ICommandHandler<ChangeDesktopBackgroundImageRandomly>>().Use<ChangeDesktopBackgroundImageRandomlyHandler>().Singleton();
                 configuration.For<ICommandHandler<StartDesktopBackgroundImageTimer>>().Use<StartDesktopBackgroundImageTimerHandler>();
+                configuration.For<CommandDispatchScheduler>().Singleton();
                 configuration.For<IEventEmitter>().Use<StructureMapEventEmitter>();
                 configuration.For<IEventListener<DesktopBackgroundChanged>>().Use<RearmTimerListener>();
                 configuration.For<BackgroundrParameters>().Singleton();
-                configuration.For<BackgroundrTimer>().Singleton();
             });
 
             base.OnStartup(e);

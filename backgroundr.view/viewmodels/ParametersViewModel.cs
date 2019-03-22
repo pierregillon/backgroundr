@@ -5,6 +5,7 @@ using System.Windows.Input;
 using backgroundr.application;
 using backgroundr.domain;
 using backgroundr.view.utils;
+using ICommand = System.Windows.Input.ICommand;
 
 namespace backgroundr.view.viewmodels
 {

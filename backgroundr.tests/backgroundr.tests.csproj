@@ -69,7 +69,7 @@
   <ItemGroup>
     <Compile Include="ChangeDesktopBackground.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TimerFeature.cs" />
+    <Compile Include="CommandDispatchSchedulerFeature.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\backgroundr\backgroundr.csproj">

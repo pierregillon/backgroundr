@@ -8,28 +8,18 @@ using Xunit;
 
 namespace backgroundr.tests
 {
-    public class TimerFeature
+    public class CommandDispatchSchedulerFeature
     {
-        private static readonly DateTime SOME_DATE = new DateTime(2018, 12, 07, 12, 0, 0);
-
-        private readonly BackgroundrTimer _timer;
         private readonly IClock _clock;
         private readonly ICommandDispatcher _commandDispatcher;
         private readonly TimeSpan THREAD_SWITCH_DELAY = TimeSpan.FromMilliseconds(10);
+        private readonly CommandDispatchScheduler _commandDispatchScheduler;
 
-        public TimerFeature()
+        public CommandDispatchSchedulerFeature()
         {
             _clock = Substitute.For<IClock>();
             _commandDispatcher = Substitute.For<ICommandDispatcher>();
-
-            _timer = new BackgroundrTimer(
-                _clock,
-                _commandDispatcher
-            );
-        }
-        ~TimerFeature()
-        {
-            _timer.Stop();
+            _commandDispatchScheduler = new CommandDispatchScheduler(_clock, _commandDispatcher);
         }
         
         [Theory]
@@ -41,7 +31,7 @@ namespace backgroundr.tests
             _clock.Now().Returns(DateTime.Parse(now));
 
             // Act
-            await _timer.Start(DateTime.Parse(nextRefreshDate));
+            await _commandDispatchScheduler.Schedule(new ChangeDesktopBackgroundImageRandomly(), DateTime.Parse(nextRefreshDate));
 
             // Assert
             await _commandDispatcher
@@ -57,9 +47,8 @@ namespace backgroundr.tests
             _clock.Now().Returns(DateTime.Parse(now));
 
             // Act
-            await _timer.Start(DateTime.Parse(nextRefreshDate));
-            var timeDifference = TimeDifference(now, nextRefreshDate);
-            await Task.Delay(timeDifference);
+            await _commandDispatchScheduler.Schedule(new ChangeDesktopBackgroundImageRandomly(), DateTime.Parse(nextRefreshDate));
+            await Task.Delay(TimeDifference(now, nextRefreshDate));
 
             // Assert
             await _commandDispatcher
@@ -76,7 +65,7 @@ namespace backgroundr.tests
             _clock.Now().Returns(DateTime.Parse(now));
 
             // Act
-            await _timer.Start(DateTime.Parse(nextRefreshDate));
+            await _commandDispatchScheduler.Schedule(new ChangeDesktopBackgroundImageRandomly(), DateTime.Parse(nextRefreshDate));
 
             // Assert
             await _commandDispatcher
@@ -92,8 +81,8 @@ namespace backgroundr.tests
             _clock.Now().Returns(DateTime.Parse(now));
 
             // Act
-            await _timer.Start(DateTime.Parse(nextRefreshDate));
-            await _timer.Stop();
+            await _commandDispatchScheduler.Schedule(new ChangeDesktopBackgroundImageRandomly(), DateTime.Parse(nextRefreshDate));
+            await _commandDispatchScheduler.Clear();
             await Task.Delay(TimeDifference(now, nextRefreshDate));
 
             // Assert
