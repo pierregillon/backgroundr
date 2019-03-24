@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        Title="Parameters" Height="197.557" Width="323.657">
+        Title="Parameters" Height="263.678" Width="399.454">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.25*"/>
@@ -17,18 +17,35 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0" Grid.Column="0" Text="UserId" HorizontalAlignment="Right" Margin="5px" />
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="Flickr user id *" HorizontalAlignment="Right" Margin="5px" />
         <TextBox Grid.Row="0" Grid.Column="1" Margin="3px" Text="{Binding Path=UserId, Mode=TwoWay}"/>
         <TextBlock Grid.Row="1" Grid.Column="0" Text="Tags" HorizontalAlignment="Right" Margin="5px" />
         <TextBox Grid.Row="1" Grid.Column="1" Margin="3px" Text="{Binding Path=Tags, Mode=TwoWay}"/>
-        <TextBlock Grid.Row="2" Grid.Column="0" Text="Token" HorizontalAlignment="Right" Margin="5px" />
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="Api token *" HorizontalAlignment="Right" Margin="5px" />
         <TextBox Grid.Row="2" Grid.Column="1" Margin="3px" Text="{Binding Path=Token, Mode=TwoWay}"/>
-        <TextBlock Grid.Row="3" Grid.Column="0"  Text="Secret" HorizontalAlignment="Right" Margin="5px" />
+        <TextBlock Grid.Row="3" Grid.Column="0"  Text="Api secret *" HorizontalAlignment="Right" Margin="5px" />
         <TextBox Grid.Row="3" Grid.Column="1" Margin="3px" Text="{Binding Path=TokenSecret, Mode=TwoWay}"/>
-        <CheckBox Grid.Row="4" Grid.Column="1" Margin="3px" IsChecked="{Binding Path=AutomaticallyStart, Mode=TwoWay}" Content="Automatically start up"/>
-        
+        <GroupBox Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Header="For private photo access" Margin="5px" Background="LightGoldenrodYellow">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.45*"/>
+                    <ColumnDefinition Width="0.55*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Column="0" Grid.Row="0" Text="OAuth access token" HorizontalAlignment="Right" Margin="5px" />
+                <TextBox Grid.Column="1" Grid.Row="0" Margin="3px" Text="{Binding Path=OAuthAccessToken, Mode=TwoWay}"/>
+                <TextBlock Grid.Column="0" Grid.Row="1" Text="OAuth access token secret" HorizontalAlignment="Right" Margin="5px" />
+                <TextBox Grid.Column="1" Grid.Row="1" Margin="3px" Text="{Binding Path=OAuthAccessTokenSecret, Mode=TwoWay}"/>
+            </Grid>
+        </GroupBox>
+        <CheckBox Grid.Row="6" Grid.Column="1" Margin="3px" IsChecked="{Binding Path=AutomaticallyStart, Mode=TwoWay}" Content="Automatically start up"/>
+
         <StackPanel Grid.Row="0" Grid.RowSpan="10" Grid.ColumnSpan="10" 
                     VerticalAlignment="Bottom" HorizontalAlignment="Right"
                     Orientation="Horizontal">

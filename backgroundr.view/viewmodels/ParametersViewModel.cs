@@ -61,8 +61,8 @@ namespace backgroundr.view.viewmodels
                     CommandAction = () => {
                         _parameters.UserId = UserId;
                         _parameters.Tags = Tags;
-                        _parameters.Token = Token;
-                        _parameters.TokenSecret = TokenSecret;
+                        _parameters.ApiToken = Token;
+                        _parameters.ApiSecret = TokenSecret;
                         _parameters.OAuthAccessToken = OAuthAccessToken;
                         _parameters.OAuthAccessTokenSecret = OAuthAccessTokenSecret;
                         _fileService.Serialize(_parameters, ".flickr");
@@ -99,8 +99,8 @@ namespace backgroundr.view.viewmodels
 
             UserId = _parameters.UserId;
             Tags = _parameters.Tags;
-            Token = _parameters.Token;
-            TokenSecret = _parameters.TokenSecret;
+            Token = _parameters.ApiToken;
+            TokenSecret = _parameters.ApiSecret;
             OAuthAccessToken = _parameters.OAuthAccessToken;
             OAuthAccessTokenSecret = _parameters.OAuthAccessTokenSecret;
 

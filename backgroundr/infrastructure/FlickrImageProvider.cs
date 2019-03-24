@@ -19,7 +19,7 @@ namespace backgroundr.infrastructure
         public async Task<IReadOnlyCollection<string>> GetImageUrls()
         {
             return await Task.Run(() => {
-                var flickr = new Flickr(_parameters.Token, _parameters.TokenSecret) {
+                var flickr = new Flickr(_parameters.ApiToken, _parameters.ApiSecret) {
                     OAuthAccessToken = _parameters.OAuthAccessToken,
                     OAuthAccessTokenSecret = _parameters.OAuthAccessTokenSecret
                 };
