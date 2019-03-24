@@ -69,7 +69,6 @@ namespace backgroundr.application
         private void SaveLastUpdateDateToNow()
         {
             _parameters.BackgroundImageLastRefreshDate = _clock.Now();
-            _parameters.RefreshPeriod = TimeSpan.FromSeconds(5);
             _fileService.Serialize(_parameters, ".flickr");
             _eventEmitter.Emit(new DesktopBackgroundChanged());
         }

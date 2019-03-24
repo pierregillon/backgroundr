@@ -1,9 +1,13 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 using backgroundr.application;
+using backgroundr.cqrs;
 using backgroundr.domain;
+using backgroundr.view.design;
 using backgroundr.view.utils;
 using ICommand = System.Windows.Input.ICommand;
 
@@ -16,6 +20,7 @@ namespace backgroundr.view.viewmodels
         private readonly BackgroundrParameters _parameters;
         private readonly IFileService _fileService;
         private readonly StartupService _startupService;
+        private readonly ICommandDispatcher _commandDispatcher;
 
         public string UserId
         {
@@ -52,50 +57,46 @@ namespace backgroundr.view.viewmodels
             get { return GetNotifiableProperty<bool>(); }
             set { SetNotifiableProperty<bool>(value); }
         }
-
-        public ICommand ValidateCommand
+        public IList<RefreshPeriod> Periods { get; set; } = new List<RefreshPeriod> {
+            new RefreshPeriod(TimeSpan.FromSeconds(5)),
+            new RefreshPeriod(TimeSpan.FromMinutes(1)),
+            new RefreshPeriod(TimeSpan.FromMinutes(5)),
+            new RefreshPeriod(TimeSpan.FromMinutes(15)),
+            new RefreshPeriod(TimeSpan.FromMinutes(30)),
+            new RefreshPeriod(TimeSpan.FromHours(1)),
+            new RefreshPeriod(TimeSpan.FromHours(2)),
+            new RefreshPeriod(TimeSpan.FromHours(4)),
+            new RefreshPeriod(TimeSpan.FromHours(6)),
+            new RefreshPeriod(TimeSpan.FromDays(1)),
+            new RefreshPeriod(TimeSpan.FromDays(2)),
+            new RefreshPeriod(TimeSpan.FromDays(7)),
+            new RefreshPeriod(TimeSpan.FromDays(30))
+        };
+        public RefreshPeriod SelectedPeriod
         {
-            get
-            {
-                return new DelegateCommand {
-                    CommandAction = () => {
-                        _parameters.UserId = UserId;
-                        _parameters.Tags = Tags;
-                        _parameters.ApiToken = Token;
-                        _parameters.ApiSecret = TokenSecret;
-                        _parameters.OAuthAccessToken = OAuthAccessToken;
-                        _parameters.OAuthAccessTokenSecret = OAuthAccessTokenSecret;
-                        _fileService.Serialize(_parameters, ".flickr");
-
-                        if (AutomaticallyStart) {
-                            _startupService.EnableAutomaticStartup(APPLICATION_NAME, Assembly.GetExecutingAssembly().Location);
-                        }
-                        else {
-                            _startupService.DisableAutomaticStartup(APPLICATION_NAME);
-                        }
-
-                        Application.Current?.MainWindow?.Close();
-                    }
-                };
-            }
-        }
-        public ICommand CancelCommand
-        {
-            get
-            {
-                return new DelegateCommand {
-                    CommandAction = () => {
-                        Application.Current?.MainWindow?.Close();
-                    }
-                };
-            }
+            get { return GetNotifiableProperty<RefreshPeriod>(); }
+            set { SetNotifiableProperty<RefreshPeriod>(value); }
         }
 
-        public ParametersViewModel(BackgroundrParameters parameters, IFileService fileService, StartupService startupService)
+        public ICommand ValidateCommand => new DelegateCommand {
+            CommandAction = Validate
+        };
+        public ICommand CancelCommand => new DelegateCommand {
+            CommandAction = () => {
+                Application.Current?.MainWindow?.Close();
+            }
+        };
+
+        public ParametersViewModel(
+            BackgroundrParameters parameters,
+            IFileService fileService,
+            StartupService startupService,
+            ICommandDispatcher commandDispatcher)
         {
             _parameters = parameters;
             _fileService = fileService;
             _startupService = startupService;
+            _commandDispatcher = commandDispatcher;
 
             UserId = _parameters.UserId;
             Tags = _parameters.Tags;
@@ -103,8 +104,31 @@ namespace backgroundr.view.viewmodels
             TokenSecret = _parameters.ApiSecret;
             OAuthAccessToken = _parameters.OAuthAccessToken;
             OAuthAccessTokenSecret = _parameters.OAuthAccessTokenSecret;
-
             AutomaticallyStart = _startupService.IsApplicationAutomaticallyStart(APPLICATION_NAME);
+            SelectedPeriod = Periods.FirstOrDefault(x => x.Value == parameters.RefreshPeriod);
+        }
+
+        private void Validate()
+        {
+            _parameters.UserId = UserId;
+            _parameters.Tags = Tags;
+            _parameters.ApiToken = Token;
+            _parameters.ApiSecret = TokenSecret;
+            _parameters.OAuthAccessToken = OAuthAccessToken;
+            _parameters.OAuthAccessTokenSecret = OAuthAccessTokenSecret;
+            _parameters.RefreshPeriod = SelectedPeriod.Value;
+            _fileService.Serialize(_parameters, ".flickr");
+
+            if (AutomaticallyStart) {
+                _startupService.EnableAutomaticStartup(APPLICATION_NAME, Assembly.GetExecutingAssembly().Location);
+            }
+            else {
+                _startupService.DisableAutomaticStartup(APPLICATION_NAME);
+            }
+
+            _commandDispatcher.Dispatch(new StartDesktopBackgroundImageTimer());
+
+            Application.Current?.MainWindow?.Close();
         }
     }
 }

@@ -18,7 +18,9 @@ namespace backgroundr.view.utils
 
         public void DisableAutomaticStartup(string applicationName)
         {
-            _startupRegistry.DeleteValue(applicationName);
+            if (_startupRegistry.GetValue(applicationName) != null) {
+                _startupRegistry.DeleteValue(applicationName);
+            }
         }
     }
 }

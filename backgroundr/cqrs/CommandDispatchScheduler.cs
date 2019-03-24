@@ -13,7 +13,6 @@ namespace backgroundr.cqrs
         private readonly IClock _clock;
         private readonly ICommandDispatcher _commandDispatcher;
         private readonly IList<CommandDispatchSchedule> _schedules = new List<CommandDispatchSchedule>();
-        private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 
         public CommandDispatchScheduler(IClock clock, ICommandDispatcher commandDispatcher)
         {
@@ -27,25 +26,29 @@ namespace backgroundr.cqrs
                 await _commandDispatcher.Dispatch(command);
             }
             else {
+                var cancellationTokenSource = new CancellationTokenSource();
                 var task = Task.Run(async () => {
-                    await Task.Delay(when - _clock.Now(), _cancellationTokenSource.Token);
+                    await Task.Delay(when - _clock.Now(), cancellationTokenSource.Token);
                     await _commandDispatcher.Dispatch(command);
                     var schedule = _schedules.FirstOrDefault(x => x.Command == (ICommand) command);
                     if (schedule != null) {
                         _schedules.Remove(schedule);
                     }
-                }, _cancellationTokenSource.Token);
+                }, cancellationTokenSource.Token);
 
                 _schedules.Add(new CommandDispatchSchedule {
                     Command = command,
-                    Task = task
+                    Task = task,
+                    CancellationToken = cancellationTokenSource
                 });
             }
         }
 
         public async Task Clear()
         {
-            _cancellationTokenSource.Cancel();
+            foreach (var schedule in _schedules) {
+                schedule.CancellationToken.Cancel();
+            }
             try {
                 await Task.WhenAll(_schedules.Select(x => x.Task));
             }
@@ -56,6 +59,7 @@ namespace backgroundr.cqrs
         {
             public ICommand Command { get; set; }
             public Task Task { get; set; }
+            public CancellationTokenSource CancellationToken { get; set; }
         }
     }
 }
