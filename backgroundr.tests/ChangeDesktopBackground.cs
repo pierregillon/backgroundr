@@ -125,13 +125,13 @@ namespace backgroundr.tests
 
             // Act
             var tasks = new[] {
-                Task.Run(async () => {
+                Task.Factory.StartNew(async () => {
                     await _handler.Handle(new ChangeDesktopBackgroundImageRandomly());
                 }),
-                Task.Run(async () => {
+                Task.Factory.StartNew(async () => {
                     await _handler.Handle(new ChangeDesktopBackgroundImageRandomly());
                 }),
-                Task.Run(async () => {
+                Task.Factory.StartNew(async () => {
                     await _handler.Handle(new ChangeDesktopBackgroundImageRandomly());
                 }),
             };
