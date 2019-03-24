@@ -3,9 +3,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:design="clr-namespace:backgroundr.view.design"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         Title="Parameters" Height="263.678" Width="399.454">
+    <Window.DataContext>
+        <design:ParametersDesignViewModel />
+    </Window.DataContext>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.25*"/>

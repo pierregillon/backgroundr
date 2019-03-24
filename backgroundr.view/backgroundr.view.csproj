@@ -64,6 +64,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="converters\BooleanToVisibilityConverter.cs" />
+    <Compile Include="design\ParametersDesignViewModel.cs" />
     <Compile Include="utils\StartupService.cs" />
     <Compile Include="viewmodels\ParametersViewModel.cs" />
     <Compile Include="viewmodels\ViewModelBase.cs" />
