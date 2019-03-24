@@ -120,7 +120,7 @@ namespace backgroundr.tests
                 .GetImageUrls()
                 .Returns(x => SOME_IMAGES)
                 .AndDoes(x => {
-                    Thread.Sleep(50);
+                    Thread.Sleep(100);
                 });
 
             // Act
@@ -133,7 +133,7 @@ namespace backgroundr.tests
                 }),
                 Task.Factory.StartNew(async () => {
                     await _handler.Handle(new ChangeDesktopBackgroundImageRandomly());
-                }),
+                })
             };
 
             await Task.WhenAll(tasks);
