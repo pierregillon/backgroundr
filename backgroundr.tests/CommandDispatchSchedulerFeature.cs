@@ -24,7 +24,9 @@ namespace backgroundr.tests
         }
         ~CommandDispatchSchedulerFeature()
         {
-            _commandDispatchScheduler.CancelAll().RunSynchronously();
+#pragma warning disable 4014
+            _commandDispatchScheduler.CancelAll();
+#pragma warning restore 4014
         }
         
         [Theory]
