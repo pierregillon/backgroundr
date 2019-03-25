@@ -1,6 +1,6 @@
 namespace backgroundr.infrastructure {
     public enum PicturePosition
     {
-        Tile, Center, Stretch, Fit, Fill
+        Tile, Center, Stretch, Fit, Fill, Extend
     }
 }

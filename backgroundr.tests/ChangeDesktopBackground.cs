@@ -96,7 +96,7 @@ namespace backgroundr.tests
         }
 
         [Fact]
-        public async Task fill_new_background_image()
+        public async Task extend_new_background_image()
         {
             // Arrange
             _photoProvider
@@ -109,7 +109,7 @@ namespace backgroundr.tests
             // Assert
             _desktopImageBackgroundUpdater
                 .Received(1)
-                .ChangeBackgroundImage(Arg.Any<string>(), PicturePosition.Fill);
+                .ChangeBackgroundImage(Arg.Any<string>(), PicturePosition.Extend);
         }
 
         [Fact(Skip = "appveyor error on multithreads")]

@@ -41,6 +41,10 @@ namespace backgroundr.infrastructure
                     key.SetValue(@"PicturePosition", "10");
                     key.SetValue(@"TileWallpaper", "0");
                     break;
+                case PicturePosition.Extend:
+                    key.SetValue(@"PicturePosition", "6");
+                    key.SetValue(@"TileWallpaper", "0");
+                    break;
             }
             key.Close();
 
