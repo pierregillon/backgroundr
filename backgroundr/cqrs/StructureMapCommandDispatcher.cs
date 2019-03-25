@@ -14,7 +14,7 @@ namespace backgroundr.cqrs
             _container = container;
         }
 
-        public async Task Dispatch<T>(T command)
+        public async Task Dispatch<T>(T command) where T : ICommand
         {
             var handlers = _container.GetAllInstances<ICommandHandler<T>>();
             if (handlers.Any() == false) {
@@ -25,7 +25,7 @@ namespace backgroundr.cqrs
             }
         }
 
-        public async Task<TResult> Dispatch<TCommand, TResult>(TCommand command)
+        public async Task<TResult> Dispatch<TCommand, TResult>(TCommand command) where TCommand : ICommand
         {
             var handler = _container.GetInstance<ICommandHandler<TCommand, TResult>>();
             if (handler == null) {

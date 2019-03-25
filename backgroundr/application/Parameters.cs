@@ -2,7 +2,7 @@ using System;
 
 namespace backgroundr.application
 {
-    public class BackgroundrParameters
+    public class Parameters
     {
         public string UserId { get; set; }
         public string Tags { get; set; }

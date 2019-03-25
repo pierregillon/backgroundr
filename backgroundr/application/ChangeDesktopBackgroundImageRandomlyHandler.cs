@@ -13,26 +13,28 @@ namespace backgroundr.application
         private readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);
 
         private readonly IDesktopBackgroundImageUpdater _desktopBackgroundImageUpdater;
-        private readonly IImageProvider _imageProvider;
+        private readonly IPhotoProvider _photoProvider;
         private readonly IFileDownloader _fileDownloader;
         private readonly IRandom _random;
         private readonly IEventEmitter _eventEmitter;
-        private readonly BackgroundrParameters _parameters;
+        private readonly Parameters _parameters;
         private readonly IClock _clock;
         private readonly IFileService _fileService;
 
+        // ----- Constructor
+
         public ChangeDesktopBackgroundImageRandomlyHandler(
-            IDesktopBackgroundImageUpdater desktopBackgroundImageUpdater, 
-            IImageProvider imageProvider, 
-            IFileDownloader fileDownloader, 
-            IRandom random, 
+            IDesktopBackgroundImageUpdater desktopBackgroundImageUpdater,
+            IPhotoProvider photoProvider,
+            IFileDownloader fileDownloader,
+            IRandom random,
             IEventEmitter eventEmitter,
-            BackgroundrParameters parameters,
+            Parameters parameters,
             IClock clock,
             IFileService fileService)
         {
             _desktopBackgroundImageUpdater = desktopBackgroundImageUpdater;
-            _imageProvider = imageProvider;
+            _photoProvider = photoProvider;
             _fileDownloader = fileDownloader;
             _random = random;
             _eventEmitter = eventEmitter;
@@ -41,36 +43,51 @@ namespace backgroundr.application
             _fileService = fileService;
         }
 
+        // ----- Public methods
         public async Task Handle(ChangeDesktopBackgroundImageRandomly command)
         {
-            if (await _semaphoreSlim.WaitAsync(1)) {
-                try {
-                    var imageUrl = await FindNextImage();
-                    if (string.IsNullOrEmpty(imageUrl) == false) {
-                        var localFilePath = await _fileDownloader.Download(imageUrl);
-                        _desktopBackgroundImageUpdater.ChangeBackgroundImage(localFilePath, PicturePosition.Fill);
-                        SaveLastUpdateDateToNow();
-                    }
-                }
-                finally {
-                    _semaphoreSlim.Release();
-                }
-            }
+            await AssertSingleExecution(async () => {
+                await UpdateDesktopBackgroundImageToRandomPhoto();
+            });
         }
-        private async Task<string> FindNextImage()
+
+        // ----- Internal logics
+        private async Task UpdateDesktopBackgroundImageToRandomPhoto()
         {
-            var images = await _imageProvider.GetImageUrls();
-            if (images.Any() == false) {
+            var photoUrl = await SelectRandomPhoto();
+            if (string.IsNullOrEmpty(photoUrl) == false) {
+                var localFilePath = await _fileDownloader.Download(photoUrl);
+                _desktopBackgroundImageUpdater.ChangeBackgroundImage(localFilePath, PicturePosition.Fill);
+                SaveLastUpdateDateToNow();
+            }
+            _eventEmitter.Emit(new DesktopBackgroundImageUpdated());
+        }
+        private async Task<string> SelectRandomPhoto()
+        {
+            var photos = await _photoProvider.GetPhotos();
+            if (photos.Any() == false) {
                 return null;
             }
-            var imageIndex = _random.RandomInteger(images.Count);
-            return images.ElementAt(imageIndex);
+            var photoIndex = _random.RandomInteger(photos.Count);
+            return photos.ElementAt(photoIndex);
         }
         private void SaveLastUpdateDateToNow()
         {
             _parameters.BackgroundImageLastRefreshDate = _clock.Now();
             _fileService.Serialize(_parameters, ".flickr");
-            _eventEmitter.Emit(new DesktopBackgroundChanged());
+        }
+
+        // ----- Utils
+        private async Task AssertSingleExecution(Func<Task> action)
+        {
+            if (await _semaphoreSlim.WaitAsync(1)) {
+                try {
+                    await action();
+                }
+                finally {
+                    _semaphoreSlim.Release();
+                }
+            }
         }
     }
 }

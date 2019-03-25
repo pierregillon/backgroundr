@@ -4,7 +4,7 @@ namespace backgroundr.cqrs
 {
     public interface ICommandDispatcher
     {
-        Task Dispatch<T>(T command);
-        Task<TResult> Dispatch<TCommand, TResult>(TCommand command);
+        Task Dispatch<T>(T command) where T : ICommand;
+        Task<TResult> Dispatch<TCommand, TResult>(TCommand command) where TCommand : ICommand;
     }
 }

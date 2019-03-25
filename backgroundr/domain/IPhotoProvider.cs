@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 
 namespace backgroundr.domain
 {
-    public interface IImageProvider
+    public interface IPhotoProvider
     {
-        Task<IReadOnlyCollection<string>> GetImageUrls();
+        Task<IReadOnlyCollection<string>> GetPhotos();
     }
 }

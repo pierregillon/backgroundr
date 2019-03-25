@@ -7,16 +7,16 @@ using FlickrNet;
 
 namespace backgroundr.infrastructure
 {
-    public class FlickrImageProvider : IImageProvider
+    public class FlickrPhotoProvider : IPhotoProvider
     {
-        private readonly BackgroundrParameters _parameters;
+        private readonly Parameters _parameters;
 
-        public FlickrImageProvider(BackgroundrParameters parameters)
+        public FlickrPhotoProvider(Parameters parameters)
         {
             _parameters = parameters;
         }
 
-        public async Task<IReadOnlyCollection<string>> GetImageUrls()
+        public async Task<IReadOnlyCollection<string>> GetPhotos()
         {
             return await Task.Run(() => {
                 var flickr = new Flickr(_parameters.ApiToken, _parameters.ApiSecret) {

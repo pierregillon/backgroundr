@@ -6,9 +6,9 @@ using backgroundr.domain;
 
 namespace backgroundr.infrastructure
 {
-    public class LocalComputerImageProvider : IImageProvider
+    public class LocalComputerImageProvider : IPhotoProvider
     {
-        public Task<IReadOnlyCollection<string>> GetImageUrls()
+        public Task<IReadOnlyCollection<string>> GetPhotos()
         {
             return Task.Run(() => {
                 var myPicturesFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);

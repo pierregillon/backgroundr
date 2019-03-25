@@ -3,20 +3,20 @@ using backgroundr.cqrs;
 
 namespace backgroundr.application
 {
-    public class StartDesktopBackgroundImageTimerHandler : ICommandHandler<StartDesktopBackgroundImageTimer>
+    public class ScheduleNextDesktopBackgroundImageChangeHandler : ICommandHandler<ScheduleNextDesktopBackgroundImageChange>
     {
         private readonly CommandDispatchScheduler _commandDispatcherScheduler;
-        private readonly BackgroundrParameters _parameters;
+        private readonly Parameters _parameters;
 
-        public StartDesktopBackgroundImageTimerHandler(
+        public ScheduleNextDesktopBackgroundImageChangeHandler(
             CommandDispatchScheduler commandDispatcherScheduler,
-            BackgroundrParameters parameters)
+            Parameters parameters)
         {
             _commandDispatcherScheduler = commandDispatcherScheduler;
             _parameters = parameters;
         }
 
-        public async Task Handle(StartDesktopBackgroundImageTimer command)
+        public async Task Handle(ScheduleNextDesktopBackgroundImageChange command)
         {
             await _commandDispatcherScheduler.CancelAll();
             if (_parameters.BackgroundImageLastRefreshDate.HasValue) {

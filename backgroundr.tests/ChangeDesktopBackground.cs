@@ -22,11 +22,11 @@ namespace backgroundr.tests
         });
 
         private readonly IDesktopBackgroundImageUpdater _desktopImageBackgroundUpdater;
-        private readonly IImageProvider _imageProvider;
+        private readonly IPhotoProvider _photoProvider;
         private readonly IFileDownloader _fileDownloader;
         private readonly ChangeDesktopBackgroundImageRandomlyHandler _handler;
         private readonly IEventEmitter _eventEmitter;
-        private readonly BackgroundrParameters _parameters;
+        private readonly Parameters _parameters;
         private readonly IClock _clock;
         private readonly IFileService _fileService;
         private static readonly DateTime NOW = new DateTime(2018, 12, 26);
@@ -34,17 +34,17 @@ namespace backgroundr.tests
         public ChangeDesktopBackground()
         {
             _desktopImageBackgroundUpdater = Substitute.For<IDesktopBackgroundImageUpdater>();
-            _imageProvider = Substitute.For<IImageProvider>();
+            _photoProvider = Substitute.For<IPhotoProvider>();
             _fileDownloader = Substitute.For<IFileDownloader>();
             _fileDownloader.Download(Arg.Any<string>()).Returns(x => x.Arg<string>());
             _eventEmitter = Substitute.For<IEventEmitter>();
-            _parameters = new BackgroundrParameters();
+            _parameters = new Parameters();
             _clock = Substitute.For<IClock>();
             _fileService = Substitute.For<IFileService>();
 
             _handler = new ChangeDesktopBackgroundImageRandomlyHandler(
                 _desktopImageBackgroundUpdater,
-                _imageProvider,
+                _photoProvider,
                 _fileDownloader,
                 new PseudoRandom(),
                 _eventEmitter,
@@ -58,8 +58,8 @@ namespace backgroundr.tests
         public async Task do_not_change_background_if_no_image_available()
         {
             // Arranges
-            _imageProvider
-                .GetImageUrls()
+            _photoProvider
+                .GetPhotos()
                 .Returns(x => NO_IMAGES);
 
             // Acts
@@ -82,8 +82,8 @@ namespace backgroundr.tests
             };
 
             // Arranges
-            _imageProvider
-                .GetImageUrls()
+            _photoProvider
+                .GetPhotos()
                 .Returns(x => Task.FromResult<IReadOnlyCollection<string>>(availableImages));
 
             // Acts
@@ -99,8 +99,8 @@ namespace backgroundr.tests
         public async Task fill_new_background_image()
         {
             // Arrange
-            _imageProvider
-                .GetImageUrls()
+            _photoProvider
+                .GetPhotos()
                 .Returns(x => SOME_IMAGES);
 
             // Act
@@ -116,8 +116,8 @@ namespace backgroundr.tests
         public async Task do_not_process_concurrent_requests()
         {
             // Arrange
-            _imageProvider
-                .GetImageUrls()
+            _photoProvider
+                .GetPhotos()
                 .Returns(x => SOME_IMAGES)
                 .AndDoes(x => {
                     Thread.Sleep(100);
@@ -148,8 +148,8 @@ namespace backgroundr.tests
         public async Task emit_desktop_background_changed()
         {
             // Arrange
-            _imageProvider
-                .GetImageUrls()
+            _photoProvider
+                .GetPhotos()
                 .Returns(x => SOME_IMAGES);
 
             // Act
@@ -158,7 +158,7 @@ namespace backgroundr.tests
             // Assert
             _eventEmitter
                 .Received(1)
-                .Emit(Arg.Any<DesktopBackgroundChanged>());
+                .Emit(Arg.Any<DesktopBackgroundImageUpdated>());
         }
 
         [Fact]
@@ -166,8 +166,8 @@ namespace backgroundr.tests
         {
             // Arrange
             _clock.Now().Returns(NOW);
-            _imageProvider
-                .GetImageUrls()
+            _photoProvider
+                .GetPhotos()
                 .Returns(x => SOME_IMAGES);
 
             // Act
@@ -175,7 +175,7 @@ namespace backgroundr.tests
 
             // Assert
             Assert.Equal(NOW, _parameters.BackgroundImageLastRefreshDate);
-            _fileService.Received(1).Serialize(Arg.Any<BackgroundrParameters>(), ".flickr");
+            _fileService.Received(1).Serialize(Arg.Any<Parameters>(), ".flickr");
         }
     }
 }

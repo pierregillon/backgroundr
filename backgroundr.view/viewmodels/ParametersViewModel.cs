@@ -17,7 +17,7 @@ namespace backgroundr.view.viewmodels
     {
         private const string APPLICATION_NAME = "Backgroundr";
 
-        private readonly BackgroundrParameters _parameters;
+        private readonly Parameters _parameters;
         private readonly IFileService _fileService;
         private readonly StartupService _startupService;
         private readonly ICommandDispatcher _commandDispatcher;
@@ -88,7 +88,7 @@ namespace backgroundr.view.viewmodels
         };
 
         public ParametersViewModel(
-            BackgroundrParameters parameters,
+            Parameters parameters,
             IFileService fileService,
             StartupService startupService,
             ICommandDispatcher commandDispatcher)
@@ -126,7 +126,7 @@ namespace backgroundr.view.viewmodels
                 _startupService.DisableAutomaticStartup(APPLICATION_NAME);
             }
 
-            _commandDispatcher.Dispatch(new StartDesktopBackgroundImageTimer());
+            _commandDispatcher.Dispatch(new ScheduleNextDesktopBackgroundImageChange());
 
             Application.Current?.MainWindow?.Close();
         }

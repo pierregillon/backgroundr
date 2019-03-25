@@ -52,15 +52,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="application\BackgroundrParameters.cs" />
-    <Compile Include="application\RearmTimerListener.cs" />
+    <Compile Include="cqrs\ICommand.cs" />
+    <Compile Include="application\Parameters.cs" />
+    <Compile Include="application\Scheduler.cs" />
     <Compile Include="cqrs\CommandDispatchScheduler.cs" />
     <Compile Include="cqrs\StructureMapEventEmitter.cs" />
     <Compile Include="cqrs\IEventListener.cs" />
-    <Compile Include="application\StartDesktopBackgroundImageTimer.cs" />
-    <Compile Include="application\StartDesktopBackgroundImageTimerHandler.cs" />
+    <Compile Include="application\ScheduleNextDesktopBackgroundImageChange.cs" />
+    <Compile Include="application\ScheduleNextDesktopBackgroundImageChangeHandler.cs" />
     <Compile Include="cqrs\IEventEmitter.cs" />
-    <Compile Include="domain\DesktopBackgroundChanged.cs" />
+    <Compile Include="domain\DesktopBackgroundImageUpdated.cs" />
     <Compile Include="domain\IClock.cs" />
     <Compile Include="domain\TimeSpanExtensions.cs" />
     <Compile Include="infrastructure\DefaultClock.cs" />
@@ -69,8 +70,8 @@
     <Compile Include="domain\IRandom.cs" />
     <Compile Include="infrastructure\LocalComputerImageProvider.cs" />
     <Compile Include="infrastructure\PseudoRandom.cs" />
-    <Compile Include="infrastructure\FlickrImageProvider.cs" />
-    <Compile Include="domain\IImageProvider.cs" />
+    <Compile Include="infrastructure\FlickrPhotoProvider.cs" />
+    <Compile Include="domain\IPhotoProvider.cs" />
     <Compile Include="cqrs\StructureMapCommandDispatcher.cs" />
     <Compile Include="cqrs\ICommandDispatcher.cs" />
     <Compile Include="cqrs\ICommandHandler.cs" />

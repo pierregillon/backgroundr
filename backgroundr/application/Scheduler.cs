@@ -4,18 +4,18 @@ using backgroundr.domain;
 
 namespace backgroundr.application
 {
-    public class RearmTimerListener : IEventListener<DesktopBackgroundChanged>
+    public class Scheduler : IEventListener<DesktopBackgroundImageUpdated>
     {
         private readonly ICommandDispatcher _commandDispatcher;
 
-        public RearmTimerListener(ICommandDispatcher commandDispatcher)
+        public Scheduler(ICommandDispatcher commandDispatcher)
         {
             _commandDispatcher = commandDispatcher;
         }
 
-        public async Task On(DesktopBackgroundChanged @event)
+        public async Task On(DesktopBackgroundImageUpdated @event)
         {
-            await _commandDispatcher.Dispatch(new StartDesktopBackgroundImageTimer());
+            await _commandDispatcher.Dispatch(new ScheduleNextDesktopBackgroundImageChange());
         }
     }
 }

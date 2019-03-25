@@ -1,8 +1,8 @@
-﻿namespace backgroundr.application
+﻿using backgroundr.cqrs;
+
+namespace backgroundr.application
 {
     public class ChangeDesktopBackgroundImageRandomly : ICommand
     {
     }
-
-    public interface ICommand { }
 }

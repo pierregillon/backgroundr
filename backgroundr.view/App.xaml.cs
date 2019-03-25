@@ -23,18 +23,18 @@ namespace backgroundr.view
 #if RELEASE
                 configuration.For<IImageProvider>().Use<FlickrImageProvider>();
 #else
-                configuration.For<IImageProvider>().Use<LocalComputerImageProvider>();
+                configuration.For<IPhotoProvider>().Use<LocalComputerImageProvider>();
 #endif
                 configuration.For<IFileDownloader>().Use<HttpFileDownloader>();
                 configuration.For<IRandom>().Use<PseudoRandom>();
                 configuration.For<IClock>().Use<DefaultClock>();
                 configuration.For<ICommandDispatcher>().Use<StructureMapCommandDispatcher>();
                 configuration.For<ICommandHandler<ChangeDesktopBackgroundImageRandomly>>().Use<ChangeDesktopBackgroundImageRandomlyHandler>().Singleton();
-                configuration.For<ICommandHandler<StartDesktopBackgroundImageTimer>>().Use<StartDesktopBackgroundImageTimerHandler>();
+                configuration.For<ICommandHandler<ScheduleNextDesktopBackgroundImageChange>>().Use<ScheduleNextDesktopBackgroundImageChangeHandler>();
                 configuration.For<CommandDispatchScheduler>().Singleton();
                 configuration.For<IEventEmitter>().Use<StructureMapEventEmitter>();
-                configuration.For<IEventListener<DesktopBackgroundChanged>>().Use<RearmTimerListener>();
-                configuration.For<BackgroundrParameters>().Singleton();
+                configuration.For<IEventListener<DesktopBackgroundImageUpdated>>().Use<Scheduler>();
+                configuration.For<Parameters>().Singleton();
             });
 
             base.OnStartup(e);
@@ -44,12 +44,12 @@ namespace backgroundr.view
 
             if (File.Exists(".flickr")) {
                 var fileService = container.GetInstance<IFileService>();
-                var parameters = fileService.Deserialize<BackgroundrParameters>(".flickr");
+                var parameters = fileService.Deserialize<Parameters>(".flickr");
                 container.Inject(parameters);
             }
 
             var dispatcher = container.GetInstance<ICommandDispatcher>();
-            dispatcher.Dispatch(new StartDesktopBackgroundImageTimer());
+            dispatcher.Dispatch(new ScheduleNextDesktopBackgroundImageChange());
         }
 
         protected override void OnExit(ExitEventArgs e)
