@@ -20,7 +20,11 @@ namespace backgroundr.view
             var container = new Container(configuration => {
                 configuration.For<IFileService>().Use<FileService>();
                 configuration.For<IDesktopBackgroundImageUpdater>().Use<WindowDesktopBackgroundImageUpdater>();
+#if RELEASE
                 configuration.For<IImageProvider>().Use<FlickrImageProvider>();
+#else
+                configuration.For<IImageProvider>().Use<LocalComputerImageProvider>();
+#endif
                 configuration.For<IFileDownloader>().Use<HttpFileDownloader>();
                 configuration.For<IRandom>().Use<PseudoRandom>();
                 configuration.For<IClock>().Use<DefaultClock>();
