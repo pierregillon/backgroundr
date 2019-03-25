@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Threading.Tasks;
 using backgroundr.application;
 using backgroundr.cqrs;
@@ -21,6 +22,12 @@ namespace backgroundr.tests
             _commandDispatcher = Substitute.For<ICommandDispatcher>();
             _commandDispatchScheduler = new CommandDispatchScheduler(_clock, _commandDispatcher);
         }
+        ~CommandDispatchSchedulerFeature()
+        {
+#pragma warning disable 4014
+            _commandDispatchScheduler.CancelAll();
+#pragma warning restore 4014
+        }
         
         [Theory]
         [InlineData("22/03/2019", "18/03/2019")]
@@ -28,10 +35,10 @@ namespace backgroundr.tests
         public async Task ask_new_background_image_instantly_if_time_already_ellapsed(string now, string nextRefreshDate)
         {
             // Arrange
-            _clock.Now().Returns(DateTime.Parse(now));
+            _clock.Now().Returns(TheDate(now));
 
             // Act
-            await _commandDispatchScheduler.Schedule(new ChangeDesktopBackgroundImageRandomly(), DateTime.Parse(nextRefreshDate));
+            await _commandDispatchScheduler.Schedule(new ChangeDesktopBackgroundImageRandomly(), TheDate(nextRefreshDate));
 
             // Assert
             await _commandDispatcher
@@ -44,11 +51,11 @@ namespace backgroundr.tests
         public async Task ask_new_background_image_when_time_ellapsed(string now, string nextRefreshDate)
         {
             // Arrange
-            _clock.Now().Returns(DateTime.Parse(now));
+            _clock.Now().Returns(TheDate(now));
 
             // Act
-            await _commandDispatchScheduler.Schedule(new ChangeDesktopBackgroundImageRandomly(), DateTime.Parse(nextRefreshDate));
-            await Task.Delay(TimeDifference(now, nextRefreshDate));
+            await _commandDispatchScheduler.Schedule(new ChangeDesktopBackgroundImageRandomly(), TheDate(nextRefreshDate));
+            await Task.Delay(TimeDifferenceBetween(now, nextRefreshDate));
 
             // Assert
             await _commandDispatcher
@@ -62,10 +69,10 @@ namespace backgroundr.tests
         public async Task do_not_ask_for_new_background_image_instantly_if_time_not_ellapsed(string now, string nextRefreshDate)
         {
             // Arrange
-            _clock.Now().Returns(DateTime.Parse(now));
+            _clock.Now().Returns(TheDate(now));
 
             // Act
-            await _commandDispatchScheduler.Schedule(new ChangeDesktopBackgroundImageRandomly(), DateTime.Parse(nextRefreshDate));
+            await _commandDispatchScheduler.Schedule(new ChangeDesktopBackgroundImageRandomly(), TheDate(nextRefreshDate));
 
             // Assert
             await _commandDispatcher
@@ -75,15 +82,15 @@ namespace backgroundr.tests
 
         [Theory]
         [InlineData("22/03/2019 19:00:00", "22/03/2019 19:00:00.1")]
-        public async Task stopping_timer_do_not_ask_new_background_image(string now, string nextRefreshDate)
+        public async Task cancelling_schedule_do_not_ask_new_background_image(string now, string nextRefreshDate)
         {
             // Arrange
-            _clock.Now().Returns(DateTime.Parse(now));
+            _clock.Now().Returns(TheDate(now));
 
             // Act
-            await _commandDispatchScheduler.Schedule(new ChangeDesktopBackgroundImageRandomly(), DateTime.Parse(nextRefreshDate));
-            await _commandDispatchScheduler.Clear();
-            await Task.Delay(TimeDifference(now, nextRefreshDate));
+            await _commandDispatchScheduler.Schedule(new ChangeDesktopBackgroundImageRandomly(), TheDate(nextRefreshDate));
+            await _commandDispatchScheduler.CancelAll();
+            await Task.Delay(TimeDifferenceBetween(now, nextRefreshDate));
 
             // Assert
             await _commandDispatcher
@@ -93,9 +100,13 @@ namespace backgroundr.tests
 
         // ----- Utils
 
-        private TimeSpan TimeDifference(string date1, string date2)
+        private TimeSpan TimeDifferenceBetween(string date1, string date2)
         {
-            return DateTime.Parse(date2).Subtract(DateTime.Parse(date1)).Add(THREAD_SWITCH_DELAY);
+            return TheDate(date2).Subtract(TheDate(date1)).Add(THREAD_SWITCH_DELAY);
+        }
+        private static DateTime TheDate(string dateSr)
+        {
+            return DateTime.Parse(dateSr, new CultureInfo("FR-fr"));
         }
     }
 }
