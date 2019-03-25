@@ -22,6 +22,10 @@ namespace backgroundr.tests
             _commandDispatcher = Substitute.For<ICommandDispatcher>();
             _commandDispatchScheduler = new CommandDispatchScheduler(_clock, _commandDispatcher);
         }
+        ~CommandDispatchSchedulerFeature()
+        {
+            _commandDispatchScheduler.CancelAll().RunSynchronously();
+        }
         
         [Theory]
         [InlineData("22/03/2019", "18/03/2019")]
@@ -49,7 +53,7 @@ namespace backgroundr.tests
 
             // Act
             await _commandDispatchScheduler.Schedule(new ChangeDesktopBackgroundImageRandomly(), TheDate(nextRefreshDate));
-            await Task.Delay(TimeDifference(now, nextRefreshDate));
+            await Task.Delay(TimeDifferenceBetween(now, nextRefreshDate));
 
             // Assert
             await _commandDispatcher
@@ -76,15 +80,15 @@ namespace backgroundr.tests
 
         [Theory]
         [InlineData("22/03/2019 19:00:00", "22/03/2019 19:00:00.1")]
-        public async Task stopping_timer_do_not_ask_new_background_image(string now, string nextRefreshDate)
+        public async Task cancelling_schedule_do_not_ask_new_background_image(string now, string nextRefreshDate)
         {
             // Arrange
             _clock.Now().Returns(TheDate(now));
 
             // Act
             await _commandDispatchScheduler.Schedule(new ChangeDesktopBackgroundImageRandomly(), TheDate(nextRefreshDate));
-            await _commandDispatchScheduler.Clear();
-            await Task.Delay(TimeDifference(now, nextRefreshDate));
+            await _commandDispatchScheduler.CancelAll();
+            await Task.Delay(TimeDifferenceBetween(now, nextRefreshDate));
 
             // Assert
             await _commandDispatcher
@@ -94,7 +98,7 @@ namespace backgroundr.tests
 
         // ----- Utils
 
-        private TimeSpan TimeDifference(string date1, string date2)
+        private TimeSpan TimeDifferenceBetween(string date1, string date2)
         {
             return TheDate(date2).Subtract(TheDate(date1)).Add(THREAD_SWITCH_DELAY);
         }

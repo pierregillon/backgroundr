@@ -10,7 +10,7 @@ namespace backgroundr.application
 {
     public class ChangeDesktopBackgroundImageRandomlyHandler : ICommandHandler<ChangeDesktopBackgroundImageRandomly>
     {
-        private static readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);
 
         private readonly IDesktopBackgroundImageUpdater _desktopBackgroundImageUpdater;
         private readonly IImageProvider _imageProvider;

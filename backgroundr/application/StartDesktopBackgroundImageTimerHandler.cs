@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using backgroundr.cqrs;
 
@@ -19,7 +18,7 @@ namespace backgroundr.application
 
         public async Task Handle(StartDesktopBackgroundImageTimer command)
         {
-            await _commandDispatcherScheduler.Clear();
+            await _commandDispatcherScheduler.CancelAll();
             if (_parameters.BackgroundImageLastRefreshDate.HasValue) {
                 var nextRefreshDate = _parameters.BackgroundImageLastRefreshDate.Value.Add(_parameters.RefreshPeriod);
                 await _commandDispatcherScheduler.Schedule(new ChangeDesktopBackgroundImageRandomly(), nextRefreshDate);

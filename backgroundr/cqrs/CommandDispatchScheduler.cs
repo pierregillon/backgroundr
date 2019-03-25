@@ -44,7 +44,7 @@ namespace backgroundr.cqrs
             }
         }
 
-        public async Task Clear()
+        public async Task CancelAll()
         {
             foreach (var schedule in _schedules) {
                 schedule.CancellationToken.Cancel();
