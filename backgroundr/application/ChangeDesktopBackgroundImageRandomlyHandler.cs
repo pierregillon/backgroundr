@@ -54,13 +54,21 @@ namespace backgroundr.application
         // ----- Internal logics
         private async Task UpdateDesktopBackgroundImageToRandomPhoto()
         {
-            var photoUrl = await SelectRandomPhoto();
-            if (string.IsNullOrEmpty(photoUrl) == false) {
-                var localFilePath = await _fileDownloader.Download(photoUrl);
-                _desktopBackgroundImageUpdater.ChangeBackgroundImage(localFilePath, PicturePosition.Fill);
-                SaveLastUpdateDateToNow();
+            try {
+                var photoUrl = await SelectRandomPhoto();
+                if (string.IsNullOrEmpty(photoUrl) == false) {
+                    var localFilePath = await _fileDownloader.Download(photoUrl);
+                    _desktopBackgroundImageUpdater.ChangeBackgroundImage(localFilePath, PicturePosition.Fill);
+                }
             }
-            _eventEmitter.Emit(new DesktopBackgroundImageUpdated());
+            catch (Exception ex) {
+                _fileService.Append("logs.txt", $"{DateTime.Now} - ERROR : " + ex + Environment.NewLine);
+            }
+            finally {
+                // Even if error occurred, we send event that background image updated.
+                SaveLastUpdateDateToNow();
+                _eventEmitter.Emit(new DesktopBackgroundImageUpdated());
+            }
         }
         private async Task<string> SelectRandomPhoto()
         {

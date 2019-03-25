@@ -21,5 +21,9 @@ namespace backgroundr.infrastructure
         {
             return File.Exists(filePath);
         }
+        public void Append(string fileName, string content)
+        {
+            File.AppendAllText(fileName, content);
+        }
     }
 }
