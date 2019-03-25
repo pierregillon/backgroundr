@@ -6,14 +6,41 @@
         xmlns:design="clr-namespace:backgroundr.view.design"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        Title="Parameters" Height="298.678" Width="398.454">
+        Title="Parameters" Height="352.678" Width="398.454"
+        Icon="images/backpack.ico">
     <Window.DataContext>
         <design:ParametersDesignViewModel />
     </Window.DataContext>
+    <Window.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="HorizontalAlignment" Value="Right"></Setter>
+            <Setter Property="Margin" Value="5px"></Setter>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Margin" Value="3px"></Setter>
+            <Setter Property="Padding" Value="3px"></Setter>
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="Margin" Value="3px"></Setter>
+            <Setter Property="Padding" Value="1px 0px"></Setter>
+        </Style>
+        <Style TargetType="CheckBox">
+            <Setter Property="Margin" Value="0 3px"></Setter>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Margin" Value="5px 3px"></Setter>
+            <Setter Property="Padding" Value="20px 4px"></Setter>
+        </Style>
+        <Style x:Key="Separator" TargetType="Grid">
+            <Setter Property="Height" Value="2px"></Setter>
+            <Setter Property="Margin" Value="10px 10px"></Setter>
+            <Setter Property="Background" Value="DarkGray"></Setter>
+        </Style>
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.25*"/>
-            <ColumnDefinition Width="0.75*"/>
+            <ColumnDefinition Width="0.25*" />
+            <ColumnDefinition Width="0.75*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -23,41 +50,48 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0" Grid.Column="0" Text="Flickr user id *" HorizontalAlignment="Right" Margin="5px" />
-        <TextBox Grid.Row="0" Grid.Column="1" Margin="3px" Text="{Binding Path=UserId, Mode=TwoWay}"/>
-        <TextBlock Grid.Row="1" Grid.Column="0" Text="Tags" HorizontalAlignment="Right" Margin="5px" />
-        <TextBox Grid.Row="1" Grid.Column="1" Margin="3px" Text="{Binding Path=Tags, Mode=TwoWay}"/>
-        <TextBlock Grid.Row="2" Grid.Column="0" Text="Api token *" HorizontalAlignment="Right" Margin="5px" />
-        <TextBox Grid.Row="2" Grid.Column="1" Margin="3px" Text="{Binding Path=Token, Mode=TwoWay}"/>
-        <TextBlock Grid.Row="3" Grid.Column="0"  Text="Api secret *" HorizontalAlignment="Right" Margin="5px" />
-        <TextBox Grid.Row="3" Grid.Column="1" Margin="3px" Text="{Binding Path=TokenSecret, Mode=TwoWay}"/>
-        <TextBlock Grid.Row="4" Grid.Column="0"  Text="Refresh period" HorizontalAlignment="Right" Margin="5px" />
-        <ComboBox Grid.Row="4" Grid.Column="1" Margin="3px" ItemsSource="{Binding Path=Periods}" SelectedItem="{Binding Path=SelectedPeriod, Mode=TwoWay}"/>
-        <GroupBox Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Header="For private photo access" Margin="5px" Background="LightGoldenrodYellow">
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="Flickr user id *" />
+        <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Path=UserId, Mode=TwoWay}" />
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="Tags" />
+        <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=Tags, Mode=TwoWay}" />
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="Api token *" />
+        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Path=Token, Mode=TwoWay}" />
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="Api secret *" />
+        <TextBox Grid.Row="3" Grid.Column="1" Text="{Binding Path=TokenSecret, Mode=TwoWay}" />
+        <TextBlock Grid.Row="4" Grid.Column="0" Text="Refresh period *" />
+        <ComboBox Grid.Row="4" Grid.Column="1" ItemsSource="{Binding Path=Periods}"
+                  SelectedItem="{Binding Path=SelectedPeriod, Mode=TwoWay}" />
+        <GroupBox Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Header="For private photo access"
+                  Background="LightGoldenrodYellow">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="0.45*"/>
-                    <ColumnDefinition Width="0.55*"/>
+                    <ColumnDefinition Width="0.45*" />
+                    <ColumnDefinition Width="0.55*" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Column="0" Grid.Row="0" Text="OAuth access token" HorizontalAlignment="Right" Margin="5px" />
-                <TextBox Grid.Column="1" Grid.Row="0" Margin="3px" Text="{Binding Path=OAuthAccessToken, Mode=TwoWay}"/>
-                <TextBlock Grid.Column="0" Grid.Row="1" Text="OAuth access token secret" HorizontalAlignment="Right" Margin="5px" />
-                <TextBox Grid.Column="1" Grid.Row="1" Margin="3px" Text="{Binding Path=OAuthAccessTokenSecret, Mode=TwoWay}"/>
+                <TextBlock Grid.Column="0" Grid.Row="0" Text="OAuth access token" />
+                <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=OAuthAccessToken, Mode=TwoWay}" />
+                <TextBlock Grid.Column="0" Grid.Row="1" Text="OAuth access token secret" />
+                <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=OAuthAccessTokenSecret, Mode=TwoWay}" />
             </Grid>
         </GroupBox>
-        <CheckBox Grid.Row="6" Grid.Column="1" Margin="3px" IsChecked="{Binding Path=AutomaticallyStart, Mode=TwoWay}" Content="Automatically start up"/>
-
-        <StackPanel Grid.Row="0" Grid.RowSpan="10" Grid.ColumnSpan="10" 
+        <CheckBox Grid.Row="6" Grid.Column="1" IsChecked="{Binding Path=AutomaticallyStart, Mode=TwoWay}"
+                  Content="Automatically start up" />
+        
+        <Grid Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource Separator}"></Grid>
+        
+        <StackPanel Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2"
                     VerticalAlignment="Bottom" HorizontalAlignment="Right"
                     Orientation="Horizontal">
-            <Button Content="OK" Width="50px" Margin="2px" Command="{Binding ValidateCommand}"/>
-            <Button Content="Annuler" Width="80px" Margin="2px" Command="{Binding CancelCommand}"/>
+            <Button Content="OK" Command="{Binding ValidateCommand}" />
+            <Button Content="Annuler" Command="{Binding CancelCommand}" />
         </StackPanel>
     </Grid>
 </Window>

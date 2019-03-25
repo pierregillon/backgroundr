@@ -15,7 +15,7 @@
 
     <tb:TaskbarIcon x:Key="Taskbar"
                     IconSource="./images/backpack.ico"
-                    ToolTipText="Double-click for window, right-click for menu"
+                    ToolTipText="Double-click to open parameters or right click for menu"
                     DoubleClickCommand="{Binding OpenParametersWindowCommand}"
                     ContextMenu="{StaticResource SysTrayMenu}">
     </tb:TaskbarIcon>
