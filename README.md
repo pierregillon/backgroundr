@@ -18,12 +18,14 @@ No production version yet. Wait for v1.0.
 Let's talk here about technical details. You might be interested of this section if you want to run the code on your machine.
 
 ## How the application is built ?
-The application is built using .NET and following : 
+The application is built in .NET WPF and following : 
 - Command Query Response Segregation (CQRS)
 - Domain Driven Design (DDD)
+- Model-View-ViewModel (MVVM) xaml binding pattern
 
 ## Main libraries
 * FlickrNet : Flickr library to access photos
+* Hardcodet.Wpf.TaskbarNotification : Library to manage task bar in WPF
 
 ## Installing & Executing
 The easiest way is to open the solution in VS2015 or earlier.
