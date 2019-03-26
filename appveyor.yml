@@ -5,3 +5,18 @@ before_build:
   ps: nuget restore backgroundr.sln
 build:
   verbosity: minimal
+after_build:
+  ps: >-
+    $publishPath = "src/backgroundr.view/bin/Release/"
+    
+    Compress-Archive -Path "$($publishPath)/*" -DestinationPath "$($publishPath)/dist.zip"
+artifacts:
+  path: 'src/backgroundr.view/bin/Release/dist.zip'
+  name: dist
+deploy:
+  provider: GitHub
+  auth_token:
+    secure: KFtQRWu6GvBEv9H5UreTcjYAcanFOY1bA2Q/76gmouBZvKbBFe8YqoJbxY0vGU4k
+  artifact: dist
+  on:
+    APPVEYOR_REPO_TAG: true
