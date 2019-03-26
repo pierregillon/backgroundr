@@ -4,16 +4,17 @@
 Backgroundr is a Windows application that automatically and periodically, download a random Flickr photo and update your desktop background image with it.
 
 # Features
-No production version yet. Wait for v1.0.
 
-## [In Progress] v0.1
+## v0.1
 - [x] Configure a Flickr account
 - [x] Filter by tags
 - [x] Configure OAuth credentials to access to private photos
 - [x] Change the refresh period
 - [x] Enable on system startup
-- [ ] Installer
-- [ ] CI
+- [x] CI
+
+## Next releases
+- [ ] Wix installer
 
 # Development
 Let's talk here about technical details. You might be interested of this section if you want to run the code on your machine.
