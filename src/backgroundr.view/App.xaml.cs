@@ -46,10 +46,14 @@ namespace backgroundr.view
                 var fileService = container.GetInstance<IFileService>();
                 var parameters = fileService.Deserialize<Parameters>(".flickr");
                 container.Inject(parameters);
-            }
 
-            var dispatcher = container.GetInstance<ICommandDispatcher>();
-            dispatcher.Dispatch(new ScheduleNextDesktopBackgroundImageChange());
+                var dispatcher = container.GetInstance<ICommandDispatcher>();
+                dispatcher.Dispatch(new ScheduleNextDesktopBackgroundImageChange());
+            }
+            else {
+                Current.MainWindow = container.GetInstance<ParametersWindow>();
+                Current.MainWindow.Show();
+            }
         }
 
         protected override void OnExit(ExitEventArgs e)
