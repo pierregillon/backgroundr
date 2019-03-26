@@ -13,7 +13,7 @@ namespace backgroundr.tests
     {
         private readonly IClock _clock;
         private readonly ICommandDispatcher _commandDispatcher;
-        private readonly TimeSpan THREAD_SWITCH_DELAY = TimeSpan.FromMilliseconds(10);
+        private readonly TimeSpan THREAD_SWITCH_DELAY = TimeSpan.FromMilliseconds(20);
         private readonly CommandDispatchScheduler _commandDispatchScheduler;
 
         public CommandDispatchSchedulerFeature()
