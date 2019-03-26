@@ -9,9 +9,9 @@ after_build:
   ps: >-
     $publishPath = "src/backgroundr.view/bin/Release/"
     
-    Compress-Archive -Path "$($publishPath)/*" -DestinationPath "$($publishPath)/dist.zip"
+    Compress-Archive -Path "$($publishPath)/*" -DestinationPath "$($publishPath)/backgroundr.zip"
 artifacts:
-  path: 'src/backgroundr.view/bin/Release/dist.zip'
+  path: 'src/backgroundr.view/bin/Release/backgroundr.zip'
   name: dist
 deploy:
   provider: GitHub
