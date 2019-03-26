@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product Id="*" Name="SetupProject1" Language="1033" Version="1.0.0.0" Manufacturer="Test" UpgradeCode="387625bc-988d-45dc-9254-7cfca0069115">
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+		<MediaTemplate />
+
+		<Feature Id="ProductFeature" Title="SetupProject1" Level="1">
+			<ComponentGroupRef Id="ProductComponents" />
+		</Feature>
+	</Product>
+
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+				<Directory Id="INSTALLFOLDER" Name="SetupProject1" />
+			</Directory>
+		</Directory>
+	</Fragment>
+
+	<Fragment>
+		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+			 <Component Id="ProductComponent">
+         <File Id='MainExecutable' Name='desktop-backgroundr.exe' DiskId='1' Source='C:\Users\gillo\Code\backgroundr\backgroundr.view\bin\Debug\desktop-backgroundr.exe' KeyPath='yes'></File>
+			 </Component> 
+		</ComponentGroup>
+	</Fragment>
+</Wix>
