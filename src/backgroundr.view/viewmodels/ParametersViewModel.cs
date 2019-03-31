@@ -16,6 +16,7 @@ namespace backgroundr.view.viewmodels
     {
         private readonly Parameters _parameters;
         private readonly IFileService _fileService;
+        private readonly IEncryptor _encryptor;
         private readonly StartupService _startupService;
         private readonly ICommandDispatcher _commandDispatcher;
 
@@ -87,11 +88,13 @@ namespace backgroundr.view.viewmodels
         public ParametersViewModel(
             Parameters parameters,
             IFileService fileService,
+            IEncryptor encryptor,
             StartupService startupService,
             ICommandDispatcher commandDispatcher)
         {
             _parameters = parameters;
             _fileService = fileService;
+            _encryptor = encryptor;
             _startupService = startupService;
             _commandDispatcher = commandDispatcher;
 
@@ -107,14 +110,7 @@ namespace backgroundr.view.viewmodels
 
         private void Validate()
         {
-            _parameters.UserId = UserId;
-            _parameters.Tags = Tags;
-            _parameters.ApiToken = Token;
-            _parameters.ApiSecret = TokenSecret.ToInsecureString();
-            _parameters.OAuthAccessToken = OAuthAccessToken;
-            _parameters.OAuthAccessTokenSecret = OAuthAccessTokenSecret.ToInsecureString();
-            _parameters.RefreshPeriod = SelectedPeriod.Value;
-            _fileService.Serialize(_parameters, ".flickr");
+            UpdateParameters();
 
             if (AutomaticallyStart) {
                 _startupService.EnableAutomaticStartup();
@@ -126,6 +122,27 @@ namespace backgroundr.view.viewmodels
             _commandDispatcher.Dispatch(new ScheduleNextDesktopBackgroundImageChange());
 
             Application.Current?.MainWindow?.Close();
+        }
+        private void UpdateParameters()
+        {
+            _parameters.UserId = UserId;
+            _parameters.Tags = Tags;
+            _parameters.ApiToken = Token;
+
+            var apiSecret = TokenSecret.ToInsecureString();
+            if (_parameters.ApiSecret != apiSecret) {
+                _parameters.ApiSecret = _encryptor.Encrypt(apiSecret);
+            }
+
+            _parameters.OAuthAccessToken = OAuthAccessToken;
+
+            var oAuthAccessTokenSecret = OAuthAccessTokenSecret.ToInsecureString();
+            if (_parameters.OAuthAccessTokenSecret != oAuthAccessTokenSecret) {
+                _parameters.OAuthAccessTokenSecret = _encryptor.Encrypt(oAuthAccessTokenSecret);
+            }
+
+            _parameters.RefreshPeriod = SelectedPeriod.Value;
+            _fileService.Serialize(_parameters, ".flickr");
         }
     }
 }

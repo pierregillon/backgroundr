@@ -63,11 +63,14 @@
     <Compile Include="cqrs\IEventEmitter.cs" />
     <Compile Include="domain\DesktopBackgroundImageUpdated.cs" />
     <Compile Include="domain\IClock.cs" />
+    <Compile Include="domain\IEncryptor.cs" />
     <Compile Include="domain\TimeSpanExtensions.cs" />
+    <Compile Include="infrastructure\AesEncryptor.cs" />
     <Compile Include="infrastructure\DefaultClock.cs" />
     <Compile Include="infrastructure\HttpFileDownloader.cs" />
     <Compile Include="domain\IFileDownloader.cs" />
     <Compile Include="domain\IRandom.cs" />
+    <Compile Include="infrastructure\IEncrypter.cs" />
     <Compile Include="infrastructure\LocalComputerImageProvider.cs" />
     <Compile Include="infrastructure\PseudoRandom.cs" />
     <Compile Include="infrastructure\FlickrPhotoProvider.cs" />
