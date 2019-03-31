@@ -58,7 +58,13 @@ namespace backgroundr.view.viewmodels
             }
             catch (Exception ex) {
                 _fileService.Append("logs.txt", $"{DateTime.Now} - ERROR : " + ex + Environment.NewLine);
-                await _messageBoxService.ShowError("An error occured when changing the image background with next Flickr photo. For more information, see the logs.txt file." + Environment.NewLine + "=> " + ex.Message);
+                await _messageBoxService.ShowError(
+                    "An error occured when changing the image background with the next Flickr photo." + Environment.NewLine +
+                    "Check the following :" + Environment.NewLine +
+                    "1. Your Internet connection" + Environment.NewLine +
+                    "2. Your Flickr credentials" + Environment.NewLine +
+                    "For more information, see the logs.txt file." + Environment.NewLine + Environment.NewLine +
+                    "Error => " + ex.Message);
             }
             finally {
                 ChangingBackground = false;
