@@ -5,6 +5,7 @@ using backgroundr.application;
 using backgroundr.cqrs;
 using backgroundr.domain;
 using backgroundr.infrastructure;
+using backgroundr.view.Properties;
 using backgroundr.view.viewmodels;
 using Hardcodet.Wpf.TaskbarNotification;
 using StructureMap;
@@ -28,6 +29,7 @@ namespace backgroundr.view
                 configuration.For<IFileDownloader>().Use<HttpFileDownloader>();
                 configuration.For<IRandom>().Use<PseudoRandom>();
                 configuration.For<IClock>().Use<DefaultClock>();
+                configuration.For<IEncryptor>().Use<AesEncryptor>().Ctor<string>("encryptionKey").Is(Environment.MachineName);
                 configuration.For<ICommandDispatcher>().Use<StructureMapCommandDispatcher>();
                 configuration.For<ICommandHandler<ChangeDesktopBackgroundImageRandomly>>().Use<ChangeDesktopBackgroundImageRandomlyHandler>().Singleton();
                 configuration.For<ICommandHandler<ScheduleNextDesktopBackgroundImageChange>>().Use<ScheduleNextDesktopBackgroundImageChangeHandler>();
