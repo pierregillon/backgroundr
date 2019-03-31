@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using backgroundr.application;
 using backgroundr.cqrs;
 using backgroundr.domain;
+using backgroundr.infrastructure;
 using NSubstitute;
 using Xunit;
 
@@ -20,7 +21,7 @@ namespace backgroundr.tests
         {
             _clock = Substitute.For<IClock>();
             _commandDispatcher = Substitute.For<ICommandDispatcher>();
-            _commandDispatchScheduler = new CommandDispatchScheduler(_clock, _commandDispatcher);
+            _commandDispatchScheduler = new CommandDispatchScheduler(_clock, _commandDispatcher, Substitute.For<IFileService>());
         }
         ~CommandDispatchSchedulerFeature()
         {
