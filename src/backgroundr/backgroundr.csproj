@@ -82,7 +82,6 @@
     <Compile Include="domain\IFileService.cs" />
     <Compile Include="infrastructure\FileService.cs" />
     <Compile Include="domain\IDesktopBackgroundImageUpdater.cs" />
-    <Compile Include="infrastructure\WindowDesktopBackgroundImageUpdater.cs" />
     <Compile Include="infrastructure\PicturePosition.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

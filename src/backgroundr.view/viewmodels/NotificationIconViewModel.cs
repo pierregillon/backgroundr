@@ -3,6 +3,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using backgroundr.application;
 using backgroundr.cqrs;
+using backgroundr.domain;
+using backgroundr.view.services;
 using ICommand = System.Windows.Input.ICommand;
 
 namespace backgroundr.view.viewmodels
@@ -11,6 +13,8 @@ namespace backgroundr.view.viewmodels
     {
         private readonly StructureMap.IContainer _container;
         private readonly ICommandDispatcher _commandDispatcher;
+        private readonly IFileService _fileService;
+        private readonly MessageBoxService _messageBoxService;
 
         public ICommand RandomlyChangeBackgroundImageCommand => new DelegateAsyncCommand {
             CommandAction = RandomlyChangeBackgroundImage
@@ -33,10 +37,16 @@ namespace backgroundr.view.viewmodels
         }
 
         // ----- Constructor
-        public TaskBarViewModel(StructureMap.IContainer container, ICommandDispatcher commandDispatcher)
+        public TaskBarViewModel(
+            StructureMap.IContainer container,
+            ICommandDispatcher commandDispatcher,
+            IFileService fileService,
+            MessageBoxService messageBoxService)
         {
             _container = container;
             _commandDispatcher = commandDispatcher;
+            _fileService = fileService;
+            _messageBoxService = messageBoxService;
         }
 
         // ----- Public methods
@@ -47,7 +57,8 @@ namespace backgroundr.view.viewmodels
                 await _commandDispatcher.Dispatch(new ChangeDesktopBackgroundImageRandomly());
             }
             catch (Exception ex) {
-                MessageBox.Show(ex.Message);
+                _fileService.Append("logs.txt", $"{DateTime.Now} - ERROR : " + ex + Environment.NewLine);
+                await _messageBoxService.ShowError("An error occured when changing the image background with next Flickr photo. For more information, see the logs.txt file." + Environment.NewLine + "=> " + ex.Message);
             }
             finally {
                 ChangingBackground = false;

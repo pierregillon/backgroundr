@@ -61,9 +61,6 @@ namespace backgroundr.application
                     _desktopBackgroundImageUpdater.ChangeBackgroundImage(localFilePath, PicturePosition.Extend);
                 }
             }
-            catch (Exception ex) {
-                _fileService.Append("logs.txt", $"{DateTime.Now} - ERROR : " + ex + Environment.NewLine);
-            }
             finally {
                 // Even if error occurred, we send event that background image updated.
                 SaveLastUpdateDateToNow();
