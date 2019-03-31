@@ -4,11 +4,9 @@ using System.Linq;
 using System.Reflection;
 using System.Security;
 using System.Windows;
-using System.Windows.Input;
 using backgroundr.application;
 using backgroundr.cqrs;
 using backgroundr.domain;
-using backgroundr.view.design;
 using backgroundr.view.utils;
 using ICommand = System.Windows.Input.ICommand;
 
@@ -16,8 +14,6 @@ namespace backgroundr.view.viewmodels
 {
     public class ParametersViewModel : ViewModelBase
     {
-        private const string APPLICATION_NAME = "Backgroundr";
-
         private readonly Parameters _parameters;
         private readonly IFileService _fileService;
         private readonly StartupService _startupService;
@@ -105,7 +101,7 @@ namespace backgroundr.view.viewmodels
             TokenSecret = _parameters.ApiSecret.ToSecureString();
             OAuthAccessToken = _parameters.OAuthAccessToken;
             OAuthAccessTokenSecret = _parameters.OAuthAccessTokenSecret.ToSecureString();
-            AutomaticallyStart = _startupService.IsApplicationAutomaticallyStart(APPLICATION_NAME);
+            AutomaticallyStart = _startupService.IsApplicationStartingOnSystemStartup();
             SelectedPeriod = Periods.FirstOrDefault(x => x.Value == parameters.RefreshPeriod);
         }
 
@@ -121,10 +117,10 @@ namespace backgroundr.view.viewmodels
             _fileService.Serialize(_parameters, ".flickr");
 
             if (AutomaticallyStart) {
-                _startupService.EnableAutomaticStartup(APPLICATION_NAME, Assembly.GetExecutingAssembly().Location);
+                _startupService.EnableAutomaticStartup();
             }
             else {
-                _startupService.DisableAutomaticStartup(APPLICATION_NAME);
+                _startupService.DisableAutomaticStartup();
             }
 
             _commandDispatcher.Dispatch(new ScheduleNextDesktopBackgroundImageChange());

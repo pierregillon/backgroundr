@@ -1,25 +1,35 @@
-﻿using Microsoft.Win32;
+﻿using System.Reflection;
+using Microsoft.Win32;
 
 namespace backgroundr.view.utils
 {
     public class StartupService
     {
+        private readonly string _applicationName;
+        private readonly string _executableFilePath;
         private readonly RegistryKey _startupRegistry = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
 
-        public bool IsApplicationAutomaticallyStart(string applicationName)
+        public StartupService()
         {
-            return _startupRegistry.GetValue(applicationName) != null;
+            var assembly = Assembly.GetExecutingAssembly();
+            _applicationName = assembly.GetCustomAttribute<AssemblyProductAttribute>().Product;
+            _executableFilePath = assembly.Location;
         }
 
-        public void EnableAutomaticStartup(string applicationName, string exeFilePath)
+        public bool IsApplicationStartingOnSystemStartup()
         {
-            _startupRegistry.SetValue(applicationName, exeFilePath);
+            return _startupRegistry.GetValue(_applicationName) != null;
         }
 
-        public void DisableAutomaticStartup(string applicationName)
+        public void EnableAutomaticStartup()
         {
-            if (_startupRegistry.GetValue(applicationName) != null) {
-                _startupRegistry.DeleteValue(applicationName);
+            _startupRegistry.SetValue(_applicationName, _executableFilePath);
+        }
+
+        public void DisableAutomaticStartup()
+        {
+            if (_startupRegistry.GetValue(_applicationName) != null) {
+                _startupRegistry.DeleteValue(_applicationName);
             }
         }
     }
