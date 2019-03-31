@@ -22,14 +22,5 @@ namespace backgroundr.view.Properties {
                 return defaultInstance;
             }
         }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Backgroundr12349382Env12")]
-        public string EncryptionKey {
-            get {
-                return ((string)(this["EncryptionKey"]));
-            }
-        }
     }
 }
