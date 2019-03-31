@@ -8,13 +8,19 @@ namespace backgroundr.infrastructure
 {
     public class AesEncryptor : IEncryptor
     {
-        string EncryptionKey = "abc123";
+        private readonly string _encryptionKey;
+
+        public AesEncryptor(string encryptionKey)
+        {
+            if (encryptionKey == null) throw new ArgumentNullException(nameof(encryptionKey));
+            _encryptionKey = encryptionKey;
+        }
 
         public string Encrypt(string clearText)
         {
             var clearBytes = Encoding.Unicode.GetBytes(clearText);
             using (var aes = Aes.Create()) {
-                var pdb = GetPdb(EncryptionKey);
+                var pdb = GetPdb(_encryptionKey);
                 aes.Key = pdb.GetBytes(32);
                 aes.IV = pdb.GetBytes(16);
                 using (var ms = new MemoryStream()) {
@@ -32,7 +38,7 @@ namespace backgroundr.infrastructure
             cipherText = cipherText.Replace(" ", "+");
             var cipherBytes = Convert.FromBase64String(cipherText);
             using (var aes = Aes.Create()) {
-                var pdb = GetPdb(EncryptionKey);
+                var pdb = GetPdb(_encryptionKey);
                 aes.Key = pdb.GetBytes(32);
                 aes.IV = pdb.GetBytes(16);
                 using (var ms = new MemoryStream()) {
