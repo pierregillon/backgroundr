@@ -6,6 +6,7 @@ using backgroundr.cqrs;
 using backgroundr.domain;
 using backgroundr.infrastructure;
 using backgroundr.view.Properties;
+using backgroundr.view.services;
 using backgroundr.view.viewmodels;
 using Hardcodet.Wpf.TaskbarNotification;
 using StructureMap;
@@ -21,7 +22,7 @@ namespace backgroundr.view
             var container = new Container(configuration => {
                 configuration.For<IFileService>().Use<FileService>();
                 configuration.For<IDesktopBackgroundImageUpdater>().Use<WindowDesktopBackgroundImageUpdater>();
-#if DEBUG
+#if !DEBUG
                 configuration.For<IPhotoProvider>().Use<LocalComputerImageProvider>();
 #else
                 configuration.For<IPhotoProvider>().Use<FlickrPhotoProvider>();

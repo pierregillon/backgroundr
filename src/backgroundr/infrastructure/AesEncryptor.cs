@@ -18,38 +18,48 @@ namespace backgroundr.infrastructure
 
         public string Encrypt(string clearText)
         {
-            var clearBytes = Encoding.Unicode.GetBytes(clearText);
-            using (var aes = Aes.Create()) {
-                var pdb = GetPdb(_encryptionKey);
-                aes.Key = pdb.GetBytes(32);
-                aes.IV = pdb.GetBytes(16);
-                using (var ms = new MemoryStream()) {
-                    using (var cs = new CryptoStream(ms, aes.CreateEncryptor(), CryptoStreamMode.Write)) {
-                        cs.Write(clearBytes, 0, clearBytes.Length);
-                        cs.Close();
+            try {
+                var clearBytes = Encoding.Unicode.GetBytes(clearText);
+                using (var aes = Aes.Create()) {
+                    var pdb = GetPdb(_encryptionKey);
+                    aes.Key = pdb.GetBytes(32);
+                    aes.IV = pdb.GetBytes(16);
+                    using (var ms = new MemoryStream()) {
+                        using (var cs = new CryptoStream(ms, aes.CreateEncryptor(), CryptoStreamMode.Write)) {
+                            cs.Write(clearBytes, 0, clearBytes.Length);
+                            cs.Close();
+                        }
+                        clearText = Convert.ToBase64String(ms.ToArray());
                     }
-                    clearText = Convert.ToBase64String(ms.ToArray());
                 }
+                return clearText;
             }
-            return clearText;
+            catch (CryptographicException ex) {
+                throw new Exception("Unable to encrypted the given text.", ex);
+            }
         }
         public string Decrypt(string cipherText)
         {
-            cipherText = cipherText.Replace(" ", "+");
-            var cipherBytes = Convert.FromBase64String(cipherText);
-            using (var aes = Aes.Create()) {
-                var pdb = GetPdb(_encryptionKey);
-                aes.Key = pdb.GetBytes(32);
-                aes.IV = pdb.GetBytes(16);
-                using (var ms = new MemoryStream()) {
-                    using (var cs = new CryptoStream(ms, aes.CreateDecryptor(), CryptoStreamMode.Write)) {
-                        cs.Write(cipherBytes, 0, cipherBytes.Length);
-                        cs.Close();
+            try {
+                cipherText = cipherText.Replace(" ", "+");
+                var cipherBytes = Convert.FromBase64String(cipherText);
+                using (var aes = Aes.Create()) {
+                    var pdb = GetPdb(_encryptionKey);
+                    aes.Key = pdb.GetBytes(32);
+                    aes.IV = pdb.GetBytes(16);
+                    using (var ms = new MemoryStream()) {
+                        using (var cs = new CryptoStream(ms, aes.CreateDecryptor(), CryptoStreamMode.Write)) {
+                            cs.Write(cipherBytes, 0, cipherBytes.Length);
+                            cs.Close();
+                        }
+                        cipherText = Encoding.Unicode.GetString(ms.ToArray());
                     }
-                    cipherText = Encoding.Unicode.GetString(ms.ToArray());
                 }
+                return cipherText;
             }
-            return cipherText;
+            catch (CryptographicException ex) {
+                throw new Exception("The encrypted text cannot be decrypted.", ex);
+            }
         }
 
         private Rfc2898DeriveBytes GetPdb(string encryptionKey)

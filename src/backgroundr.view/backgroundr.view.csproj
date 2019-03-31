@@ -68,7 +68,9 @@
     </ApplicationDefinition>
     <Compile Include="converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="design\ParametersDesignViewModel.cs" />
+    <Compile Include="services\WindowDesktopBackgroundImageUpdater.cs" />
     <Compile Include="utils\StartupService.cs" />
+    <Compile Include="services\MessageBoxService.cs" />
     <Compile Include="viewmodels\ParametersViewModel.cs" />
     <Compile Include="viewmodels\RefreshPeriod.cs" />
     <Compile Include="utils\SecureStringExtensions.cs" />
