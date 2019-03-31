@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Security;
 using System.Windows;
 using System.Windows.Input;
 using backgroundr.application;
@@ -37,20 +38,20 @@ namespace backgroundr.view.viewmodels
             get { return GetNotifiableProperty<string>(); }
             set { SetNotifiableProperty<string>(value); }
         }
-        public string TokenSecret
+        public SecureString TokenSecret
         {
-            get { return GetNotifiableProperty<string>(); }
-            set { SetNotifiableProperty<string>(value); }
+            get { return GetNotifiableProperty<SecureString>(); }
+            set { SetNotifiableProperty<SecureString>(value); }
         }
         public string OAuthAccessToken
         {
             get { return GetNotifiableProperty<string>(); }
             set { SetNotifiableProperty<string>(value); }
         }
-        public string OAuthAccessTokenSecret
+        public SecureString OAuthAccessTokenSecret
         {
-            get { return GetNotifiableProperty<string>(); }
-            set { SetNotifiableProperty<string>(value); }
+            get { return GetNotifiableProperty<SecureString>(); }
+            set { SetNotifiableProperty<SecureString>(value); }
         }
         public bool AutomaticallyStart
         {
@@ -101,9 +102,9 @@ namespace backgroundr.view.viewmodels
             UserId = _parameters.UserId;
             Tags = _parameters.Tags;
             Token = _parameters.ApiToken;
-            TokenSecret = _parameters.ApiSecret;
+            TokenSecret = _parameters.ApiSecret.ToSecureString();
             OAuthAccessToken = _parameters.OAuthAccessToken;
-            OAuthAccessTokenSecret = _parameters.OAuthAccessTokenSecret;
+            OAuthAccessTokenSecret = _parameters.OAuthAccessTokenSecret.ToSecureString();
             AutomaticallyStart = _startupService.IsApplicationAutomaticallyStart(APPLICATION_NAME);
             SelectedPeriod = Periods.FirstOrDefault(x => x.Value == parameters.RefreshPeriod);
         }
@@ -113,9 +114,9 @@ namespace backgroundr.view.viewmodels
             _parameters.UserId = UserId;
             _parameters.Tags = Tags;
             _parameters.ApiToken = Token;
-            _parameters.ApiSecret = TokenSecret;
+            _parameters.ApiSecret = TokenSecret.ToInsecureString();
             _parameters.OAuthAccessToken = OAuthAccessToken;
-            _parameters.OAuthAccessTokenSecret = OAuthAccessTokenSecret;
+            _parameters.OAuthAccessTokenSecret = OAuthAccessTokenSecret.ToInsecureString();
             _parameters.RefreshPeriod = SelectedPeriod.Value;
             _fileService.Serialize(_parameters, ".flickr");
 
