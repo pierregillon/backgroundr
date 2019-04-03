@@ -53,7 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="cqrs\ICommand.cs" />
-    <Compile Include="application\Parameters.cs" />
+    <Compile Include="application\FlickrParameters.cs" />
     <Compile Include="application\Scheduler.cs" />
     <Compile Include="cqrs\CommandDispatchScheduler.cs" />
     <Compile Include="cqrs\StructureMapEventEmitter.cs" />

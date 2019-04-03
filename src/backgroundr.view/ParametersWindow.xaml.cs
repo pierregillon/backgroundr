@@ -15,15 +15,7 @@ namespace backgroundr.view
             InitializeComponent();
 
             DataContext = viewModel;
-            TokenSecret.Password = viewModel.TokenSecret?.ToInsecureString();
             OAuthAccessTokenSecret.Password = viewModel.OAuthAccessTokenSecret?.ToInsecureString();
-        }
-
-        private void TokenSecret_OnPasswordChanged(object sender, RoutedEventArgs e)
-        {
-            if (DataContext != null) {
-                ((ParametersViewModel) DataContext).TokenSecret = ((PasswordBox) sender).SecurePassword;
-            }
         }
 
         private void OAuthAccessTokenSecret_OnPasswordChanged(object sender, RoutedEventArgs e)

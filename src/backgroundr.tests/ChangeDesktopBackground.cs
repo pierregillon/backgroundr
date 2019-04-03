@@ -26,7 +26,7 @@ namespace backgroundr.tests
         private readonly IFileDownloader _fileDownloader;
         private readonly ChangeDesktopBackgroundImageRandomlyHandler _handler;
         private readonly IEventEmitter _eventEmitter;
-        private readonly Parameters _parameters;
+        private readonly FlickrParameters _flickrParameters;
         private readonly IClock _clock;
         private readonly IFileService _fileService;
         private static readonly DateTime NOW = new DateTime(2018, 12, 26);
@@ -38,7 +38,7 @@ namespace backgroundr.tests
             _fileDownloader = Substitute.For<IFileDownloader>();
             _fileDownloader.Download(Arg.Any<string>()).Returns(x => x.Arg<string>());
             _eventEmitter = Substitute.For<IEventEmitter>();
-            _parameters = new Parameters();
+            _flickrParameters = new FlickrParameters();
             _clock = Substitute.For<IClock>();
             _fileService = Substitute.For<IFileService>();
 
@@ -48,7 +48,7 @@ namespace backgroundr.tests
                 _fileDownloader,
                 new PseudoRandom(),
                 _eventEmitter,
-                _parameters,
+                _flickrParameters,
                 _clock,
                 _fileService
             );
@@ -174,8 +174,8 @@ namespace backgroundr.tests
             await _handler.Handle(new ChangeDesktopBackgroundImageRandomly());
 
             // Assert
-            Assert.Equal(NOW, _parameters.BackgroundImageLastRefreshDate);
-            _fileService.Received(1).Serialize(Arg.Any<Parameters>(), ".flickr");
+            Assert.Equal(NOW, _flickrParameters.BackgroundImageLastRefreshDate);
+            _fileService.Received(1).Serialize(Arg.Any<FlickrParameters>(), ".flickr");
         }
     }
 }

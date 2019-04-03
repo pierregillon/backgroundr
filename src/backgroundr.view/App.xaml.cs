@@ -37,7 +37,7 @@ namespace backgroundr.view
                 configuration.For<CommandDispatchScheduler>().Singleton();
                 configuration.For<IEventEmitter>().Use<StructureMapEventEmitter>();
                 configuration.For<IEventListener<DesktopBackgroundImageUpdated>>().Use<Scheduler>();
-                configuration.For<Parameters>().Singleton();
+                configuration.For<FlickrParameters>().Singleton();
             });
 
             base.OnStartup(e);
@@ -47,7 +47,7 @@ namespace backgroundr.view
 
             if (File.Exists(".flickr")) {
                 var fileService = container.GetInstance<IFileService>();
-                var parameters = fileService.Deserialize<Parameters>(".flickr");
+                var parameters = fileService.Deserialize<FlickrParameters>(".flickr");
                 container.Inject(parameters);
 
                 var dispatcher = container.GetInstance<ICommandDispatcher>();

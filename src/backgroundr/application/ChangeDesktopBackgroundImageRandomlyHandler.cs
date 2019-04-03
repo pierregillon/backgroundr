@@ -17,7 +17,7 @@ namespace backgroundr.application
         private readonly IFileDownloader _fileDownloader;
         private readonly IRandom _random;
         private readonly IEventEmitter _eventEmitter;
-        private readonly Parameters _parameters;
+        private readonly FlickrParameters _flickrParameters;
         private readonly IClock _clock;
         private readonly IFileService _fileService;
 
@@ -29,7 +29,7 @@ namespace backgroundr.application
             IFileDownloader fileDownloader,
             IRandom random,
             IEventEmitter eventEmitter,
-            Parameters parameters,
+            FlickrParameters flickrParameters,
             IClock clock,
             IFileService fileService)
         {
@@ -38,7 +38,7 @@ namespace backgroundr.application
             _fileDownloader = fileDownloader;
             _random = random;
             _eventEmitter = eventEmitter;
-            _parameters = parameters;
+            _flickrParameters = flickrParameters;
             _clock = clock;
             _fileService = fileService;
         }
@@ -78,8 +78,8 @@ namespace backgroundr.application
         }
         private void SaveLastUpdateDateToNow()
         {
-            _parameters.BackgroundImageLastRefreshDate = _clock.Now();
-            _fileService.Serialize(_parameters, ".flickr");
+            _flickrParameters.BackgroundImageLastRefreshDate = _clock.Now();
+            _fileService.Serialize(_flickrParameters, ".flickr");
         }
 
         // ----- Utils
