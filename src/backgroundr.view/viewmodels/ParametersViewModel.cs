@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Security;
 using System.Windows;
 using backgroundr.application;
@@ -14,7 +13,7 @@ namespace backgroundr.view.viewmodels
 {
     public class ParametersViewModel : ViewModelBase
     {
-        private readonly Parameters _parameters;
+        private readonly FlickrParameters _flickrParameters;
         private readonly IFileService _fileService;
         private readonly IEncryptor _encryptor;
         private readonly StartupService _startupService;
@@ -29,16 +28,6 @@ namespace backgroundr.view.viewmodels
         {
             get { return GetNotifiableProperty<string>(); }
             set { SetNotifiableProperty<string>(value); }
-        }
-        public string Token
-        {
-            get { return GetNotifiableProperty<string>(); }
-            set { SetNotifiableProperty<string>(value); }
-        }
-        public SecureString TokenSecret
-        {
-            get { return GetNotifiableProperty<SecureString>(); }
-            set { SetNotifiableProperty<SecureString>(value); }
         }
         public string OAuthAccessToken
         {
@@ -86,26 +75,24 @@ namespace backgroundr.view.viewmodels
         };
 
         public ParametersViewModel(
-            Parameters parameters,
+            FlickrParameters flickrParameters,
             IFileService fileService,
             IEncryptor encryptor,
             StartupService startupService,
             ICommandDispatcher commandDispatcher)
         {
-            _parameters = parameters;
+            _flickrParameters = flickrParameters;
             _fileService = fileService;
             _encryptor = encryptor;
             _startupService = startupService;
             _commandDispatcher = commandDispatcher;
 
-            UserId = _parameters.UserId;
-            Tags = _parameters.Tags;
-            Token = _parameters.ApiToken;
-            TokenSecret = _parameters.ApiSecret?.ToSecureString();
-            OAuthAccessToken = _parameters.OAuthAccessToken;
-            OAuthAccessTokenSecret = _parameters.OAuthAccessTokenSecret?.ToSecureString();
+            UserId = _flickrParameters.UserId;
+            Tags = _flickrParameters.Tags;
+            OAuthAccessToken = _flickrParameters.OAuthAccessToken;
+            OAuthAccessTokenSecret = _flickrParameters.OAuthAccessTokenSecret?.ToSecureString();
             AutomaticallyStart = _startupService.IsApplicationStartingOnSystemStartup();
-            SelectedPeriod = Periods.FirstOrDefault(x => x.Value == parameters.RefreshPeriod);
+            SelectedPeriod = Periods.FirstOrDefault(x => x.Value == flickrParameters.RefreshPeriod);
         }
 
         private void Validate()
@@ -125,24 +112,17 @@ namespace backgroundr.view.viewmodels
         }
         private void UpdateParameters()
         {
-            _parameters.UserId = UserId;
-            _parameters.Tags = Tags;
-            _parameters.ApiToken = Token;
-
-            var apiSecret = TokenSecret.ToInsecureString();
-            if (_parameters.ApiSecret != apiSecret) {
-                _parameters.ApiSecret = _encryptor.Encrypt(apiSecret);
-            }
-
-            _parameters.OAuthAccessToken = OAuthAccessToken;
+            _flickrParameters.UserId = UserId;
+            _flickrParameters.Tags = Tags;
+            _flickrParameters.OAuthAccessToken = OAuthAccessToken;
 
             var oAuthAccessTokenSecret = OAuthAccessTokenSecret.ToInsecureString();
-            if (_parameters.OAuthAccessTokenSecret != oAuthAccessTokenSecret) {
-                _parameters.OAuthAccessTokenSecret = _encryptor.Encrypt(oAuthAccessTokenSecret);
+            if (_flickrParameters.OAuthAccessTokenSecret != oAuthAccessTokenSecret) {
+                _flickrParameters.OAuthAccessTokenSecret = _encryptor.Encrypt(oAuthAccessTokenSecret);
             }
 
-            _parameters.RefreshPeriod = SelectedPeriod.Value;
-            _fileService.Serialize(_parameters, ".flickr");
+            _flickrParameters.RefreshPeriod = SelectedPeriod.Value;
+            _fileService.Serialize(_flickrParameters, ".flickr");
         }
     }
 }

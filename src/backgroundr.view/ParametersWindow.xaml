@@ -6,7 +6,7 @@
         xmlns:design="clr-namespace:backgroundr.view.design"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        Title="Parameters" Height="352.678" Width="398.454"
+        Title="Parameters" Height="283.188" Width="398.454"
         Icon="images/backpack.ico">
     <Window.DataContext>
         <design:ParametersDesignViewModel />
@@ -62,10 +62,6 @@
         <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding Path=UserId, Mode=TwoWay}" />
         <TextBlock Grid.Row="1" Grid.Column="0" Text="Tags" />
         <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding Path=Tags, Mode=TwoWay}" />
-        <TextBlock Grid.Row="2" Grid.Column="0" Text="Api token *" />
-        <TextBox Grid.Row="2" Grid.Column="1" Text="{Binding Path=Token, Mode=TwoWay}" />
-        <TextBlock Grid.Row="3" Grid.Column="0" Text="Api secret *" />
-        <PasswordBox Name="TokenSecret" Grid.Row="3" Grid.Column="1" PasswordChanged="TokenSecret_OnPasswordChanged"/>
         <TextBlock Grid.Row="4" Grid.Column="0" Text="Refresh period *" />
         <ComboBox Grid.Row="4" Grid.Column="1" ItemsSource="{Binding Path=Periods}"
                   SelectedItem="{Binding Path=SelectedPeriod, Mode=TwoWay}" />

@@ -9,27 +9,30 @@ namespace backgroundr.infrastructure
 {
     public class FlickrPhotoProvider : IPhotoProvider
     {
-        private readonly Parameters _parameters;
+        private const string ApiToken = "a023233ad75a2e7ae38a1b1aa92ff751";
+        private const string ApiSecret = "abd048b37b9e44f9";
+
+        private readonly FlickrParameters _flickrParameters;
         private readonly IEncryptor _encryptor;
 
-        public FlickrPhotoProvider(Parameters parameters, IEncryptor encryptor)
+        public FlickrPhotoProvider(FlickrParameters flickrParameters, IEncryptor encryptor)
         {
-            _parameters = parameters;
+            _flickrParameters = flickrParameters;
             _encryptor = encryptor;
         }
 
         public async Task<IReadOnlyCollection<string>> GetPhotos()
         {
             return await Task.Run(() => {
-                var flickr = new Flickr(_parameters.ApiToken, _encryptor.Decrypt(_parameters.ApiSecret)) {
-                    OAuthAccessToken = _parameters.OAuthAccessToken,
-                    OAuthAccessTokenSecret = _encryptor.Decrypt(_parameters.OAuthAccessTokenSecret)
+                var flickr = new Flickr(ApiToken, ApiSecret) {
+                    OAuthAccessToken = _flickrParameters.OAuthAccessToken,
+                    OAuthAccessTokenSecret = _encryptor.Decrypt(_flickrParameters.OAuthAccessTokenSecret)
                 };
                 flickr.AuthOAuthCheckToken();
 
                 var photoCollection = flickr.PhotosSearch(new PhotoSearchOptions {
-                    Tags = _parameters.Tags,
-                    UserId = _parameters.UserId,
+                    Tags = _flickrParameters.Tags,
+                    UserId = _flickrParameters.UserId,
                     PerPage = 500,
                     ContentType = ContentTypeSearch.PhotosOnly,
                     MediaType = MediaType.Photos,

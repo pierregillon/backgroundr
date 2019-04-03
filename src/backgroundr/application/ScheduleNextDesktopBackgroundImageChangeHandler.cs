@@ -6,21 +6,21 @@ namespace backgroundr.application
     public class ScheduleNextDesktopBackgroundImageChangeHandler : ICommandHandler<ScheduleNextDesktopBackgroundImageChange>
     {
         private readonly CommandDispatchScheduler _commandDispatcherScheduler;
-        private readonly Parameters _parameters;
+        private readonly FlickrParameters _flickrParameters;
 
         public ScheduleNextDesktopBackgroundImageChangeHandler(
             CommandDispatchScheduler commandDispatcherScheduler,
-            Parameters parameters)
+            FlickrParameters flickrParameters)
         {
             _commandDispatcherScheduler = commandDispatcherScheduler;
-            _parameters = parameters;
+            _flickrParameters = flickrParameters;
         }
 
         public async Task Handle(ScheduleNextDesktopBackgroundImageChange command)
         {
             await _commandDispatcherScheduler.CancelAll();
-            if (_parameters.BackgroundImageLastRefreshDate.HasValue) {
-                var nextRefreshDate = _parameters.BackgroundImageLastRefreshDate.Value.Add(_parameters.RefreshPeriod);
+            if (_flickrParameters.BackgroundImageLastRefreshDate.HasValue) {
+                var nextRefreshDate = _flickrParameters.BackgroundImageLastRefreshDate.Value.Add(_flickrParameters.RefreshPeriod);
                 await _commandDispatcherScheduler.Schedule(new ChangeDesktopBackgroundImageRandomly(), nextRefreshDate);
             }
         }
