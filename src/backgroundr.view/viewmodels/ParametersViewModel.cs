@@ -101,9 +101,9 @@ namespace backgroundr.view.viewmodels
             UserId = _parameters.UserId;
             Tags = _parameters.Tags;
             Token = _parameters.ApiToken;
-            TokenSecret = _parameters.ApiSecret.ToSecureString();
+            TokenSecret = _parameters.ApiSecret?.ToSecureString();
             OAuthAccessToken = _parameters.OAuthAccessToken;
-            OAuthAccessTokenSecret = _parameters.OAuthAccessTokenSecret.ToSecureString();
+            OAuthAccessTokenSecret = _parameters.OAuthAccessTokenSecret?.ToSecureString();
             AutomaticallyStart = _startupService.IsApplicationStartingOnSystemStartup();
             SelectedPeriod = Periods.FirstOrDefault(x => x.Value == parameters.RefreshPeriod);
         }
