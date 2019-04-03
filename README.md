@@ -9,7 +9,8 @@ Backgroundr is a Windows application that automatically and periodically, downlo
 - [x] Display tokens in UI with password boxes
 - [x] Encrypt tokens in .flickr file
 - [x] Better exception management and user messages
-- [ ] Incorporate Flickr api tokens
+- [x] Incorporate Flickr api tokens
+- [ ] Genereate OAuth tokens button
 - [ ] Update icon
 
 ## v0.1
