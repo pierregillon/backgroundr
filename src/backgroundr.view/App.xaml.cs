@@ -22,7 +22,7 @@ namespace backgroundr.view
             var container = new Container(configuration => {
                 configuration.For<IFileService>().Use<FileService>();
                 configuration.For<IDesktopBackgroundImageUpdater>().Use<WindowDesktopBackgroundImageUpdater>();
-#if !DEBUG
+#if DEBUG
                 configuration.For<IPhotoProvider>().Use<LocalComputerImageProvider>();
 #else
                 configuration.For<IPhotoProvider>().Use<FlickrPhotoProvider>();
