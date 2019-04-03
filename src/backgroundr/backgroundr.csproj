@@ -67,6 +67,7 @@
     <Compile Include="domain\TimeSpanExtensions.cs" />
     <Compile Include="infrastructure\AesEncryptor.cs" />
     <Compile Include="infrastructure\DefaultClock.cs" />
+    <Compile Include="infrastructure\FlickrAuthenticationService.cs" />
     <Compile Include="infrastructure\HttpFileDownloader.cs" />
     <Compile Include="domain\IFileDownloader.cs" />
     <Compile Include="domain\IRandom.cs" />

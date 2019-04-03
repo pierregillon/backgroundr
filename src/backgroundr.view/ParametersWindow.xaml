@@ -74,12 +74,14 @@
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Column="0" Grid.Row="0" Text="OAuth access token" />
-                <TextBox Grid.Column="1" Grid.Row="0" Text="{Binding Path=OAuthAccessToken, Mode=TwoWay}" />
-                <TextBlock Grid.Column="0" Grid.Row="1" Text="OAuth access token secret" />
-                <PasswordBox Name="OAuthAccessTokenSecret" Grid.Column="1" Grid.Row="1" PasswordChanged="OAuthAccessTokenSecret_OnPasswordChanged"/>
+                <Button Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Content="Connect to my account" Width="200" Command="{Binding ConnectToFlickrAccountCommand}"/>
+                <TextBlock Grid.Column="0" Grid.Row="1" Text="OAuth access token" />
+                <TextBox Grid.Column="1" Grid.Row="1" Text="{Binding Path=OAuthAccessToken, Mode=TwoWay}" />
+                <TextBlock Grid.Column="0" Grid.Row="2" Text="OAuth access token secret" />
+                <PasswordBox Name="OAuthAccessTokenSecret" Grid.Column="1" Grid.Row="2" PasswordChanged="OAuthAccessTokenSecret_OnPasswordChanged"/>
             </Grid>
         </GroupBox>
         <CheckBox Grid.Row="6" Grid.Column="1" IsChecked="{Binding Path=AutomaticallyStart, Mode=TwoWay}"

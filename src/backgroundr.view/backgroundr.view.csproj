@@ -68,6 +68,10 @@
     </ApplicationDefinition>
     <Compile Include="converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="design\ParametersDesignViewModel.cs" />
+    <Compile Include="FlickrAuthenticationDialog.xaml.cs">
+      <DependentUpon>FlickrAuthenticationDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FlickrAuthenticationViewModel.cs" />
     <Compile Include="services\WindowDesktopBackgroundImageUpdater.cs" />
     <Compile Include="utils\StartupService.cs" />
     <Compile Include="services\MessageBoxService.cs" />
@@ -75,6 +79,10 @@
     <Compile Include="viewmodels\RefreshPeriod.cs" />
     <Compile Include="utils\SecureStringExtensions.cs" />
     <Compile Include="viewmodels\ViewModelBase.cs" />
+    <Page Include="FlickrAuthenticationDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

@@ -7,6 +7,7 @@ using backgroundr.application;
 using backgroundr.cqrs;
 using backgroundr.domain;
 using backgroundr.view.utils;
+using StructureMap;
 using ICommand = System.Windows.Input.ICommand;
 
 namespace backgroundr.view.viewmodels
@@ -18,32 +19,38 @@ namespace backgroundr.view.viewmodels
         private readonly IEncryptor _encryptor;
         private readonly StartupService _startupService;
         private readonly ICommandDispatcher _commandDispatcher;
+        private readonly IContainer _container;
 
         public string UserId
         {
             get { return GetNotifiableProperty<string>(); }
             set { SetNotifiableProperty<string>(value); }
         }
+
         public string Tags
         {
             get { return GetNotifiableProperty<string>(); }
             set { SetNotifiableProperty<string>(value); }
         }
+
         public string OAuthAccessToken
         {
             get { return GetNotifiableProperty<string>(); }
             set { SetNotifiableProperty<string>(value); }
         }
+
         public SecureString OAuthAccessTokenSecret
         {
             get { return GetNotifiableProperty<SecureString>(); }
             set { SetNotifiableProperty<SecureString>(value); }
         }
+
         public bool AutomaticallyStart
         {
             get { return GetNotifiableProperty<bool>(); }
             set { SetNotifiableProperty<bool>(value); }
         }
+
         public IList<RefreshPeriod> Periods { get; set; } = new List<RefreshPeriod> {
             new RefreshPeriod(TimeSpan.FromSeconds(5)),
             new RefreshPeriod(TimeSpan.FromMinutes(1)),
@@ -59,6 +66,7 @@ namespace backgroundr.view.viewmodels
             new RefreshPeriod(TimeSpan.FromDays(7)),
             new RefreshPeriod(TimeSpan.FromDays(30))
         };
+
         public RefreshPeriod SelectedPeriod
         {
             get { return GetNotifiableProperty<RefreshPeriod>(); }
@@ -68,10 +76,13 @@ namespace backgroundr.view.viewmodels
         public ICommand ValidateCommand => new DelegateCommand {
             CommandAction = Validate
         };
+
         public ICommand CancelCommand => new DelegateCommand {
-            CommandAction = () => {
-                Application.Current?.MainWindow?.Close();
-            }
+            CommandAction = () => { Application.Current?.MainWindow?.Close(); }
+        };
+
+        public ICommand ConnectToFlickrAccountCommand => new DelegateCommand {
+            CommandAction = ConnectToFlickrAccount
         };
 
         public ParametersViewModel(
@@ -79,13 +90,15 @@ namespace backgroundr.view.viewmodels
             IFileService fileService,
             IEncryptor encryptor,
             StartupService startupService,
-            ICommandDispatcher commandDispatcher)
+            ICommandDispatcher commandDispatcher,
+            IContainer container)
         {
             _flickrParameters = flickrParameters;
             _fileService = fileService;
             _encryptor = encryptor;
             _startupService = startupService;
             _commandDispatcher = commandDispatcher;
+            _container = container;
 
             UserId = _flickrParameters.UserId;
             Tags = _flickrParameters.Tags;
@@ -110,6 +123,7 @@ namespace backgroundr.view.viewmodels
 
             Application.Current?.MainWindow?.Close();
         }
+
         private void UpdateParameters()
         {
             _flickrParameters.UserId = UserId;
@@ -123,6 +137,13 @@ namespace backgroundr.view.viewmodels
 
             _flickrParameters.RefreshPeriod = SelectedPeriod.Value;
             _fileService.Serialize(_flickrParameters, ".flickr");
+        }
+
+        private void ConnectToFlickrAccount()
+        {
+            _container.GetInstance<FlickrAuthenticationDialog>().ShowDialog();
+            OAuthAccessToken = _flickrParameters.OAuthAccessToken;
+            OAuthAccessTokenSecret = _flickrParameters.OAuthAccessTokenSecret?.ToSecureString();
         }
     }
 }
