@@ -1,17 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security;
-using System.Windows;
 using backgroundr.application;
 using backgroundr.cqrs;
 using backgroundr.domain;
+using backgroundr.view.mvvm;
 using backgroundr.view.services;
 using backgroundr.view.utils;
 using StructureMap;
 using ICommand = System.Windows.Input.ICommand;
 
-namespace backgroundr.view.viewmodels
+namespace backgroundr.view.windows.parameters
 {
     public class ParametersViewModel : ViewModelBase
     {
@@ -83,6 +82,8 @@ namespace backgroundr.view.viewmodels
             CommandAction = DisconnectFlickrAccount
         };
 
+        // ----- Constructor
+
         public ParametersViewModel(
             FlickrParameters flickrParameters,
             IFileService fileService,
@@ -105,9 +106,11 @@ namespace backgroundr.view.viewmodels
             PrivateAccess = _flickrParameters.PrivateAccess;
         }
 
+        // ----- Internal logics
+
         private void Validate()
         {
-            UpdateParameters();
+            SaveParameters();
 
             if (AutomaticallyStart) {
                 _startupService.EnableAutomaticStartup();
@@ -121,18 +124,19 @@ namespace backgroundr.view.viewmodels
             Close?.Invoke();
         }
 
-        private void UpdateParameters()
+        private void SaveParameters()
         {
             _flickrParameters.UserId = UserId;
             _flickrParameters.Tags = Tags;
             _flickrParameters.RefreshPeriod = SelectedPeriod.Value;
+            _flickrParameters.PrivateAccess = PrivateAccess;
             _fileService.Serialize(_flickrParameters, ".flickr");
         }
 
         private async void ConnectToFlickrAccount()
         {
             try {
-                _flickrParameters.PrivateAccess = _container.GetInstance<FlickrAuthenticationDialog>().ShowDialog();
+                PrivateAccess = _container.GetInstance<authentication.FlickrAuthenticationDialog>().ShowDialog();
             }
             catch (Exception ex) {
                 await _messageBoxService.ShowError("An error occurred during authentication. " + ex.Message);
@@ -142,8 +146,6 @@ namespace backgroundr.view.viewmodels
         private void DisconnectFlickrAccount()
         {
             if (_messageBoxService.ShowQuestion("Are you sure to disconnect your Flickr account ? You won't be able to access your private photos anymore.")) {
-                _flickrParameters.PrivateAccess = null;
-                _fileService.Serialize(_flickrParameters, ".flickr");
                 PrivateAccess = null;
             }
         }

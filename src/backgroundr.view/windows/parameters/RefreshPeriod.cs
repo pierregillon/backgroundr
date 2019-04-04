@@ -1,6 +1,6 @@
 using System;
 
-namespace backgroundr.view.viewmodels
+namespace backgroundr.view.windows.parameters
 {
     public class RefreshPeriod
     {

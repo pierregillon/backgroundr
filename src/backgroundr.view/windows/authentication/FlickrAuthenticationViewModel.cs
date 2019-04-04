@@ -2,14 +2,16 @@
 using System.Windows.Input;
 using backgroundr.application;
 using backgroundr.infrastructure;
+using backgroundr.view.mvvm;
 using backgroundr.view.services;
 
-namespace backgroundr.view.viewmodels
+namespace backgroundr.view.windows.authentication
 {
     public class FlickrAuthenticationViewModel : ViewModelBase
     {
         private readonly FlickrAuthenticationService _service;
         private readonly MessageBoxService _messageBoxService;
+
         public event Action<FlickrPrivateAccess> Close;
 
         public string FlickrCode
@@ -26,8 +28,6 @@ namespace backgroundr.view.viewmodels
             CommandAction = Validate,
             CanExecuteFunc = () => !string.IsNullOrEmpty(FlickrCode) && !string.IsNullOrWhiteSpace(FlickrCode)
         };
-
-        public FlickrPrivateAccess Result { get; set; }
 
         public FlickrAuthenticationViewModel(FlickrAuthenticationService service, MessageBoxService messageBoxService)
         {

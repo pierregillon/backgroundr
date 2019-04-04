@@ -11,10 +11,10 @@ namespace backgroundr.infrastructure
         private OAuthRequestToken _requestToken;
         private readonly IEncryptor _encryptor;
 
-        public FlickrAuthenticationService(IEncryptor encryptor, FlickrApiCredentials flickrApiCredentials)
+        public FlickrAuthenticationService(FlickrApiCredentials flickrApiCredentials, IEncryptor encryptor)
         {
-            _encryptor = encryptor;
             _flickr = new Flickr(flickrApiCredentials.ApiToken, flickrApiCredentials.ApiSecret);
+            _encryptor = encryptor;
         }
 
         public void AuthenticateUserInBrowser()

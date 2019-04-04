@@ -7,7 +7,7 @@ using backgroundr.domain;
 using backgroundr.infrastructure;
 using backgroundr.view.Properties;
 using backgroundr.view.services;
-using backgroundr.view.viewmodels;
+using backgroundr.view.windows.taskbar;
 using Hardcodet.Wpf.TaskbarNotification;
 using StructureMap;
 
@@ -18,6 +18,28 @@ namespace backgroundr.view
         private TaskbarIcon _taskbar;
 
         protected override void OnStartup(StartupEventArgs e)
+        {
+            var container = GetContainer();
+
+            base.OnStartup(e);
+
+            _taskbar = (TaskbarIcon) FindResource("Taskbar");
+            _taskbar.DataContext = container.GetInstance<TaskBarViewModel>();
+
+            if (File.Exists(".flickr")) {
+                var fileService = container.GetInstance<IFileService>();
+                var parameters = fileService.Deserialize<FlickrParameters>(".flickr");
+                container.Inject(parameters);
+                var dispatcher = container.GetInstance<ICommandDispatcher>();
+                dispatcher.Dispatch(new ScheduleNextDesktopBackgroundImageChange());
+            }
+            else {
+                Current.MainWindow = container.GetInstance<windows.parameters.ParametersWindow>();
+                Current.MainWindow.Show();
+            }
+        }
+
+        private static Container GetContainer()
         {
             var container = new Container(configuration => {
                 configuration.For<IFileService>().Use<FileService>();
@@ -44,24 +66,7 @@ namespace backgroundr.view
                 configuration.For<IEventListener<DesktopBackgroundImageUpdated>>().Use<Scheduler>();
                 configuration.For<FlickrParameters>().Singleton();
             });
-
-            base.OnStartup(e);
-
-            _taskbar = (TaskbarIcon) FindResource("Taskbar");
-            _taskbar.DataContext = container.GetInstance<TaskBarViewModel>();
-
-            if (File.Exists(".flickr")) {
-                var fileService = container.GetInstance<IFileService>();
-                var parameters = fileService.Deserialize<FlickrParameters>(".flickr");
-                container.Inject(parameters);
-
-                var dispatcher = container.GetInstance<ICommandDispatcher>();
-                dispatcher.Dispatch(new ScheduleNextDesktopBackgroundImageChange());
-            }
-            else {
-                Current.MainWindow = container.GetInstance<ParametersWindow>();
-                Current.MainWindow.Show();
-            }
+            return container;
         }
 
         protected override void OnExit(ExitEventArgs e)

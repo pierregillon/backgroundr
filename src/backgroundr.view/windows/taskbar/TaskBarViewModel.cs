@@ -4,10 +4,11 @@ using System.Windows;
 using backgroundr.application;
 using backgroundr.cqrs;
 using backgroundr.domain;
+using backgroundr.view.mvvm;
 using backgroundr.view.services;
 using ICommand = System.Windows.Input.ICommand;
 
-namespace backgroundr.view.viewmodels
+namespace backgroundr.view.windows.taskbar
 {
     public class TaskBarViewModel : ViewModelBase
     {
@@ -22,14 +23,13 @@ namespace backgroundr.view.viewmodels
         public ICommand OpenParametersWindowCommand => new DelegateCommand {
             CanExecuteFunc = () => Application.Current.MainWindow == null,
             CommandAction = () => {
-                Application.Current.MainWindow = _container.GetInstance<ParametersWindow>();
+                Application.Current.MainWindow = _container.GetInstance<parameters.ParametersWindow>();
                 Application.Current.MainWindow.Show();
             }
         };
-        public ICommand ExitApplicationCommand
-        {
-            get { return new DelegateCommand { CommandAction = () => Application.Current.Shutdown() }; }
-        }
+        public ICommand ExitApplicationCommand => new DelegateCommand {
+            CommandAction = () => Application.Current.Shutdown()
+        };
         public bool ChangingBackground
         {
             get { return GetNotifiableProperty<bool>(); }

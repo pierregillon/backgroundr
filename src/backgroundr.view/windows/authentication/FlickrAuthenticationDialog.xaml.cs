@@ -1,8 +1,7 @@
-﻿using System.Windows;
+using System.Windows;
 using backgroundr.application;
-using backgroundr.view.viewmodels;
 
-namespace backgroundr.view
+namespace backgroundr.view.windows.authentication
 {
     public partial class FlickrAuthenticationDialog : Window
     {

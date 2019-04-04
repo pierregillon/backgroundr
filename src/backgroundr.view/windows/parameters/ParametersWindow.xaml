@@ -1,4 +1,4 @@
-﻿<Window x:Class="backgroundr.view.ParametersWindow"
+﻿<Window x:Class="backgroundr.view.windows.parameters.ParametersWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen" SizeToContent="Height"
         Title="Parameters" Height="292.154" Width="398.454"
-        Icon="images/backpack.ico">
+        Icon="../../images/backpack.ico">
     <Window.DataContext>
         <design:ParametersDesignViewModel />
     </Window.DataContext>

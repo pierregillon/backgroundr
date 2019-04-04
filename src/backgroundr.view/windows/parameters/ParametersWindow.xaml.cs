@@ -1,7 +1,6 @@
 ﻿using System.Windows;
-using backgroundr.view.viewmodels;
 
-namespace backgroundr.view
+namespace backgroundr.view.windows.parameters
 {
     /// <summary>
     /// Interaction logic for ParametersWindow.xaml

@@ -22,6 +22,7 @@ Backgroundr is a Windows application that automatically and periodically, downlo
 - [x] CI
 
 ## Next releases
+- [ ] Get all photos not only the first 500
 - [ ] Wix installer
 
 # Development
