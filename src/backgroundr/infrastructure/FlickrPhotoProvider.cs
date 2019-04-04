@@ -9,14 +9,13 @@ namespace backgroundr.infrastructure
 {
     public class FlickrPhotoProvider : IPhotoProvider
     {
-        private const string ApiToken = "a023233ad75a2e7ae38a1b1aa92ff751";
-        private const string ApiSecret = "abd048b37b9e44f9";
-
         private readonly FlickrParameters _flickrParameters;
         private readonly IEncryptor _encryptor;
+        private readonly FlickrApiCredentials _apiCredentials;
 
-        public FlickrPhotoProvider(FlickrParameters flickrParameters, IEncryptor encryptor)
+        public FlickrPhotoProvider(FlickrApiCredentials apiCredentials, FlickrParameters flickrParameters, IEncryptor encryptor)
         {
+            _apiCredentials = apiCredentials;
             _flickrParameters = flickrParameters;
             _encryptor = encryptor;
         }
@@ -24,7 +23,7 @@ namespace backgroundr.infrastructure
         public async Task<IReadOnlyCollection<string>> GetPhotos()
         {
             return await Task.Run(() => {
-                var flickr = new Flickr(ApiToken, ApiSecret);
+                var flickr = new Flickr(_apiCredentials.ApiToken, _apiCredentials.ApiSecret);
                 if (_flickrParameters.PrivateAccess != null) {
                     flickr.OAuthAccessToken = _flickrParameters.PrivateAccess.OAuthAccessToken;
                     flickr.OAuthAccessTokenSecret = _encryptor.Decrypt(_flickrParameters.PrivateAccess.OAuthAccessTokenSecret);

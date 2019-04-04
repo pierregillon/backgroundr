@@ -7,17 +7,14 @@ namespace backgroundr.infrastructure
 {
     public class FlickrAuthenticationService
     {
-        private const string ApiToken = "a023233ad75a2e7ae38a1b1aa92ff751";
-        private const string ApiSecret = "abd048b37b9e44f9";
-
         private readonly Flickr _flickr;
         private OAuthRequestToken _requestToken;
         private readonly IEncryptor _encryptor;
 
-        public FlickrAuthenticationService(IEncryptor encryptor)
+        public FlickrAuthenticationService(IEncryptor encryptor, FlickrApiCredentials flickrApiCredentials)
         {
             _encryptor = encryptor;
-            _flickr = new Flickr(ApiToken, ApiSecret);
+            _flickr = new Flickr(flickrApiCredentials.ApiToken, flickrApiCredentials.ApiSecret);
         }
 
         public void AuthenticateUserInBrowser()

@@ -27,6 +27,11 @@ namespace backgroundr.view
 #else
                 configuration.For<IPhotoProvider>().Use<FlickrPhotoProvider>();
 #endif
+                configuration.For<FlickrApiCredentials>().Use<FlickrApiCredentials>()
+                    .Ctor<string>("apiToken").Is(Settings.Default.FlickrApiToken)
+                    .Ctor<string>("apiSecret").Is(Settings.Default.FlickrApiSecret)
+                    .Singleton();
+
                 configuration.For<IFileDownloader>().Use<HttpFileDownloader>();
                 configuration.For<IRandom>().Use<PseudoRandom>();
                 configuration.For<IClock>().Use<DefaultClock>();
