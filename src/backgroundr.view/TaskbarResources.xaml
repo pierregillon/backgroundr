@@ -4,6 +4,7 @@
                     xmlns:converters="clr-namespace:backgroundr.view.converters">
 
     <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    <converters:ObjectExistanceToVisibilityConverter x:Key="ObjectExistanceToVisibilityConverter" />
 
     <ContextMenu x:Shared="false" x:Key="SysTrayMenu">
         <MenuItem Header="Change background image" Command="{Binding RandomlyChangeBackgroundImageCommand}" Visibility="{Binding ChangingBackground, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=reverse}"/>

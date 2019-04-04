@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Windows.Input;
+using backgroundr.application;
 using backgroundr.infrastructure;
 using backgroundr.view.services;
-using backgroundr.view.viewmodels;
 
-namespace backgroundr.view
+namespace backgroundr.view.viewmodels
 {
     public class FlickrAuthenticationViewModel : ViewModelBase
     {
         private readonly FlickrAuthenticationService _service;
         private readonly MessageBoxService _messageBoxService;
-        public event Action Close;
+        public event Action<FlickrPrivateAccess> Close;
 
         public string FlickrCode
         {
@@ -19,13 +19,15 @@ namespace backgroundr.view
         }
 
         public ICommand CancelCommand => new DelegateCommand {
-            CommandAction = () => Close?.Invoke()
+            CommandAction = () => Close?.Invoke(null)
         };
 
         public ICommand ValidateCommand => new DelegateCommand {
             CommandAction = Validate,
-            CanExecuteFunc = () => string.IsNullOrEmpty(FlickrCode) || string.IsNullOrWhiteSpace(FlickrCode)
+            CanExecuteFunc = () => !string.IsNullOrEmpty(FlickrCode) && !string.IsNullOrWhiteSpace(FlickrCode)
         };
+
+        public FlickrPrivateAccess Result { get; set; }
 
         public FlickrAuthenticationViewModel(FlickrAuthenticationService service, MessageBoxService messageBoxService)
         {
@@ -41,8 +43,8 @@ namespace backgroundr.view
         private async void Validate()
         {
             try {
-                _service.FinalizeAuthentication(FlickrCode);
-                Close?.Invoke();
+                var privateAccess = _service.FinalizeAuthentication(FlickrCode);
+                Close?.Invoke(privateAccess);
             }
             catch (Exception ex) {
                 await _messageBoxService.ShowError("An error occured during authentication. " + ex.Message);

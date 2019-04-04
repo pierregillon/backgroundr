@@ -67,11 +67,12 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="converters\BooleanToVisibilityConverter.cs" />
+    <Compile Include="converters\ObjectExistanceToVisibilityConverter.cs" />
     <Compile Include="design\ParametersDesignViewModel.cs" />
     <Compile Include="FlickrAuthenticationDialog.xaml.cs">
       <DependentUpon>FlickrAuthenticationDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="FlickrAuthenticationViewModel.cs" />
+    <Compile Include="viewmodels\FlickrAuthenticationViewModel.cs" />
     <Compile Include="services\WindowDesktopBackgroundImageUpdater.cs" />
     <Compile Include="utils\StartupService.cs" />
     <Compile Include="services\MessageBoxService.cs" />

@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using backgroundr.application;
+using backgroundr.domain;
 using FlickrNet;
 
 namespace backgroundr.infrastructure
@@ -9,13 +10,13 @@ namespace backgroundr.infrastructure
         private const string ApiToken = "a023233ad75a2e7ae38a1b1aa92ff751";
         private const string ApiSecret = "abd048b37b9e44f9";
 
-        private readonly FlickrParameters _parameters;
         private readonly Flickr _flickr;
         private OAuthRequestToken _requestToken;
+        private readonly IEncryptor _encryptor;
 
-        public FlickrAuthenticationService(FlickrParameters parameters)
+        public FlickrAuthenticationService(IEncryptor encryptor)
         {
-            _parameters = parameters;
+            _encryptor = encryptor;
             _flickr = new Flickr(ApiToken, ApiSecret);
         }
 
@@ -26,11 +27,15 @@ namespace backgroundr.infrastructure
             Process.Start(url);
         }
 
-        public void FinalizeAuthentication(string verifier)
+        public FlickrPrivateAccess FinalizeAuthentication(string verifier)
         {
             var accessToken = _flickr.OAuthGetAccessToken(_requestToken, verifier);
-            _parameters.OAuthAccessToken = accessToken.Token;
-            _parameters.OAuthAccessTokenSecret = accessToken.TokenSecret;
+            return new FlickrPrivateAccess {
+                UserId = accessToken.UserId,
+                UserName = accessToken.FullName,
+                OAuthAccessToken = accessToken.Token,
+                OAuthAccessTokenSecret = _encryptor.Encrypt(accessToken.TokenSecret)
+            };
         }
     }
 }

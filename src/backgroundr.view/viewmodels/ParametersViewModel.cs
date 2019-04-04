@@ -6,6 +6,7 @@ using System.Windows;
 using backgroundr.application;
 using backgroundr.cqrs;
 using backgroundr.domain;
+using backgroundr.view.services;
 using backgroundr.view.utils;
 using StructureMap;
 using ICommand = System.Windows.Input.ICommand;
@@ -20,6 +21,7 @@ namespace backgroundr.view.viewmodels
         private readonly StartupService _startupService;
         private readonly ICommandDispatcher _commandDispatcher;
         private readonly IContainer _container;
+        private readonly MessageBoxService _messageBoxService;
 
         public string UserId
         {
@@ -33,16 +35,10 @@ namespace backgroundr.view.viewmodels
             set { SetNotifiableProperty<string>(value); }
         }
 
-        public string OAuthAccessToken
+        public FlickrPrivateAccess PrivateAccess
         {
-            get { return GetNotifiableProperty<string>(); }
+            get { return GetNotifiableProperty<FlickrPrivateAccess>(); }
             set { SetNotifiableProperty<string>(value); }
-        }
-
-        public SecureString OAuthAccessTokenSecret
-        {
-            get { return GetNotifiableProperty<SecureString>(); }
-            set { SetNotifiableProperty<SecureString>(value); }
         }
 
         public bool AutomaticallyStart
@@ -85,13 +81,18 @@ namespace backgroundr.view.viewmodels
             CommandAction = ConnectToFlickrAccount
         };
 
+        public ICommand DisconnectFlickrAccountCommand => new DelegateCommand {
+            CommandAction = DisconnectFlickrAccount
+        };
+
         public ParametersViewModel(
             FlickrParameters flickrParameters,
             IFileService fileService,
             IEncryptor encryptor,
             StartupService startupService,
             ICommandDispatcher commandDispatcher,
-            IContainer container)
+            IContainer container,
+            MessageBoxService messageBoxService)
         {
             _flickrParameters = flickrParameters;
             _fileService = fileService;
@@ -99,13 +100,13 @@ namespace backgroundr.view.viewmodels
             _startupService = startupService;
             _commandDispatcher = commandDispatcher;
             _container = container;
+            _messageBoxService = messageBoxService;
 
             UserId = _flickrParameters.UserId;
             Tags = _flickrParameters.Tags;
-            OAuthAccessToken = _flickrParameters.OAuthAccessToken;
-            OAuthAccessTokenSecret = _flickrParameters.OAuthAccessTokenSecret?.ToSecureString();
             AutomaticallyStart = _startupService.IsApplicationStartingOnSystemStartup();
             SelectedPeriod = Periods.FirstOrDefault(x => x.Value == flickrParameters.RefreshPeriod);
+            PrivateAccess = _flickrParameters.PrivateAccess;
         }
 
         private void Validate()
@@ -128,22 +129,22 @@ namespace backgroundr.view.viewmodels
         {
             _flickrParameters.UserId = UserId;
             _flickrParameters.Tags = Tags;
-            _flickrParameters.OAuthAccessToken = OAuthAccessToken;
-
-            var oAuthAccessTokenSecret = OAuthAccessTokenSecret.ToInsecureString();
-            if (_flickrParameters.OAuthAccessTokenSecret != oAuthAccessTokenSecret) {
-                _flickrParameters.OAuthAccessTokenSecret = _encryptor.Encrypt(oAuthAccessTokenSecret);
-            }
-
             _flickrParameters.RefreshPeriod = SelectedPeriod.Value;
             _fileService.Serialize(_flickrParameters, ".flickr");
         }
 
         private void ConnectToFlickrAccount()
         {
-            _container.GetInstance<FlickrAuthenticationDialog>().ShowDialog();
-            OAuthAccessToken = _flickrParameters.OAuthAccessToken;
-            OAuthAccessTokenSecret = _flickrParameters.OAuthAccessTokenSecret?.ToSecureString();
+            _flickrParameters.PrivateAccess = _container.GetInstance<FlickrAuthenticationDialog>().ShowDialog();
+        }
+
+        private void DisconnectFlickrAccount()
+        {
+            if (_messageBoxService.ShowQuestion("Are you sure to disconnect your Flickr account ? You won't be able to access your private photos anymore.")) {
+                _flickrParameters.PrivateAccess = null;
+                _fileService.Serialize(_flickrParameters, ".flickr");
+                PrivateAccess = null;
+            }
         }
     }
 }

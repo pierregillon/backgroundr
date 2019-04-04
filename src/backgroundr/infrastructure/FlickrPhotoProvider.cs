@@ -24,10 +24,11 @@ namespace backgroundr.infrastructure
         public async Task<IReadOnlyCollection<string>> GetPhotos()
         {
             return await Task.Run(() => {
-                var flickr = new Flickr(ApiToken, ApiSecret) {
-                    OAuthAccessToken = _flickrParameters.OAuthAccessToken,
-                    OAuthAccessTokenSecret = _encryptor.Decrypt(_flickrParameters.OAuthAccessTokenSecret)
-                };
+                var flickr = new Flickr(ApiToken, ApiSecret);
+                if (_flickrParameters.PrivateAccess != null) {
+                    flickr.OAuthAccessToken = _flickrParameters.PrivateAccess.OAuthAccessToken;
+                    flickr.OAuthAccessTokenSecret = _encryptor.Decrypt(_flickrParameters.PrivateAccess.OAuthAccessTokenSecret);
+                }
                 flickr.AuthOAuthCheckToken();
 
                 var photoCollection = flickr.PhotosSearch(new PhotoSearchOptions {
