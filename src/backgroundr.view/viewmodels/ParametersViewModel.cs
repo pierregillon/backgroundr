@@ -17,11 +17,12 @@ namespace backgroundr.view.viewmodels
     {
         private readonly FlickrParameters _flickrParameters;
         private readonly IFileService _fileService;
-        private readonly IEncryptor _encryptor;
         private readonly StartupService _startupService;
         private readonly ICommandDispatcher _commandDispatcher;
         private readonly IContainer _container;
         private readonly MessageBoxService _messageBoxService;
+
+        public event Action Close;
 
         public string UserId
         {
@@ -74,7 +75,7 @@ namespace backgroundr.view.viewmodels
         };
 
         public ICommand CancelCommand => new DelegateCommand {
-            CommandAction = () => { Application.Current?.MainWindow?.Close(); }
+            CommandAction = () => { Close?.Invoke(); }
         };
 
         public ICommand ConnectToFlickrAccountCommand => new DelegateCommand {
@@ -88,7 +89,6 @@ namespace backgroundr.view.viewmodels
         public ParametersViewModel(
             FlickrParameters flickrParameters,
             IFileService fileService,
-            IEncryptor encryptor,
             StartupService startupService,
             ICommandDispatcher commandDispatcher,
             IContainer container,
@@ -96,7 +96,6 @@ namespace backgroundr.view.viewmodels
         {
             _flickrParameters = flickrParameters;
             _fileService = fileService;
-            _encryptor = encryptor;
             _startupService = startupService;
             _commandDispatcher = commandDispatcher;
             _container = container;
@@ -122,7 +121,7 @@ namespace backgroundr.view.viewmodels
 
             _commandDispatcher.Dispatch(new ScheduleNextDesktopBackgroundImageChange());
 
-            Application.Current?.MainWindow?.Close();
+            Close?.Invoke();
         }
 
         private void UpdateParameters()

@@ -12,6 +12,8 @@ namespace backgroundr.view
         {
             InitializeComponent();
 
+            viewModel.Close += Close;
+
             DataContext = viewModel;
         }
     }
