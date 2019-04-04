@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="Flick authentication" Height="138.559" Width="315.89"
-        WindowStartupLocation="CenterOwner">
+        WindowStartupLocation="CenterScreen" SizeToContent="Height"
+        Icon="images/backpack.ico">
     <Window.Resources>
         <Style TargetType="TextBlock">
             <Setter Property="HorizontalAlignment" Value="Right"></Setter>

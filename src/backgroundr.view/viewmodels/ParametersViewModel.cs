@@ -29,19 +29,16 @@ namespace backgroundr.view.viewmodels
             get { return GetNotifiableProperty<string>(); }
             set { SetNotifiableProperty<string>(value); }
         }
-
         public string Tags
         {
             get { return GetNotifiableProperty<string>(); }
             set { SetNotifiableProperty<string>(value); }
         }
-
         public FlickrPrivateAccess PrivateAccess
         {
             get { return GetNotifiableProperty<FlickrPrivateAccess>(); }
             set { SetNotifiableProperty<string>(value); }
         }
-
         public bool AutomaticallyStart
         {
             get { return GetNotifiableProperty<bool>(); }
@@ -132,9 +129,14 @@ namespace backgroundr.view.viewmodels
             _fileService.Serialize(_flickrParameters, ".flickr");
         }
 
-        private void ConnectToFlickrAccount()
+        private async void ConnectToFlickrAccount()
         {
-            _flickrParameters.PrivateAccess = _container.GetInstance<FlickrAuthenticationDialog>().ShowDialog();
+            try {
+                _flickrParameters.PrivateAccess = _container.GetInstance<FlickrAuthenticationDialog>().ShowDialog();
+            }
+            catch (Exception ex) {
+                await _messageBoxService.ShowError("An error occurred during authentication. " + ex.Message);
+            }
         }
 
         private void DisconnectFlickrAccount()
