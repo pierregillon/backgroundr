@@ -6,7 +6,7 @@
         mc:Ignorable="d"
         Title="Flick authentication" Height="138.559" Width="315.89"
         WindowStartupLocation="CenterScreen" SizeToContent="Height"
-        Icon="../../images/backpack.ico">
+        Icon="../../images/wallpaper.ico">
     <Window.Resources>
         <Style TargetType="TextBlock">
             <Setter Property="HorizontalAlignment" Value="Right"></Setter>

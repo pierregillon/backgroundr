@@ -11,8 +11,8 @@
     </ContextMenu>
 
     <tb:TaskbarIcon x:Key="Taskbar"
-                    IconSource="../../images/backpack.ico"
-                    ToolTipText="Double-click to open parameters or right click for menu"
+                    IconSource="../../images/wallpaper.ico"
+                    ToolTipText="Backgroundr"
                     DoubleClickCommand="{Binding OpenParametersWindowCommand}"
                     ContextMenu="{StaticResource SysTrayMenu}">
     </tb:TaskbarIcon>
