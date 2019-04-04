@@ -11,7 +11,7 @@ Backgroundr is a Windows application that automatically and periodically, downlo
 - [x] Better exception management and user messages
 - [x] Incorporate Flickr api tokens
 - [x] Generate OAuth tokens with connect / disconnect button
-- [ ] Update icon
+- [x] Update icon
 
 ## v0.1
 - [x] Configure a Flickr account
