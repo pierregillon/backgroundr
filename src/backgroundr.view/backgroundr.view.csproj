@@ -133,13 +133,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="images\backpack.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\backgroundr\backgroundr.csproj">
       <Project>{610D5518-A232-42CB-8FDF-2D439DCAA890}</Project>
       <Name>backgroundr</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="images\wallpaper.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

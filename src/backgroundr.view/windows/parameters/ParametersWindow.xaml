@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen" SizeToContent="Height"
         Title="Parameters" Height="292.154" Width="398.454"
-        Icon="../../images/backpack.ico">
+        Icon="../../images/wallpaper.ico">
     <Window.DataContext>
         <design:ParametersDesignViewModel />
     </Window.DataContext>
