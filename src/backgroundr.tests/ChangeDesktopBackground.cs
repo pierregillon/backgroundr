@@ -109,7 +109,7 @@ namespace backgroundr.tests
             // Assert
             _desktopImageBackgroundUpdater
                 .Received(1)
-                .ChangeBackgroundImage(Arg.Any<string>(), PicturePosition.Extend);
+                .ChangeBackgroundImage(Arg.Any<string>(), PicturePosition.Fit);
         }
 
         [Fact(Skip = "appveyor error on multithreads")]

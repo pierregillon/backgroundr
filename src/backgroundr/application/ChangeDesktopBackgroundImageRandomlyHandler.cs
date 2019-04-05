@@ -58,7 +58,7 @@ namespace backgroundr.application
                 var photoUrl = await SelectRandomPhoto();
                 if (string.IsNullOrEmpty(photoUrl) == false) {
                     var localFilePath = await _fileDownloader.Download(photoUrl);
-                    _desktopBackgroundImageUpdater.ChangeBackgroundImage(localFilePath, PicturePosition.Extend);
+                    _desktopBackgroundImageUpdater.ChangeBackgroundImage(localFilePath, PicturePosition.Fit);
                 }
             }
             finally {
