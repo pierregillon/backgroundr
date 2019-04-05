@@ -22,5 +22,23 @@ namespace backgroundr.view.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("a023233ad75a2e7ae38a1b1aa92ff751")]
+        public string FlickrApiToken {
+            get {
+                return ((string)(this["FlickrApiToken"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("abd048b37b9e44f9")]
+        public string FlickrApiSecret {
+            get {
+                return ((string)(this["FlickrApiSecret"]));
+            }
+        }
     }
 }

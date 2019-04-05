@@ -1,15 +1,17 @@
 using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace backgroundr.view.viewmodels {
-    public class DelegateCommand : ICommand
+namespace backgroundr.view.mvvm
+{
+    public class DelegateAsyncCommand : ICommand
     {
-        public Action CommandAction { get; set; }
+        public Func<Task> CommandAction { get; set; }
         public Func<bool> CanExecuteFunc { get; set; }
 
-        public void Execute(object parameter)
+        public async void Execute(object parameter)
         {
-            CommandAction();
+            await CommandAction();
         }
 
         public bool CanExecute(object parameter)
