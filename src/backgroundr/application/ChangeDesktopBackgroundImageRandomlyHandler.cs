@@ -60,6 +60,9 @@ namespace backgroundr.application
                     var localFilePath = await _fileDownloader.Download(photoUrl);
                     _desktopBackgroundImageUpdater.ChangeBackgroundImage(localFilePath, PicturePosition.Fit);
                 }
+                else {
+                    throw new Exception($"No photos found for user {_flickrParameters.UserId} and tags {_flickrParameters.Tags}. Have you checked your credentials ?");
+                }
             }
             finally {
                 // Even if error occurred, we send event that background image updated.
