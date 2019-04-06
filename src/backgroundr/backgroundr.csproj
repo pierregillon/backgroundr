@@ -69,6 +69,7 @@
     <Compile Include="infrastructure\DefaultClock.cs" />
     <Compile Include="infrastructure\FlickrApiCredentials.cs" />
     <Compile Include="infrastructure\FlickrAuthenticationService.cs" />
+    <Compile Include="infrastructure\FlickrParametersService.cs" />
     <Compile Include="infrastructure\HttpFileDownloader.cs" />
     <Compile Include="domain\IFileDownloader.cs" />
     <Compile Include="domain\IRandom.cs" />

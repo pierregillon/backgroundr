@@ -19,7 +19,7 @@ namespace backgroundr.application
         private readonly IEventEmitter _eventEmitter;
         private readonly FlickrParameters _flickrParameters;
         private readonly IClock _clock;
-        private readonly IFileService _fileService;
+        private readonly FlickrParametersService _flickrParametersService;
 
         // ----- Constructor
 
@@ -31,7 +31,7 @@ namespace backgroundr.application
             IEventEmitter eventEmitter,
             FlickrParameters flickrParameters,
             IClock clock,
-            IFileService fileService)
+            FlickrParametersService flickrParametersService)
         {
             _desktopBackgroundImageUpdater = desktopBackgroundImageUpdater;
             _photoProvider = photoProvider;
@@ -40,7 +40,7 @@ namespace backgroundr.application
             _eventEmitter = eventEmitter;
             _flickrParameters = flickrParameters;
             _clock = clock;
-            _fileService = fileService;
+            _flickrParametersService = flickrParametersService;
         }
 
         // ----- Public methods
@@ -79,7 +79,7 @@ namespace backgroundr.application
         private void SaveLastUpdateDateToNow()
         {
             _flickrParameters.BackgroundImageLastRefreshDate = _clock.Now();
-            _fileService.Serialize(_flickrParameters, ".flickr");
+            _flickrParametersService.Save(_flickrParameters);
         }
 
         // ----- Utils

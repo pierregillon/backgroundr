@@ -4,6 +4,7 @@ using System.Linq;
 using backgroundr.application;
 using backgroundr.cqrs;
 using backgroundr.domain;
+using backgroundr.infrastructure;
 using backgroundr.view.mvvm;
 using backgroundr.view.services;
 using backgroundr.view.utils;
@@ -15,7 +16,7 @@ namespace backgroundr.view.windows.parameters
     public class ParametersViewModel : ViewModelBase
     {
         private readonly FlickrParameters _flickrParameters;
-        private readonly IFileService _fileService;
+        private readonly FlickrParametersService _flickrParametersService;
         private readonly StartupService _startupService;
         private readonly ICommandDispatcher _commandDispatcher;
         private readonly IContainer _container;
@@ -86,14 +87,14 @@ namespace backgroundr.view.windows.parameters
 
         public ParametersViewModel(
             FlickrParameters flickrParameters,
-            IFileService fileService,
+            FlickrParametersService flickrParametersService,
             StartupService startupService,
             ICommandDispatcher commandDispatcher,
             IContainer container,
             MessageBoxService messageBoxService)
         {
             _flickrParameters = flickrParameters;
-            _fileService = fileService;
+            _flickrParametersService = flickrParametersService;
             _startupService = startupService;
             _commandDispatcher = commandDispatcher;
             _container = container;
@@ -130,7 +131,7 @@ namespace backgroundr.view.windows.parameters
             _flickrParameters.Tags = Tags;
             _flickrParameters.RefreshPeriod = SelectedPeriod.Value;
             _flickrParameters.PrivateAccess = PrivateAccess;
-            _fileService.Serialize(_flickrParameters, ".flickr");
+            _flickrParametersService.Save(_flickrParameters);
         }
 
         private async void ConnectToFlickrAccount()
