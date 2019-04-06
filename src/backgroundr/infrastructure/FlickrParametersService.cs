@@ -6,7 +6,7 @@ namespace backgroundr.infrastructure
 {
     public class FlickrParametersService
     {
-        private const string FILE_NAME = ".flickr";
+        private const string FILE_NAME = ".config";
         private readonly IFileService _fileService;
 
         public FlickrParametersService(IFileService fileService)
