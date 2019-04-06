@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Windows;
+using System.Windows.Controls;
 using backgroundr.application;
 using backgroundr.cqrs;
 using backgroundr.domain;
@@ -26,9 +27,10 @@ namespace backgroundr.view
             _taskbar = (TaskbarIcon) FindResource("Taskbar");
             _taskbar.DataContext = container.GetInstance<TaskBarViewModel>();
 
-            if (File.Exists(".flickr")) {
-                var fileService = container.GetInstance<IFileService>();
-                var parameters = fileService.Deserialize<FlickrParameters>(".flickr");
+            var service = container.GetInstance<FlickrParametersService>();
+
+            if (service.Exists()) {
+                var parameters = service.Read();
                 container.Inject(parameters);
                 var dispatcher = container.GetInstance<ICommandDispatcher>();
                 dispatcher.Dispatch(new ScheduleNextDesktopBackgroundImageChange());

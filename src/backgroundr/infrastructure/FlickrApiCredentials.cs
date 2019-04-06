@@ -1,4 +1,7 @@
-﻿namespace backgroundr.infrastructure
+﻿using System;
+using System.Text;
+
+namespace backgroundr.infrastructure
 {
     public class FlickrApiCredentials
     {
@@ -7,8 +10,8 @@
 
         public FlickrApiCredentials(string apiToken, string apiSecret)
         {
-            ApiToken = apiToken;
-            ApiSecret = apiSecret;
+            ApiToken = Encoding.UTF8.GetString(Convert.FromBase64String(apiToken));
+            ApiSecret = Encoding.UTF8.GetString(Convert.FromBase64String(apiSecret));
         }
     }
 }

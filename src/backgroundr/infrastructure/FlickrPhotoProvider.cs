@@ -27,8 +27,8 @@ namespace backgroundr.infrastructure
                 if (_flickrParameters.PrivateAccess != null) {
                     flickr.OAuthAccessToken = _flickrParameters.PrivateAccess.OAuthAccessToken;
                     flickr.OAuthAccessTokenSecret = _encryptor.Decrypt(_flickrParameters.PrivateAccess.OAuthAccessTokenSecret);
+                    flickr.AuthOAuthCheckToken();
                 }
-                flickr.AuthOAuthCheckToken();
 
                 var photoCollection = flickr.PhotosSearch(new PhotoSearchOptions {
                     Tags = _flickrParameters.Tags,

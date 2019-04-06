@@ -50,7 +50,7 @@ namespace backgroundr.tests
                 _eventEmitter,
                 _flickrParameters,
                 _clock,
-                _fileService
+                new FlickrParametersService(_fileService)
             );
         }
 
@@ -175,7 +175,7 @@ namespace backgroundr.tests
 
             // Assert
             Assert.Equal(NOW, _flickrParameters.BackgroundImageLastRefreshDate);
-            _fileService.Received(1).Serialize(Arg.Any<FlickrParameters>(), ".flickr");
+            _fileService.Received(1).Serialize(Arg.Any<FlickrParameters>(), ".config");
         }
     }
 }
