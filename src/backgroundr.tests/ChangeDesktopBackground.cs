@@ -55,20 +55,17 @@ namespace backgroundr.tests
         }
 
         [Fact]
-        public async Task do_not_change_background_if_no_image_available()
+        public async Task throw_error_when_no_image_available()
         {
-            // Arranges
-            _photoProvider
-                .GetPhotos()
-                .Returns(x => NO_IMAGES);
+            await Assert.ThrowsAsync<NoPhotoFound>(async () => {
+                // Arranges
+                _photoProvider
+                    .GetPhotos()
+                    .Returns(x => NO_IMAGES);
 
-            // Acts
-            await _handler.Handle(new ChangeDesktopBackgroundImageRandomly());
-
-            // Asserts
-            _desktopImageBackgroundUpdater
-                .Received(0)
-                .ChangeBackgroundImage(Arg.Any<string>(), Arg.Any<PicturePosition>());
+                // Acts
+                await _handler.Handle(new ChangeDesktopBackgroundImageRandomly());
+            });
         }
 
         [Fact]

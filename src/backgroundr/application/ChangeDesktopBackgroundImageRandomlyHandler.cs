@@ -61,7 +61,7 @@ namespace backgroundr.application
                     _desktopBackgroundImageUpdater.ChangeBackgroundImage(localFilePath, PicturePosition.Fit);
                 }
                 else {
-                    throw new Exception($"No photos found for user {_flickrParameters.UserId} and tags {_flickrParameters.Tags}. Have you checked your credentials ?");
+                    throw new NoPhotoFound(_flickrParameters.UserId, _flickrParameters.Tags);
                 }
             }
             finally {

@@ -52,6 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="domain\NoPhotoFound.cs" />
     <Compile Include="cqrs\ICommand.cs" />
     <Compile Include="application\FlickrParameters.cs" />
     <Compile Include="application\Scheduler.cs" />
