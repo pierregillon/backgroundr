@@ -1,7 +1,12 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="uri:settings" CurrentProfile="(Default)">
-  <Profiles>
-    <Profile Name="(Default)" />
-  </Profiles>
-  <Settings />
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="backgroundr.view.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="FlickrApiToken" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">NjRmYzIyY2E5MjI0NzY3NDE1MzBhNDEyNWI0MDA5ZDY=</Value>
+    </Setting>
+    <Setting Name="FlickrApiSecret" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">ZDFmOTlkOWFhNzQ1Yzg1ZQ==</Value>
+    </Setting>
+  </Settings>
 </SettingsFile>

@@ -1,9 +1,10 @@
 using System;
 using System.Runtime.InteropServices;
 using backgroundr.domain;
+using backgroundr.infrastructure;
 using Microsoft.Win32;
 
-namespace backgroundr.infrastructure
+namespace backgroundr.view.services
 {
     public class WindowDesktopBackgroundImageUpdater : IDesktopBackgroundImageUpdater
     {

@@ -17,9 +17,9 @@ namespace backgroundr.application
         private readonly IFileDownloader _fileDownloader;
         private readonly IRandom _random;
         private readonly IEventEmitter _eventEmitter;
-        private readonly Parameters _parameters;
+        private readonly FlickrParameters _flickrParameters;
         private readonly IClock _clock;
-        private readonly IFileService _fileService;
+        private readonly FlickrParametersService _flickrParametersService;
 
         // ----- Constructor
 
@@ -29,18 +29,18 @@ namespace backgroundr.application
             IFileDownloader fileDownloader,
             IRandom random,
             IEventEmitter eventEmitter,
-            Parameters parameters,
+            FlickrParameters flickrParameters,
             IClock clock,
-            IFileService fileService)
+            FlickrParametersService flickrParametersService)
         {
             _desktopBackgroundImageUpdater = desktopBackgroundImageUpdater;
             _photoProvider = photoProvider;
             _fileDownloader = fileDownloader;
             _random = random;
             _eventEmitter = eventEmitter;
-            _parameters = parameters;
+            _flickrParameters = flickrParameters;
             _clock = clock;
-            _fileService = fileService;
+            _flickrParametersService = flickrParametersService;
         }
 
         // ----- Public methods
@@ -58,11 +58,11 @@ namespace backgroundr.application
                 var photoUrl = await SelectRandomPhoto();
                 if (string.IsNullOrEmpty(photoUrl) == false) {
                     var localFilePath = await _fileDownloader.Download(photoUrl);
-                    _desktopBackgroundImageUpdater.ChangeBackgroundImage(localFilePath, PicturePosition.Extend);
+                    _desktopBackgroundImageUpdater.ChangeBackgroundImage(localFilePath, PicturePosition.Fit);
                 }
-            }
-            catch (Exception ex) {
-                _fileService.Append("logs.txt", $"{DateTime.Now} - ERROR : " + ex + Environment.NewLine);
+                else {
+                    throw new NoPhotoFound(_flickrParameters.UserId, _flickrParameters.Tags);
+                }
             }
             finally {
                 // Even if error occurred, we send event that background image updated.
@@ -81,8 +81,8 @@ namespace backgroundr.application
         }
         private void SaveLastUpdateDateToNow()
         {
-            _parameters.BackgroundImageLastRefreshDate = _clock.Now();
-            _fileService.Serialize(_parameters, ".flickr");
+            _flickrParameters.BackgroundImageLastRefreshDate = _clock.Now();
+            _flickrParametersService.Save(_flickrParameters);
         }
 
         // ----- Utils

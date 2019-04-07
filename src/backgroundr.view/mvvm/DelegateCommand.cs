@@ -1,7 +1,7 @@
 using System;
 using System.Windows.Input;
 
-namespace backgroundr.view.viewmodels {
+namespace backgroundr.view.mvvm {
     public class DelegateCommand : ICommand
     {
         public Action CommandAction { get; set; }
@@ -19,8 +19,8 @@ namespace backgroundr.view.viewmodels {
 
         public event EventHandler CanExecuteChanged
         {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
+            add => CommandManager.RequerySuggested += value;
+            remove => CommandManager.RequerySuggested -= value;
         }
     }
 }

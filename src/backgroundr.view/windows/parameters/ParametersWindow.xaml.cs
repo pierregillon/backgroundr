@@ -1,7 +1,6 @@
 ﻿using System.Windows;
-using backgroundr.view.viewmodels;
 
-namespace backgroundr.view
+namespace backgroundr.view.windows.parameters
 {
     /// <summary>
     /// Interaction logic for ParametersWindow.xaml
@@ -11,6 +10,8 @@ namespace backgroundr.view
         public ParametersWindow(ParametersViewModel viewModel)
         {
             InitializeComponent();
+
+            viewModel.Close += Close;
 
             DataContext = viewModel;
         }

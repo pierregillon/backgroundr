@@ -9,25 +9,30 @@ namespace backgroundr.infrastructure
 {
     public class FlickrPhotoProvider : IPhotoProvider
     {
-        private readonly Parameters _parameters;
+        private readonly FlickrParameters _flickrParameters;
+        private readonly IEncryptor _encryptor;
+        private readonly FlickrApiCredentials _apiCredentials;
 
-        public FlickrPhotoProvider(Parameters parameters)
+        public FlickrPhotoProvider(FlickrApiCredentials apiCredentials, FlickrParameters flickrParameters, IEncryptor encryptor)
         {
-            _parameters = parameters;
+            _apiCredentials = apiCredentials;
+            _flickrParameters = flickrParameters;
+            _encryptor = encryptor;
         }
 
         public async Task<IReadOnlyCollection<string>> GetPhotos()
         {
             return await Task.Run(() => {
-                var flickr = new Flickr(_parameters.ApiToken, _parameters.ApiSecret) {
-                    OAuthAccessToken = _parameters.OAuthAccessToken,
-                    OAuthAccessTokenSecret = _parameters.OAuthAccessTokenSecret
-                };
-                flickr.AuthOAuthCheckToken();
+                var flickr = new Flickr(_apiCredentials.ApiToken, _apiCredentials.ApiSecret);
+                if (_flickrParameters.PrivateAccess != null) {
+                    flickr.OAuthAccessToken = _flickrParameters.PrivateAccess.OAuthAccessToken;
+                    flickr.OAuthAccessTokenSecret = _encryptor.Decrypt(_flickrParameters.PrivateAccess.OAuthAccessTokenSecret);
+                    flickr.AuthOAuthCheckToken();
+                }
 
                 var photoCollection = flickr.PhotosSearch(new PhotoSearchOptions {
-                    Tags = _parameters.Tags,
-                    UserId = _parameters.UserId,
+                    Tags = _flickrParameters.Tags,
+                    UserId = _flickrParameters.UserId,
                     PerPage = 500,
                     ContentType = ContentTypeSearch.PhotosOnly,
                     MediaType = MediaType.Photos,

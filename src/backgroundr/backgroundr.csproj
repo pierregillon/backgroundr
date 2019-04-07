@@ -52,8 +52,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="cqrs\ICommandDispatchScheduler.cs" />
+    <Compile Include="domain\FlickrPrivateAccess.cs" />
+    <Compile Include="domain\NoPhotoFound.cs" />
     <Compile Include="cqrs\ICommand.cs" />
-    <Compile Include="application\Parameters.cs" />
+    <Compile Include="domain\FlickrParameters.cs" />
     <Compile Include="application\Scheduler.cs" />
     <Compile Include="cqrs\CommandDispatchScheduler.cs" />
     <Compile Include="cqrs\StructureMapEventEmitter.cs" />
@@ -63,8 +66,12 @@
     <Compile Include="cqrs\IEventEmitter.cs" />
     <Compile Include="domain\DesktopBackgroundImageUpdated.cs" />
     <Compile Include="domain\IClock.cs" />
-    <Compile Include="domain\TimeSpanExtensions.cs" />
+    <Compile Include="domain\IEncryptor.cs" />
+    <Compile Include="infrastructure\AesEncryptor.cs" />
     <Compile Include="infrastructure\DefaultClock.cs" />
+    <Compile Include="infrastructure\FlickrApiCredentials.cs" />
+    <Compile Include="infrastructure\FlickrAuthenticationService.cs" />
+    <Compile Include="domain\FlickrParametersService.cs" />
     <Compile Include="infrastructure\HttpFileDownloader.cs" />
     <Compile Include="domain\IFileDownloader.cs" />
     <Compile Include="domain\IRandom.cs" />
@@ -80,7 +87,6 @@
     <Compile Include="domain\IFileService.cs" />
     <Compile Include="infrastructure\FileService.cs" />
     <Compile Include="domain\IDesktopBackgroundImageUpdater.cs" />
-    <Compile Include="infrastructure\WindowDesktopBackgroundImageUpdater.cs" />
     <Compile Include="infrastructure\PicturePosition.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

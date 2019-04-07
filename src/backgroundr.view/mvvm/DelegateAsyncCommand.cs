@@ -2,7 +2,7 @@ using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace backgroundr.view.viewmodels
+namespace backgroundr.view.mvvm
 {
     public class DelegateAsyncCommand : ICommand
     {
@@ -21,8 +21,8 @@ namespace backgroundr.view.viewmodels
 
         public event EventHandler CanExecuteChanged
         {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
+            add => CommandManager.RequerySuggested += value;
+            remove => CommandManager.RequerySuggested -= value;
         }
     }
 }

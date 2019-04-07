@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace backgroundr.view.viewmodels
+namespace backgroundr.view.mvvm
 {
     public abstract class ViewModelBase : INotifyPropertyChanged
     {
