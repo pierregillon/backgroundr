@@ -5,12 +5,12 @@ namespace backgroundr.application
 {
     public class ScheduleNextDesktopBackgroundImageChangeHandler : ICommandHandler<ScheduleNextDesktopBackgroundImageChange>
     {
-        private readonly CommandDispatchScheduler _commandDispatcherScheduler;
+        private readonly ICommandDispatchScheduler _commandDispatcherScheduler;
         private readonly ICommandDispatcher _commandDispatcher;
         private readonly FlickrParameters _flickrParameters;
 
         public ScheduleNextDesktopBackgroundImageChangeHandler(
-            CommandDispatchScheduler commandDispatcherScheduler,
+            ICommandDispatchScheduler commandDispatcherScheduler,
             ICommandDispatcher commandDispatcher,
             FlickrParameters flickrParameters)
         {

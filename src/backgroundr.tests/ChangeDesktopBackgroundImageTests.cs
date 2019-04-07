@@ -12,7 +12,7 @@ using Xunit;
 
 namespace backgroundr.tests
 {
-    public class ChangeDesktopBackground
+    public class ChangeDesktopBackgroundImageTests
     {
         private static readonly Task<IReadOnlyCollection<string>> NO_IMAGES = Task.FromResult<IReadOnlyCollection<string>>(new string[0]);
         private static readonly Task<IReadOnlyCollection<string>> SOME_IMAGES = Task.FromResult<IReadOnlyCollection<string>>(new[] {
@@ -23,7 +23,6 @@ namespace backgroundr.tests
 
         private readonly IDesktopBackgroundImageUpdater _desktopImageBackgroundUpdater;
         private readonly IPhotoProvider _photoProvider;
-        private readonly IFileDownloader _fileDownloader;
         private readonly ChangeDesktopBackgroundImageRandomlyHandler _handler;
         private readonly IEventEmitter _eventEmitter;
         private readonly FlickrParameters _flickrParameters;
@@ -31,12 +30,12 @@ namespace backgroundr.tests
         private readonly IFileService _fileService;
         private static readonly DateTime NOW = new DateTime(2018, 12, 26);
 
-        public ChangeDesktopBackground()
+        public ChangeDesktopBackgroundImageTests()
         {
             _desktopImageBackgroundUpdater = Substitute.For<IDesktopBackgroundImageUpdater>();
             _photoProvider = Substitute.For<IPhotoProvider>();
-            _fileDownloader = Substitute.For<IFileDownloader>();
-            _fileDownloader.Download(Arg.Any<string>()).Returns(x => x.Arg<string>());
+            var fileDownloader = Substitute.For<IFileDownloader>();
+            fileDownloader.Download(Arg.Any<string>()).Returns(x => x.Arg<string>());
             _eventEmitter = Substitute.For<IEventEmitter>();
             _flickrParameters = new FlickrParameters();
             _clock = Substitute.For<IClock>();
@@ -45,7 +44,7 @@ namespace backgroundr.tests
             _handler = new ChangeDesktopBackgroundImageRandomlyHandler(
                 _desktopImageBackgroundUpdater,
                 _photoProvider,
-                _fileDownloader,
+                fileDownloader,
                 new PseudoRandom(),
                 _eventEmitter,
                 _flickrParameters,
@@ -109,7 +108,7 @@ namespace backgroundr.tests
                 .ChangeBackgroundImage(Arg.Any<string>(), PicturePosition.Fit);
         }
 
-        [Fact(Skip = "appveyor error on multithreads")]
+        [Fact(Skip = "appveyor error on multi threads")]
         public async Task do_not_process_concurrent_requests()
         {
             // Arrange

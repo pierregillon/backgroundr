@@ -63,7 +63,7 @@ namespace backgroundr.view
                 configuration.For<ICommandDispatcher>().Use<StructureMapCommandDispatcher>();
                 configuration.For<ICommandHandler<ChangeDesktopBackgroundImageRandomly>>().Use<ChangeDesktopBackgroundImageRandomlyHandler>().Singleton();
                 configuration.For<ICommandHandler<ScheduleNextDesktopBackgroundImageChange>>().Use<ScheduleNextDesktopBackgroundImageChangeHandler>();
-                configuration.For<CommandDispatchScheduler>().Singleton();
+                configuration.For<ICommandDispatchScheduler>().Use<CommandDispatchScheduler>().Singleton();
                 configuration.For<IEventEmitter>().Use<StructureMapEventEmitter>();
                 configuration.For<IEventListener<DesktopBackgroundImageUpdated>>().Use<Scheduler>();
                 configuration.For<FlickrParameters>().Singleton();

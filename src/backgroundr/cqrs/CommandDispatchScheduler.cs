@@ -8,7 +8,7 @@ using backgroundr.domain;
 
 namespace backgroundr.cqrs
 {
-    public class CommandDispatchScheduler
+    public class CommandDispatchScheduler : ICommandDispatchScheduler
     {
         private readonly IClock _clock;
         private readonly ICommandDispatcher _commandDispatcher;
