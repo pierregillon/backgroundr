@@ -3,10 +3,10 @@
   <Profiles />
   <Settings>
     <Setting Name="FlickrApiToken" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">a023233ad75a2e7ae38a1b1aa92ff751</Value>
+      <Value Profile="(Default)">NjRmYzIyY2E5MjI0NzY3NDE1MzBhNDEyNWI0MDA5ZDY=</Value>
     </Setting>
     <Setting Name="FlickrApiSecret" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">abd048b37b9e44f9</Value>
+      <Value Profile="(Default)">ZDFmOTlkOWFhNzQ1Yzg1ZQ==</Value>
     </Setting>
   </Settings>
 </SettingsFile>
