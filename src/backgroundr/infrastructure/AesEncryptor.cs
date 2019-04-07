@@ -12,8 +12,7 @@ namespace backgroundr.infrastructure
 
         public AesEncryptor(string encryptionKey)
         {
-            if (encryptionKey == null) throw new ArgumentNullException(nameof(encryptionKey));
-            _encryptionKey = encryptionKey;
+            _encryptionKey = encryptionKey ?? throw new ArgumentNullException(nameof(encryptionKey));
         }
 
         public string Encrypt(string clearText)
@@ -62,7 +61,7 @@ namespace backgroundr.infrastructure
             }
         }
 
-        private Rfc2898DeriveBytes GetPdb(string encryptionKey)
+        private static Rfc2898DeriveBytes GetPdb(string encryptionKey)
         {
             return new Rfc2898DeriveBytes(encryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
         }

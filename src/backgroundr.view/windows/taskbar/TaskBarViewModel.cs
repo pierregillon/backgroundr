@@ -32,8 +32,8 @@ namespace backgroundr.view.windows.taskbar
         };
         public bool ChangingBackground
         {
-            get { return GetNotifiableProperty<bool>(); }
-            set { SetNotifiableProperty<bool>(value); }
+            get => GetNotifiableProperty<bool>();
+            set => SetNotifiableProperty<bool>(value);
         }
 
         // ----- Constructor

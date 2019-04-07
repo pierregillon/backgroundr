@@ -24,14 +24,5 @@ namespace backgroundr.cqrs
                 await handler.Handle(command);
             }
         }
-
-        public async Task<TResult> Dispatch<TCommand, TResult>(TCommand command) where TCommand : ICommand
-        {
-            var handler = _container.GetInstance<ICommandHandler<TCommand, TResult>>();
-            if (handler == null) {
-                throw new Exception("No handlers found");
-            }
-            return await handler.Handle(command);
-        }
     }
 }

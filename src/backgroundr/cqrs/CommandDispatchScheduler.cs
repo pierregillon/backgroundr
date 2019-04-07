@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using backgroundr.application;
 using backgroundr.domain;
 
 namespace backgroundr.cqrs
@@ -60,7 +59,7 @@ namespace backgroundr.cqrs
             catch (TaskCanceledException) { }
         }
 
-        // ----- Internal logics
+        // ----- Internal logic
         private async Task SafeDispatch<T>(T command) where T : ICommand
         {
             try {

@@ -8,7 +8,7 @@
              <ResourceDictionary.MergedDictionaries>
                  <ResourceDictionary>
                     <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-                    <converters:ObjectExistanceToVisibilityConverter x:Key="ObjectExistanceToVisibilityConverter" />
+                    <converters:ObjectExistenceToVisibilityConverter x:Key="ObjectExistenceToVisibilityConverter" />
                 </ResourceDictionary>
                  <ResourceDictionary Source="windows/taskbar/TaskbarResources.xaml" />
              </ResourceDictionary.MergedDictionaries>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using backgroundr.application;
+using backgroundr.domain;
 using backgroundr.view.windows.parameters;
 
 namespace backgroundr.view.design
@@ -10,9 +11,6 @@ namespace backgroundr.view.design
     {
         public string UserId { get; set; } = "148722902@N09";
         public string Tags { get; set; } = "best top";
-        public string OAuthAccessToken { get; set; } = "my-oauth-access-token";
-        public string OAuthAccessTokenSecret { get; set; } = "xxxxxxxxaaaaaa";
-
         public FlickrPrivateAccess PrivateAccess { get; set; } = new FlickrPrivateAccess {
             UserName = "Pierre GILLON"
         };

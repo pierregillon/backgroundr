@@ -1,6 +1,6 @@
 using System;
 
-namespace backgroundr.application
+namespace backgroundr.domain
 {
     public class FlickrParameters
     {
@@ -9,13 +9,5 @@ namespace backgroundr.application
         public DateTime? BackgroundImageLastRefreshDate { get; set; }
         public TimeSpan RefreshPeriod { get; set; } = TimeSpan.FromDays(1);
         public FlickrPrivateAccess PrivateAccess { get; set; }
-    }
-
-    public class FlickrPrivateAccess
-    {
-        public string UserId { get; set; }
-        public string UserName { get; set; }
-        public string OAuthAccessToken { get; set; }
-        public string OAuthAccessTokenSecret { get; set; }
     }
 }

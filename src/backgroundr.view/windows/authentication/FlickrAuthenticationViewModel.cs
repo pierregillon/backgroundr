@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 using backgroundr.application;
+using backgroundr.domain;
 using backgroundr.infrastructure;
 using backgroundr.view.mvvm;
 using backgroundr.view.services;
@@ -16,8 +17,8 @@ namespace backgroundr.view.windows.authentication
 
         public string FlickrCode
         {
-            get { return GetNotifiableProperty<string>(); }
-            set { SetNotifiableProperty<string>(value); }
+            get => GetNotifiableProperty<string>();
+            set => SetNotifiableProperty<string>(value);
         }
 
         public ICommand CancelCommand => new DelegateCommand {

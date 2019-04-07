@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using backgroundr.cqrs;
+using backgroundr.domain;
 
 namespace backgroundr.application
 {

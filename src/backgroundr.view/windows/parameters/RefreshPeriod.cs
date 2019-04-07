@@ -4,36 +4,34 @@ namespace backgroundr.view.windows.parameters
 {
     public class RefreshPeriod
     {
-        private readonly TimeSpan _timespan;
-
-        public TimeSpan Value => _timespan;
+        public TimeSpan Value { get; }
 
         public RefreshPeriod(TimeSpan timespan)
         {
-            _timespan = timespan;
+            Value = timespan;
         }
 
         public override string ToString()
         {
-            if ((int) _timespan.TotalMinutes == 0) {
-                return $"Every {(int) _timespan.TotalSeconds} seconds";
+            if ((int) Value.TotalMinutes == 0) {
+                return $"Every {(int) Value.TotalSeconds} seconds";
             }
-            if ((int) _timespan.TotalHours == 0) {
-                if ((int) _timespan.TotalMinutes == 1) {
+            if ((int) Value.TotalHours == 0) {
+                if ((int) Value.TotalMinutes == 1) {
                     return "Every minute";
                 }
-                return $"Every {(int) _timespan.TotalMinutes} minutes";
+                return $"Every {(int) Value.TotalMinutes} minutes";
             }
-            if ((int) _timespan.TotalDays == 0) {
-                if ((int) _timespan.TotalHours == 1) {
+            if ((int) Value.TotalDays == 0) {
+                if ((int) Value.TotalHours == 1) {
                     return $"Every hour";
                 }
-                return $"Every {(int) _timespan.TotalHours} hours";
+                return $"Every {(int) Value.TotalHours} hours";
             }
-            if ((int) _timespan.TotalDays == 1) {
+            if ((int) Value.TotalDays == 1) {
                 return "Every day";
             }
-            return $"Every {(int) _timespan.TotalDays} days";
+            return $"Every {(int) Value.TotalDays} days";
         }
     }
 }

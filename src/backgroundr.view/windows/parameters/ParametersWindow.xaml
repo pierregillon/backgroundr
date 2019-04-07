@@ -68,10 +68,10 @@
         <GroupBox Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Header="For private photo access"
                   Background="LightGoldenrodYellow">
             <Grid Margin="5px">
-                <Grid Visibility="{Binding Path=PrivateAccess, Mode=OneWay, Converter={StaticResource ObjectExistanceToVisibilityConverter}, ConverterParameter=reverse}">
+                <Grid Visibility="{Binding Path=PrivateAccess, Mode=OneWay, Converter={StaticResource ObjectExistenceToVisibilityConverter}, ConverterParameter=reverse}">
                     <Button Content="Connect my Flickr account" Width="200" Command="{Binding ConnectToFlickrAccountCommand}"/>
                 </Grid>
-                <Grid Visibility="{Binding Path=PrivateAccess, Mode=OneWay, Converter={StaticResource ObjectExistanceToVisibilityConverter}}">
+                <Grid Visibility="{Binding Path=PrivateAccess, Mode=OneWay, Converter={StaticResource ObjectExistenceToVisibilityConverter}}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="0.45*" />
                         <ColumnDefinition Width="0.55*" />

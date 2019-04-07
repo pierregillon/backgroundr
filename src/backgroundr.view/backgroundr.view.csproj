@@ -68,7 +68,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="converters\BooleanToVisibilityConverter.cs" />
-    <Compile Include="converters\ObjectExistanceToVisibilityConverter.cs" />
+    <Compile Include="converters\ObjectExistenceToVisibilityConverter.cs" />
     <Compile Include="design\ParametersDesignViewModel.cs" />
     <Compile Include="windows\authentication\FlickrAuthenticationDialog.xaml.cs">
       <DependentUpon>FlickrAuthenticationDialog.xaml</DependentUpon>

@@ -26,23 +26,23 @@ namespace backgroundr.view.windows.parameters
 
         public string UserId
         {
-            get { return GetNotifiableProperty<string>(); }
-            set { SetNotifiableProperty<string>(value); }
+            get => GetNotifiableProperty<string>();
+            set => SetNotifiableProperty<string>(value);
         }
         public string Tags
         {
-            get { return GetNotifiableProperty<string>(); }
-            set { SetNotifiableProperty<string>(value); }
+            get => GetNotifiableProperty<string>();
+            set => SetNotifiableProperty<string>(value);
         }
         public FlickrPrivateAccess PrivateAccess
         {
-            get { return GetNotifiableProperty<FlickrPrivateAccess>(); }
-            set { SetNotifiableProperty<string>(value); }
+            get => GetNotifiableProperty<FlickrPrivateAccess>();
+            set => SetNotifiableProperty<string>(value);
         }
         public bool AutomaticallyStart
         {
-            get { return GetNotifiableProperty<bool>(); }
-            set { SetNotifiableProperty<bool>(value); }
+            get => GetNotifiableProperty<bool>();
+            set => SetNotifiableProperty<bool>(value);
         }
 
         public IList<RefreshPeriod> Periods { get; set; } = new List<RefreshPeriod> {
@@ -63,8 +63,8 @@ namespace backgroundr.view.windows.parameters
 
         public RefreshPeriod SelectedPeriod
         {
-            get { return GetNotifiableProperty<RefreshPeriod>(); }
-            set { SetNotifiableProperty<RefreshPeriod>(value); }
+            get => GetNotifiableProperty<RefreshPeriod>();
+            set => SetNotifiableProperty<RefreshPeriod>(value);
         }
 
         public ICommand ValidateCommand => new DelegateCommand {

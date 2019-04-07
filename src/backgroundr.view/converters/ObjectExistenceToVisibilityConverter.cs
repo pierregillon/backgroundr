@@ -5,7 +5,7 @@ using System.Windows.Data;
 
 namespace backgroundr.view.converters
 {
-    public class ObjectExistanceToVisibilityConverter : IValueConverter
+    public class ObjectExistenceToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

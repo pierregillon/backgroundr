@@ -1,5 +1,6 @@
 using System.Windows;
 using backgroundr.application;
+using backgroundr.domain;
 
 namespace backgroundr.view.windows.authentication
 {

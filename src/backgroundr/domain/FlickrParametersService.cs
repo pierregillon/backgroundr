@@ -1,8 +1,4 @@
-﻿using System.IO;
-using backgroundr.application;
-using backgroundr.domain;
-
-namespace backgroundr.infrastructure
+﻿namespace backgroundr.domain
 {
     public class FlickrParametersService
     {
@@ -16,7 +12,7 @@ namespace backgroundr.infrastructure
 
         public bool Exists()
         {
-            return File.Exists(FILE_NAME);
+            return _fileService.Exists(FILE_NAME);
         }
 
         public FlickrParameters Read()

@@ -17,15 +17,15 @@ namespace backgroundr.infrastructure
         private static async Task<string> DownloadUrl(string url)
         {
             var httpWebRequest = (HttpWebRequest) WebRequest.Create(url);
-            var httpWebReponse = (HttpWebResponse) httpWebRequest.GetResponse();
-            var stream = httpWebReponse.GetResponseStream();
+            var httpWebResponse = (HttpWebResponse) httpWebRequest.GetResponse();
+            var stream = httpWebResponse.GetResponseStream();
             var tempFilePath = Path.GetTempFileName();
             using (var fileStream = File.Create(tempFilePath)) {
                 await stream.CopyToAsync(fileStream);
             }
             return tempFilePath;
         }
-        private bool IsRemote(string url)
+        private static bool IsRemote(string url)
         {
             return url.StartsWith("http");
         }
