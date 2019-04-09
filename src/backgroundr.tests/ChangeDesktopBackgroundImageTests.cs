@@ -171,7 +171,22 @@ namespace backgroundr.tests
 
             // Assert
             Assert.Equal(NOW, _flickrParameters.BackgroundImageLastRefreshDate);
-            _fileService.Received(1).Serialize(Arg.Any<FlickrParameters>(), ".config");
+        }
+
+        [Fact]
+        public async Task update_config_file()
+        {
+            // Arrange
+            _clock.Now().Returns(NOW);
+            _photoProvider
+                .GetPhotos()
+                .Returns(x => SOME_IMAGES);
+
+            // Act
+            await _handler.Handle(new ChangeDesktopBackgroundImageRandomly());
+
+            // Assert
+            _fileService.Received(1).Serialize(Arg.Any<FlickrParameters>(), Arg.Is<string>(x=>x.EndsWith(".config")));
         }
     }
 }
