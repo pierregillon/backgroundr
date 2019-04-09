@@ -1,8 +1,12 @@
-﻿namespace backgroundr.domain
+﻿using System;
+using System.IO;
+
+namespace backgroundr.domain
 {
     public class FlickrParametersService
     {
-        private const string FILE_NAME = ".config";
+        private static readonly string FILE_NAME = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".config");
+
         private readonly IFileService _fileService;
 
         public FlickrParametersService(IFileService fileService)
