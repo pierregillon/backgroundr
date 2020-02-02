@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Runtime.Loader;
 using System.Threading;
 using backgroundr.application;
 using backgroundr.domain;
@@ -15,29 +13,36 @@ namespace backgroundr.daemon
         static void Main(string[] args)
         {
             var exitEvent = new ManualResetEvent(false);
-            var container = BuildContainer();
+            
+            Console.CancelKeyPress += delegate(object sender, ConsoleCancelEventArgs e) {
+                Console.WriteLine("* Exiting daemon ...");
+                e.Cancel = true;
+                exitEvent.Set();
+            };
+
+            Initialize(BuildContainer());
+
+            exitEvent.WaitOne();
+        }
+
+        private static void Initialize(IContainer container)
+        {
+            var logger = container.GetInstance<ILogger>();
+
+            logger.Log("Starting daemon ...");
+
             var service = container.GetInstance<FlickrParametersService>();
-
-            if (service.Exists()) {
-                var parameters = service.Read();
-                container.Inject(parameters);
-                var dispatcher = container.GetInstance<ICommandDispatcher>();
-                dispatcher.Dispatch(new ScheduleNextDesktopBackgroundImageChange());
-
-                Console.WriteLine("* Starting ...");
-
-                Console.CancelKeyPress += delegate (object sender, ConsoleCancelEventArgs e) {
-                    Console.WriteLine("* Exiting ...");
-                    e.Cancel = true;
-                    exitEvent.Set();
-                };
-
-                exitEvent.WaitOne();
-
+            if (!service.Exists()) {
+                logger.Log("No configuration file found. Exiting.");
+                return;
             }
-            else {
-                Console.WriteLine("* No configuration file found.");
-            }
+
+            logger.Log("Configuration file found");
+            var parameters = service.Read();
+            container.Inject(parameters);
+
+            var dispatcher = container.GetInstance<ICommandDispatcher>();
+            dispatcher.Dispatch(new ScheduleNextDesktopBackgroundImageChange());
         }
 
         private static Container BuildContainer()
@@ -66,15 +71,9 @@ namespace backgroundr.daemon
                 configuration.For<IEventEmitter>().Use<StructureMapEventEmitter>();
                 configuration.For<IEventListener<DesktopBackgroundImageUpdated>>().Use<Scheduler>();
                 configuration.For<FlickrParameters>().Singleton();
+                configuration.For<ILogger>().Use<ConsoleLogger>();
+                configuration.For(typeof(ICommandHandler<>)).DecorateAllWith(typeof(LoggerCommandHandlerDecorator<>));
             });
-        }
-    }
-
-    internal class FakeDesktopBackgroundImageUpdater : IDesktopBackgroundImageUpdater
-    {
-        public void ChangeBackgroundImage(string backgroundPath, PicturePosition style)
-        {
-            Console.WriteLine($"* Changing background to {backgroundPath} position {style}");
         }
     }
 }

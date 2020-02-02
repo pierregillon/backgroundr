@@ -4,8 +4,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using backgroundr.domain;
+using ddd_cqrs;
 
-namespace ddd_cqrs
+namespace backgroundr.application
 {
     public class CommandDispatchScheduler : ICommandDispatchScheduler
     {
