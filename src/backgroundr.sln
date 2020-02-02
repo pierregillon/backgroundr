@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "backgroundr.tests", "backgr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "backgroundr.daemon", "backgroundr.daemon\backgroundr.daemon.csproj", "{D1DE9CDB-0899-4BF3-A356-5A7D20B0BFEF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ddd-cqrs", "ddd-cqrs\ddd-cqrs.csproj", "{EBF90E02-8CD5-4624-84AF-58CC24B18793}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{D1DE9CDB-0899-4BF3-A356-5A7D20B0BFEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1DE9CDB-0899-4BF3-A356-5A7D20B0BFEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D1DE9CDB-0899-4BF3-A356-5A7D20B0BFEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBF90E02-8CD5-4624-84AF-58CC24B18793}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBF90E02-8CD5-4624-84AF-58CC24B18793}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBF90E02-8CD5-4624-84AF-58CC24B18793}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBF90E02-8CD5-4624-84AF-58CC24B18793}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

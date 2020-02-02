@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using StructureMap;
 
-namespace backgroundr.cqrs
+namespace ddd_cqrs
 {
     public class StructureMapCommandDispatcher : ICommandDispatcher
     {

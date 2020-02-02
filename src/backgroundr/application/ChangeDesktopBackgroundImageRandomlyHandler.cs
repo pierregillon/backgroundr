@@ -2,9 +2,9 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using backgroundr.cqrs;
 using backgroundr.domain;
 using backgroundr.infrastructure;
+using ddd_cqrs;
 
 namespace backgroundr.application
 {

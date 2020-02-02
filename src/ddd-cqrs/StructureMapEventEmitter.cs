@@ -1,6 +1,6 @@
 using StructureMap;
 
-namespace backgroundr.cqrs
+namespace ddd_cqrs
 {
     public class StructureMapEventEmitter : IEventEmitter
     {

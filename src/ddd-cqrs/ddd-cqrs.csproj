@@ -2,16 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>ddd_cqrs</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FlickrNet" Version="3.26.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="structuremap" Version="4.7.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\ddd-cqrs\ddd-cqrs.csproj" />
   </ItemGroup>
 
 </Project>

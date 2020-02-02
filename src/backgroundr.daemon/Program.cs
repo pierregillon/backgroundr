@@ -3,9 +3,9 @@ using System.Diagnostics;
 using System.Runtime.Loader;
 using System.Threading;
 using backgroundr.application;
-using backgroundr.cqrs;
 using backgroundr.domain;
 using backgroundr.infrastructure;
+using ddd_cqrs;
 using StructureMap;
 
 namespace backgroundr.daemon

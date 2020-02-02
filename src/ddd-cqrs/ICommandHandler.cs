@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace backgroundr.cqrs
+namespace ddd_cqrs
 {
     public interface ICommandHandler<in T> where T : ICommand
     {

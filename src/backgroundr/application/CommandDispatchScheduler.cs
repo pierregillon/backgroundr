@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using backgroundr.domain;
 
-namespace backgroundr.cqrs
+namespace ddd_cqrs
 {
     public class CommandDispatchScheduler : ICommandDispatchScheduler
     {

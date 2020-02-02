@@ -2,8 +2,8 @@
 using System.Globalization;
 using System.Threading.Tasks;
 using backgroundr.application;
-using backgroundr.cqrs;
 using backgroundr.domain;
+using ddd_cqrs;
 using NSubstitute;
 using Xunit;
 

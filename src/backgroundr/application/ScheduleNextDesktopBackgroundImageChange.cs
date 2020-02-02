@@ -1,4 +1,4 @@
-using backgroundr.cqrs;
+using ddd_cqrs;
 
 namespace backgroundr.application
 {
