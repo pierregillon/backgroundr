@@ -41,36 +41,6 @@ namespace backgroundr.view
             }
         }
 
-        private static Container GetContainer()
-        {
-            var container = new Container(configuration => {
-                configuration.For<IFileService>().Use<FileService>();
-                configuration.For<IDesktopBackgroundImageUpdater>().Use<WindowDesktopBackgroundImageUpdater>();
-#if DEBUG
-                configuration.For<IPhotoProvider>().Use<LocalComputerImageProvider>();
-#else
-                configuration.For<IPhotoProvider>().Use<FlickrPhotoProvider>();
-#endif
-                configuration.For<FlickrApiCredentials>().Use<FlickrApiCredentials>()
-                    .Ctor<string>("apiToken").Is(Settings.Default.FlickrApiToken)
-                    .Ctor<string>("apiSecret").Is(Settings.Default.FlickrApiSecret)
-                    .Singleton();
-
-                configuration.For<IFileDownloader>().Use<HttpFileDownloader>();
-                configuration.For<IRandom>().Use<PseudoRandom>();
-                configuration.For<IClock>().Use<DefaultClock>();
-                configuration.For<IEncryptor>().Use<AesEncryptor>().Ctor<string>("encryptionKey").Is(Environment.MachineName);
-                configuration.For<ICommandDispatcher>().Use<StructureMapCommandDispatcher>();
-                configuration.For<ICommandHandler<ChangeDesktopBackgroundImageRandomly>>().Use<ChangeDesktopBackgroundImageRandomlyHandler>().Singleton();
-                configuration.For<ICommandHandler<ScheduleNextDesktopBackgroundImageChange>>().Use<ScheduleNextDesktopBackgroundImageChangeHandler>();
-                configuration.For<ICommandDispatchScheduler>().Use<CommandDispatchScheduler>().Singleton();
-                configuration.For<IEventEmitter>().Use<StructureMapEventEmitter>();
-                configuration.For<IEventListener<DesktopBackgroundImageUpdated>>().Use<Scheduler>();
-                configuration.For<FlickrParameters>().Singleton();
-            });
-            return container;
-        }
-
         protected override void OnExit(ExitEventArgs e)
         {
             _taskbar.Dispose();
