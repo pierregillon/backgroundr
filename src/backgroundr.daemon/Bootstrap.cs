@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using backgroundr.application;
 using backgroundr.domain;
 using backgroundr.infrastructure;
@@ -13,7 +14,14 @@ namespace backgroundr.daemon
         {
             return new Container(configuration => {
                 configuration.For<IFileService>().Use<FileService>();
-                configuration.For<IDesktopBackgroundImageUpdater>().Use<FakeDesktopBackgroundImageUpdater>();
+
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+                    configuration.For<IDesktopBackgroundImageUpdater>().Use<WindowsDesktopBackgroundImageUpdater>();
+                }
+                else {
+                    throw new Exception("This os version is not supported.");
+                }
+
 #if DEBUG
                 configuration.For<IPhotoProvider>().Use<LocalComputerImageProvider>();
 #else

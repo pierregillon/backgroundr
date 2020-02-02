@@ -4,6 +4,6 @@ namespace backgroundr.domain
 {
     public interface IDesktopBackgroundImageUpdater
     {
-        void ChangeBackgroundImage(string backgroundPath, PicturePosition style);
+        void ChangeBackgroundImage(string backgroundPath, PicturePosition picturePosition);
     }
 }

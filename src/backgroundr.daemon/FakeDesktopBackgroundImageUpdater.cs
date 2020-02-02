@@ -7,9 +7,9 @@ namespace backgroundr.daemon
 {
     internal class FakeDesktopBackgroundImageUpdater : IDesktopBackgroundImageUpdater
     {
-        public void ChangeBackgroundImage(string backgroundPath, PicturePosition style)
+        public void ChangeBackgroundImage(string backgroundPath, PicturePosition picturePosition)
         {
-            Console.WriteLine($"* Changing background to {Path.GetFileName(backgroundPath)} position {style}");
+            Console.WriteLine($"* Changing background to {Path.GetFileName(backgroundPath)} position {picturePosition}");
         }
     }
 }
