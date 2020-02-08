@@ -28,5 +28,10 @@ namespace backgroundr.domain
         {
             _fileService.Serialize(parameters, FILE_NAME);
         }
+
+        public void OnChange(Action<FlickrParameters> changed)
+        {
+            _fileService.WhenFileChanged(FILE_NAME, () => { changed(Read()); });
+        }
     }
 }

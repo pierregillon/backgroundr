@@ -31,7 +31,10 @@ namespace backgroundr.daemon
             logger.Log("Starting daemon ...");
             var daemon = container.GetInstance<Daemon>();
             container.Inject(daemon.ReadFileConfiguration());
-            daemon.WatchFileChanges();
+            daemon.WatchForConfigurationChange(flickrParameters => {
+                container.Inject(flickrParameters);
+                daemon.ScheduleNextBackgroundImageChange();
+            });
             daemon.ScheduleNextBackgroundImageChange();
             return true;
         }

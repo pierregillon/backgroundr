@@ -1,3 +1,5 @@
+using System;
+
 namespace backgroundr.domain
 {
     public interface IFileService
@@ -6,5 +8,6 @@ namespace backgroundr.domain
         void Serialize<T>(T obj, string filePath);
         bool Exists(string filePath);
         void Append(string fileName, string content);
+        void WhenFileChanged(string fileName, Action action);
     }
 }

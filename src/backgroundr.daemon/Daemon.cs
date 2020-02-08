@@ -31,7 +31,10 @@ namespace backgroundr.daemon
             }
         }
 
-        public void WatchFileChanges() { }
+        public void WatchForConfigurationChange(Action<FlickrParameters> changed)
+        {
+            _flickrParametersService.OnChange(changed);
+        }
 
         public void ScheduleNextBackgroundImageChange()
         {
