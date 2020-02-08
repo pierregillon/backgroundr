@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Windows.Input;
-using backgroundr.application;
-using backgroundr.domain;
-using backgroundr.infrastructure;
 using backgroundr.view.mvvm;
 using backgroundr.view.services;
 
@@ -10,7 +7,7 @@ namespace backgroundr.view.windows.authentication
 {
     public class FlickrAuthenticationViewModel : ViewModelBase
     {
-        private readonly FlickrAuthenticationService _service;
+        //private readonly FlickrAuthenticationService _service;
         private readonly MessageBoxService _messageBoxService;
 
         public event Action<FlickrPrivateAccess> Close;
@@ -30,26 +27,26 @@ namespace backgroundr.view.windows.authentication
             CanExecuteFunc = () => !string.IsNullOrEmpty(FlickrCode) && !string.IsNullOrWhiteSpace(FlickrCode)
         };
 
-        public FlickrAuthenticationViewModel(FlickrAuthenticationService service, MessageBoxService messageBoxService)
+        public FlickrAuthenticationViewModel(/*FlickrAuthenticationService service,*/ MessageBoxService messageBoxService)
         {
-            _service = service;
+            //_service = service;
             _messageBoxService = messageBoxService;
         }
 
         public void Initialize()
         {
-            _service.AuthenticateUserInBrowser();
+            //_service.AuthenticateUserInBrowser();
         }
 
         private async void Validate()
         {
-            try {
-                var privateAccess = _service.FinalizeAuthentication(FlickrCode);
-                Close?.Invoke(privateAccess);
-            }
-            catch (Exception ex) {
-                await _messageBoxService.ShowError("An error occured during authentication. " + ex.Message);
-            }
+            //try {
+            //    var privateAccess = _service.FinalizeAuthentication(FlickrCode);
+            //    Close?.Invoke(privateAccess);
+            //}
+            //catch (Exception ex) {
+            //    await _messageBoxService.ShowError("An error occured during authentication. " + ex.Message);
+            //}
         }
 
     }

@@ -1,9 +1,7 @@
 ﻿using System;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
-using backgroundr.application;
-using backgroundr.cqrs;
-using backgroundr.domain;
 using backgroundr.view.mvvm;
 using backgroundr.view.services;
 using ICommand = System.Windows.Input.ICommand;
@@ -13,9 +11,8 @@ namespace backgroundr.view.windows.taskbar
     public class TaskBarViewModel : ViewModelBase
     {
         private readonly StructureMap.IContainer _container;
-        private readonly ICommandDispatcher _commandDispatcher;
-        private readonly IFileService _fileService;
         private readonly MessageBoxService _messageBoxService;
+        private readonly FlickrParametersService _flickrParametersService;
 
         public ICommand RandomlyChangeBackgroundImageCommand => new DelegateAsyncCommand {
             CommandAction = RandomlyChangeBackgroundImage
@@ -39,14 +36,12 @@ namespace backgroundr.view.windows.taskbar
         // ----- Constructor
         public TaskBarViewModel(
             StructureMap.IContainer container,
-            ICommandDispatcher commandDispatcher,
-            IFileService fileService,
-            MessageBoxService messageBoxService)
+            MessageBoxService messageBoxService,
+            FlickrParametersService flickrParametersService)
         {
             _container = container;
-            _commandDispatcher = commandDispatcher;
-            _fileService = fileService;
             _messageBoxService = messageBoxService;
+            _flickrParametersService = flickrParametersService;
         }
 
         // ----- Public methods
@@ -54,10 +49,13 @@ namespace backgroundr.view.windows.taskbar
         {
             try {
                 ChangingBackground = true;
-                await _commandDispatcher.Dispatch(new ChangeDesktopBackgroundImageRandomly());
+
+                var parameters = _flickrParametersService.Read();
+                parameters.BackgroundImageLastRefreshDate = null;
+                _flickrParametersService.Save(parameters);
             }
             catch (Exception ex) {
-                _fileService.Append("logs.txt", $"{DateTime.Now} - ERROR : " + ex + Environment.NewLine);
+                File.AppendAllText("logs.txt", $"{DateTime.Now} - ERROR : " + ex + Environment.NewLine);
                 await _messageBoxService.ShowError(
                     "An error occured when changing the image background with the next Flickr photo." + Environment.NewLine +
                     "Check the following :" + Environment.NewLine +

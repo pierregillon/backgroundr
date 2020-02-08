@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using backgroundr.application;
-using backgroundr.domain;
 using backgroundr.view.windows.parameters;
 
 namespace backgroundr.view.design

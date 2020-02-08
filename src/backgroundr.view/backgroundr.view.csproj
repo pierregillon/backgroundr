@@ -43,6 +43,9 @@
       <HintPath>..\packages\Hardcodet.NotifyIcon.Wpf.1.0.8\lib\net451\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="StructureMap, Version=4.7.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\StructureMap.4.7.0\lib\net45\StructureMap.dll</HintPath>
       <Private>True</Private>
@@ -64,12 +67,14 @@
     </ApplicationDefinition>
     <Compile Include="converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="converters\ObjectExistenceToVisibilityConverter.cs" />
+    <Compile Include="FlickrParametersService.cs" />
+    <Compile Include="FlickrPrivateAccess.cs" />
     <Compile Include="design\ParametersDesignViewModel.cs" />
+    <Compile Include="FlickrParameters.cs" />
     <Compile Include="windows\authentication\FlickrAuthenticationDialog.xaml.cs">
       <DependentUpon>FlickrAuthenticationDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="windows\authentication\FlickrAuthenticationViewModel.cs" />
-    <Compile Include="services\WindowDesktopBackgroundImageUpdater.cs" />
     <Compile Include="utils\StartupService.cs" />
     <Compile Include="services\MessageBoxService.cs" />
     <Compile Include="windows\parameters\ParametersViewModel.cs" />

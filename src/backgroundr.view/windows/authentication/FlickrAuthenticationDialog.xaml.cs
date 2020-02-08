@@ -1,6 +1,4 @@
 using System.Windows;
-using backgroundr.application;
-using backgroundr.domain;
 
 namespace backgroundr.view.windows.authentication
 {
@@ -15,7 +13,6 @@ namespace backgroundr.view.windows.authentication
             DataContext = viewModel;
 
             _viewModel = viewModel;
-
         }
 
         public new FlickrPrivateAccess ShowDialog()

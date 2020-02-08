@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using backgroundr.application;
-using backgroundr.cqrs;
-using backgroundr.domain;
-using backgroundr.infrastructure;
 using backgroundr.view.mvvm;
 using backgroundr.view.services;
 using backgroundr.view.utils;
+using Newtonsoft.Json;
 using StructureMap;
 using ICommand = System.Windows.Input.ICommand;
 
@@ -15,12 +13,11 @@ namespace backgroundr.view.windows.parameters
 {
     public class ParametersViewModel : ViewModelBase
     {
-        private readonly FlickrParameters _flickrParameters;
-        private readonly FlickrParametersService _flickrParametersService;
         private readonly StartupService _startupService;
-        private readonly ICommandDispatcher _commandDispatcher;
         private readonly IContainer _container;
         private readonly MessageBoxService _messageBoxService;
+        private readonly FlickrParametersService _flickrParametersService;
+        private readonly FlickrParameters _flickrParameters;
 
         public event Action Close;
 
@@ -86,24 +83,21 @@ namespace backgroundr.view.windows.parameters
         // ----- Constructor
 
         public ParametersViewModel(
-            FlickrParameters flickrParameters,
-            FlickrParametersService flickrParametersService,
             StartupService startupService,
-            ICommandDispatcher commandDispatcher,
             IContainer container,
-            MessageBoxService messageBoxService)
+            MessageBoxService messageBoxService,
+            FlickrParametersService flickrParametersService)
         {
-            _flickrParameters = flickrParameters;
-            _flickrParametersService = flickrParametersService;
             _startupService = startupService;
-            _commandDispatcher = commandDispatcher;
             _container = container;
             _messageBoxService = messageBoxService;
+            _flickrParametersService = flickrParametersService;
 
-            UserId = _flickrParameters.UserId;
-            Tags = _flickrParameters.Tags;
             AutomaticallyStart = _startupService.IsApplicationStartingOnSystemStartup();
-            SelectedPeriod = Periods.FirstOrDefault(x => x.Value == flickrParameters.RefreshPeriod);
+
+            _flickrParameters = _flickrParametersService.Read();
+
+            SelectedPeriod = Periods.FirstOrDefault(x => x.Value == _flickrParameters.RefreshPeriod);
             PrivateAccess = _flickrParameters.PrivateAccess;
         }
 
@@ -119,8 +113,6 @@ namespace backgroundr.view.windows.parameters
             else {
                 _startupService.DisableAutomaticStartup();
             }
-
-            _commandDispatcher.Dispatch(new ScheduleNextDesktopBackgroundImageChange());
 
             Close?.Invoke();
         }
