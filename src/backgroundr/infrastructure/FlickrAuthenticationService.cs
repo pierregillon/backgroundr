@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics;
-using backgroundr.application;
+using System.Runtime.InteropServices;
 using backgroundr.domain;
 using FlickrNet;
 
@@ -21,7 +21,7 @@ namespace backgroundr.infrastructure
         {
             _requestToken = _flickr.OAuthGetRequestToken("oob");
             var url = _flickr.OAuthCalculateAuthorizationUrl(_requestToken.Token, AuthLevel.Read);
-            Process.Start(url);
+            OpenBrowser(url);
         }
 
         public FlickrPrivateAccess FinalizeAuthentication(string verifier)
@@ -33,6 +33,29 @@ namespace backgroundr.infrastructure
                 OAuthAccessToken = accessToken.Token,
                 OAuthAccessTokenSecret = _encryptor.Encrypt(accessToken.TokenSecret)
             };
+        }
+
+        public static void OpenBrowser(string url)
+        {
+            try {
+                Process.Start(url);
+            }
+            catch {
+                // hack because of this: https://github.com/dotnet/corefx/issues/10361
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+                    url = url.Replace("&", "^&");
+                    Process.Start(new ProcessStartInfo("cmd", $"/c start {url}") { CreateNoWindow = true });
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
+                    Process.Start("xdg-open", url);
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) {
+                    Process.Start("open", url);
+                }
+                else {
+                    throw;
+                }
+            }
         }
     }
 }

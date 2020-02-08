@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using backgroundr.application;
+using backgroundr.daemon.windows;
 using backgroundr.domain;
 using backgroundr.infrastructure;
 using ddd_cqrs;
@@ -16,7 +17,7 @@ namespace backgroundr.daemon
                 configuration.For<IFileService>().Use<FileService>();
 
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
-                    configuration.For<IDesktopBackgroundImageUpdater>().Use<WindowsDesktopBackgroundImageUpdater>();
+                    configuration.For<IDesktopBackgroundImageUpdater>().Use<DirectRegistryDesktopBackgroundImageUpdater>();
                 }
                 else {
                     throw new Exception("This os version is not supported.");
