@@ -14,7 +14,7 @@ namespace backgroundr.domain
             _fileService = fileService;
         }
 
-        public bool Exists()
+        public bool ConfigurationExists()
         {
             return _fileService.Exists(FILE_NAME);
         }
