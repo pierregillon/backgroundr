@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using backgroundr.domain;
@@ -8,7 +9,7 @@ namespace backgroundr.infrastructure
 {
     public class FileService : IFileService
     {
-        private readonly DateTime _lastRead = DateTime.MinValue;
+        private readonly IDictionary<string, FileWatcher> _dictionary = new Dictionary<string, FileWatcher>();
 
         public T Deserialize<T>(string filePath)
         {
@@ -33,18 +34,22 @@ namespace backgroundr.infrastructure
 
         public void WhenFileChanged(string fileName, Action action)
         {
-            var watcher = new FileSystemWatcher {
-                NotifyFilter = NotifyFilters.LastWrite,
-                Filter = Path.GetFileName(fileName),
-                Path = Directory.GetParent(fileName).FullName
-            };
-            watcher.Changed += (sender, args) => {
-                var lastWriteTime = File.GetLastWriteTime(args.FullPath);
-                if (lastWriteTime != _lastRead) {
-                    action();
-                }
-            };
-            watcher.EnableRaisingEvents = true;
+            if (_dictionary.ContainsKey(fileName)) {
+                throw new InvalidOperationException("File already watched.");
+            }
+
+            _dictionary.Add(fileName, new FileWatcher(fileName, action));
+            _dictionary[fileName].Start();
+        }
+
+        public void StopWhenFileChanged(string fileName)
+        {
+            if (!_dictionary.ContainsKey(fileName)) {
+                throw new InvalidOperationException("File not watched.");
+            }
+
+            _dictionary[fileName].Stop();
+            _dictionary.Remove(fileName);
         }
 
         private static string SafeReadAllText(string filePath, int attempt = 10)

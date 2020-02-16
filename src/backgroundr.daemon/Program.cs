@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Threading;
-using backgroundr.application;
-using backgroundr.domain;
-using backgroundr.infrastructure;
 using ddd_cqrs;
-using StructureMap;
 
 namespace backgroundr.daemon
 {
@@ -15,28 +11,19 @@ namespace backgroundr.daemon
             var exitEvent = new ManualResetEvent(false);
 
             Console.CancelKeyPress += delegate(object sender, ConsoleCancelEventArgs e) {
-                Console.WriteLine("Exiting daemon ...");
                 e.Cancel = true;
                 exitEvent.Set();
             };
 
-            if (Initialize(Bootstrap.BuildContainer())) {
-                exitEvent.WaitOne();
-            }
-        }
-
-        private static bool Initialize(IContainer container)
-        {
+            var container = Bootstrap.BuildContainer();
             var logger = container.GetInstance<ILogger>();
             logger.Log("Starting daemon ...");
             var daemon = container.GetInstance<Daemon>();
             container.Inject(daemon.ReadFileConfiguration());
-            daemon.WatchForConfigurationChange(flickrParameters => {
-                container.Inject(flickrParameters);
-                daemon.ScheduleNextBackgroundImageChange();
-            });
-            daemon.ScheduleNextBackgroundImageChange();
-            return true;
+            daemon.Start();
+            exitEvent.WaitOne();
+            logger.Log("Exiting daemon ...");
+            daemon.Stop();
         }
     }
 }

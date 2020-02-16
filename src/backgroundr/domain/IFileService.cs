@@ -9,5 +9,6 @@ namespace backgroundr.domain
         bool Exists(string filePath);
         void Append(string fileName, string content);
         void WhenFileChanged(string fileName, Action action);
+        void StopWhenFileChanged(string fileName);
     }
 }

@@ -40,12 +40,16 @@ namespace backgroundr.daemon
                 configuration.For<ICommandDispatcher>().Use<StructureMapCommandDispatcher>();
                 configuration.For<ICommandHandler<ChangeDesktopBackgroundImageRandomly>>().Use<ChangeDesktopBackgroundImageRandomlyHandler>().Singleton();
                 configuration.For<ICommandHandler<ScheduleNextDesktopBackgroundImageChange>>().Use<ScheduleNextDesktopBackgroundImageChangeHandler>();
+                configuration.For<ICommandHandler<ReloadFileConfigurationCommand>>().Use<ReloadFileConfigurationCommandHandler>();
                 configuration.For<ICommandDispatchScheduler>().Use<CommandDispatchScheduler>().Singleton();
                 configuration.For<IEventEmitter>().Use<StructureMapEventEmitter>();
-                configuration.For<IEventListener<DesktopBackgroundImageUpdated>>().Use<Scheduler>();
+                configuration.For<IEventListener<DesktopBackgroundImageUpdated>>().Use<ProcessManager>();
+                configuration.For<IEventListener<FlickrConfigurationFileChanged>>().Use<ProcessManager>();
+                configuration.For<IEventListener<FileConfigurationReloaded>>().Use<ProcessManager>();
                 configuration.For<FlickrParameters>().Singleton();
                 configuration.For<ILogger>().Use<ConsoleLogger>();
                 configuration.For(typeof(ICommandHandler<>)).DecorateAllWith(typeof(LoggerCommandHandlerDecorator<>));
+                configuration.For(typeof(IEventListener<>)).DecorateAllWith(typeof(LoggerEventListenerDecorator<>));
             });
         }
     }

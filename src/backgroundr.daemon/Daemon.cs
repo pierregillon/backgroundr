@@ -12,13 +12,20 @@ namespace backgroundr.daemon
         private readonly FlickrAuthenticationService _authenticationService;
         private readonly ILogger _logger;
         private readonly ICommandDispatcher _commandDispatcher;
+        private readonly IEventEmitter _eventEmitter;
 
-        public Daemon(FlickrParametersService flickrParametersService, FlickrAuthenticationService authenticationService, ILogger logger, ICommandDispatcher commandDispatcher)
+        public Daemon(
+            FlickrParametersService flickrParametersService,
+            FlickrAuthenticationService authenticationService,
+            ILogger logger,
+            ICommandDispatcher commandDispatcher,
+            IEventEmitter eventEmitter)
         {
             _flickrParametersService = flickrParametersService;
             _authenticationService = authenticationService;
             _logger = logger;
             _commandDispatcher = commandDispatcher;
+            _eventEmitter = eventEmitter;
         }
 
         public FlickrParameters ReadFileConfiguration()
@@ -31,14 +38,22 @@ namespace backgroundr.daemon
             }
         }
 
-        public void WatchForConfigurationChange(Action<FlickrParameters> changed)
+        public void Start()
         {
-            _flickrParametersService.OnChange(changed);
+            _flickrParametersService.FlickrConfigurationFileChanged += OnFlickrConfigurationFileChanged;
+            _flickrParametersService.SubscribeToChange();
+            _commandDispatcher.Dispatch(new ScheduleNextDesktopBackgroundImageChange());
         }
 
-        public void ScheduleNextBackgroundImageChange()
+        public void Stop()
         {
-            _commandDispatcher.Dispatch(new ScheduleNextDesktopBackgroundImageChange());
+            _flickrParametersService.FlickrConfigurationFileChanged -= OnFlickrConfigurationFileChanged;
+            _flickrParametersService.UnsubscribeToChange();
+        }
+
+        private void OnFlickrConfigurationFileChanged()
+        {
+            _eventEmitter.Emit(new FlickrConfigurationFileChanged());
         }
 
         private FlickrParameters ReadExistingConfiguration()

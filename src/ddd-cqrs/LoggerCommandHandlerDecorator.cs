@@ -15,7 +15,7 @@ namespace ddd_cqrs
 
         public async Task Handle(T command)
         {
-            _logger.Log($"Handling {typeof(T).Name} command");
+            _logger.Log($"[COMMAND]\tHandling {typeof(T).Name}");
             await _decoratedHandler.Handle(command);
         }
     }

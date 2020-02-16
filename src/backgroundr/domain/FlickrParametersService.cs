@@ -9,6 +9,8 @@ namespace backgroundr.domain
 
         private readonly IFileService _fileService;
 
+        public event Action FlickrConfigurationFileChanged;
+
         public FlickrParametersService(IFileService fileService)
         {
             _fileService = fileService;
@@ -29,9 +31,14 @@ namespace backgroundr.domain
             _fileService.Serialize(parameters, FILE_NAME);
         }
 
-        public void OnChange(Action<FlickrParameters> changed)
+        public void SubscribeToChange()
         {
-            _fileService.WhenFileChanged(FILE_NAME, () => { changed(Read()); });
+            _fileService.WhenFileChanged(FILE_NAME, () => { FlickrConfigurationFileChanged?.Invoke(); });
+        }
+
+        public void UnsubscribeToChange()
+        {
+            _fileService.StopWhenFileChanged(FILE_NAME);
         }
     }
 }
