@@ -186,7 +186,7 @@ namespace backgroundr.tests
             await _handler.Handle(new ChangeDesktopBackgroundImageRandomly());
 
             // Assert
-            _fileService.Received(1).Serialize(Arg.Any<FlickrParameters>(), Arg.Is<string>(x=>x.EndsWith(".config")));
+            _fileService.Received(1).Serialize(Arg.Any<FlickrParameters>(), Arg.Is<string>(x=>x.EndsWith(".backgroundr")));
         }
     }
 }

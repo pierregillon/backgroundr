@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -9,31 +7,30 @@ namespace backgroundr.view
 {
     public class FlickrParametersService
     {
+        private static readonly string FILE_NAME = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".backgroundr");
+
         public FlickrParameters Read()
         {
-            return JsonConvert.DeserializeObject<FlickrParameters>(File.ReadAllText(FindDaemonConfigurationFile()));
+            return JsonConvert.DeserializeObject<FlickrParameters>(File.ReadAllText(FILE_NAME));
         }
 
         public void Save(FlickrParameters parameters)
         {
             var newJson = JObject.FromObject(parameters);
-            var oldJson = JObject.Parse(File.ReadAllText(FindDaemonConfigurationFile()));
+            var oldJson = JObject.Parse(File.ReadAllText(FILE_NAME));
 
             oldJson.Merge(newJson, new JsonMergeSettings {
                 MergeArrayHandling = MergeArrayHandling.Union
             });
 
-            File.WriteAllText(FindDaemonConfigurationFile(), oldJson.ToString());
+            File.WriteAllText(FILE_NAME, oldJson.ToString());
         }
 
-        private static string FindDaemonConfigurationFile()
+        public void ResetBackgroundImageLastRefreshDate()
         {
-            var process = Process.GetProcessesByName("backgroundr.daemon").FirstOrDefault();
-            if (process == null) {
-                throw new InvalidOperationException("Daemon process was not found");
-            }
-
-            return Path.Combine(process.StartInfo.WorkingDirectory, ".config");
+            var json = JObject.Parse(File.ReadAllText(FILE_NAME));
+            json.Remove(nameof(FlickrParameters.BackgroundImageLastRefreshDate));
+            File.WriteAllText(FILE_NAME, json.ToString());
         }
     }
 }

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using backgroundr.view.mvvm;
 using backgroundr.view.services;
+using backgroundr.view.windows.parameters;
 using ICommand = System.Windows.Input.ICommand;
 
 namespace backgroundr.view.windows.taskbar
@@ -18,7 +19,7 @@ namespace backgroundr.view.windows.taskbar
             CommandAction = RandomlyChangeBackgroundImage
         };
         public ICommand OpenParametersWindowCommand => new DelegateCommand {
-            CanExecuteFunc = () => Application.Current.MainWindow == null,
+            CanExecuteFunc = () => Application.Current.MainWindow is ParametersWindow == false,
             CommandAction = () => {
                 Application.Current.MainWindow = _container.GetInstance<parameters.ParametersWindow>();
                 Application.Current.MainWindow.Show();
@@ -49,10 +50,7 @@ namespace backgroundr.view.windows.taskbar
         {
             try {
                 ChangingBackground = true;
-
-                var parameters = _flickrParametersService.Read();
-                parameters.BackgroundImageLastRefreshDate = null;
-                _flickrParametersService.Save(parameters);
+                _flickrParametersService.ResetBackgroundImageLastRefreshDate();
             }
             catch (Exception ex) {
                 File.AppendAllText("logs.txt", $"{DateTime.Now} - ERROR : " + ex + Environment.NewLine);

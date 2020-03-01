@@ -96,7 +96,8 @@ namespace backgroundr.view.windows.parameters
             AutomaticallyStart = _startupService.IsApplicationStartingOnSystemStartup();
 
             _flickrParameters = _flickrParametersService.Read();
-
+            UserId = _flickrParameters.UserId;
+            Tags = _flickrParameters.Tags;
             SelectedPeriod = Periods.FirstOrDefault(x => x.Value == _flickrParameters.RefreshPeriod);
             PrivateAccess = _flickrParameters.PrivateAccess;
         }

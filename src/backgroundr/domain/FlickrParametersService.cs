@@ -6,7 +6,7 @@ namespace backgroundr.domain
 {
     public class FlickrParametersService
     {
-        private static readonly string FILE_NAME = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".config");
+        private static readonly string FILE_NAME = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".backgroundr");
         
         private readonly IFileService _fileService;
         private FileWatcher _fileWatching;
