@@ -14,7 +14,7 @@ namespace ddd_cqrs {
 
         public async Task On(T @event)
         {
-            _logger.Log($"[EVENT]\tHandling {typeof(T).Name}");
+            _logger.Log($"[ EVENT ]\tHandling {typeof(T).Name}");
             await _decoratedListener.On(@event);
         }
     }

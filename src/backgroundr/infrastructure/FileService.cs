@@ -32,7 +32,7 @@ namespace backgroundr.infrastructure
             File.AppendAllText(fileName, content);
         }
 
-        public void WhenFileChanged(string fileName, Action action)
+        public FileWatcher WhenFileChanged(string fileName, Action action)
         {
             if (_dictionary.ContainsKey(fileName)) {
                 throw new InvalidOperationException("File already watched.");
@@ -40,6 +40,7 @@ namespace backgroundr.infrastructure
 
             _dictionary.Add(fileName, new FileWatcher(fileName, action));
             _dictionary[fileName].Start();
+            return _dictionary[fileName];
         }
 
         public void StopWhenFileChanged(string fileName)

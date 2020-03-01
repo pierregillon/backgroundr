@@ -4,7 +4,11 @@ using ddd_cqrs;
 
 namespace backgroundr.application
 {
-    public class ProcessManager : IEventListener<DesktopBackgroundImageUpdated>, IEventListener<FlickrConfigurationFileChanged>, IEventListener<FileConfigurationReloaded>
+    public class ProcessManager :
+        IEventListener<DesktopBackgroundImageUpdated>,
+        IEventListener<DesktopBackgroundImageUpdateFailed>,
+        IEventListener<FlickrConfigurationFileChanged>,
+        IEventListener<FileConfigurationReloaded>
     {
         private readonly ICommandDispatcher _commandDispatcher;
 
@@ -14,6 +18,11 @@ namespace backgroundr.application
         }
 
         public async Task On(DesktopBackgroundImageUpdated @event)
+        {
+            await _commandDispatcher.Dispatch(new ScheduleNextDesktopBackgroundImageChange());
+        }
+
+        public async Task On(DesktopBackgroundImageUpdateFailed @event)
         {
             await _commandDispatcher.Dispatch(new ScheduleNextDesktopBackgroundImageChange());
         }

@@ -1,13 +1,15 @@
 ﻿using System;
 using System.IO;
+using backgroundr.infrastructure;
 
 namespace backgroundr.domain
 {
     public class FlickrParametersService
     {
         private static readonly string FILE_NAME = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ".config");
-
+        
         private readonly IFileService _fileService;
+        private FileWatcher _fileWatching;
 
         public event Action FlickrConfigurationFileChanged;
 
@@ -28,12 +30,16 @@ namespace backgroundr.domain
 
         public void Save(FlickrParameters parameters)
         {
+            _fileWatching?.Pause();
             _fileService.Serialize(parameters, FILE_NAME);
+            _fileWatching?.Start();
         }
 
         public void SubscribeToChange()
         {
-            _fileService.WhenFileChanged(FILE_NAME, () => { FlickrConfigurationFileChanged?.Invoke(); });
+            _fileWatching = _fileService.WhenFileChanged(FILE_NAME, () => {
+                FlickrConfigurationFileChanged?.Invoke();
+            });
         }
 
         public void UnsubscribeToChange()

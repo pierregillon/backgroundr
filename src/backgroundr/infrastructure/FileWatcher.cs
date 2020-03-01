@@ -29,6 +29,11 @@ namespace backgroundr.infrastructure
             _watcher.EnableRaisingEvents = true;
         }
 
+        public void Pause()
+        {
+            _watcher.EnableRaisingEvents = false;
+        }
+
         public void Stop()
         {
             _watcher.EnableRaisingEvents = false;

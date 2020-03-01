@@ -10,8 +10,6 @@ namespace backgroundr.application
 {
     public class ChangeDesktopBackgroundImageRandomlyHandler : ICommandHandler<ChangeDesktopBackgroundImageRandomly>
     {
-        private readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(1, 1);
-
         private readonly IDesktopBackgroundImageUpdater _desktopBackgroundImageUpdater;
         private readonly IPhotoProvider _photoProvider;
         private readonly IFileDownloader _fileDownloader;
@@ -44,58 +42,47 @@ namespace backgroundr.application
         }
 
         // ----- Public methods
+
         public async Task Handle(ChangeDesktopBackgroundImageRandomly command)
         {
-            await AssertSingleExecution(async () => {
-                await UpdateDesktopBackgroundImageToRandomPhoto();
-            });
+            await UpdateDesktopBackgroundImageToRandomPhoto();
         }
 
-        // ----- Internal logics
+        // ----- Internal logic
         private async Task UpdateDesktopBackgroundImageToRandomPhoto()
         {
             try {
-                var photoUrl = await SelectRandomPhoto();
-                if (string.IsNullOrEmpty(photoUrl) == false) {
-                    var localFilePath = await _fileDownloader.Download(photoUrl);
-                    _desktopBackgroundImageUpdater.ChangeBackgroundImage(localFilePath, PicturePosition.Fit);
-                }
-                else {
-                    throw new NoPhotoFound(_flickrParameters.UserId, _flickrParameters.Tags);
-                }
-            }
-            finally {
-                // Even if error occurred, we send event that background image updated.
+                var photoUrl = await SelectRandomPhotoUrl();
+                await ChangeBackgroundImageToPhotoUrl(photoUrl);
                 SaveLastUpdateDateToNow();
                 _eventEmitter.Emit(new DesktopBackgroundImageUpdated());
             }
+            catch {
+                SaveLastUpdateDateToNow();
+                _eventEmitter.Emit(new DesktopBackgroundImageUpdateFailed());
+                throw;
+            }
         }
-        private async Task<string> SelectRandomPhoto()
+
+        private async Task<string> SelectRandomPhotoUrl()
         {
             var photos = await _photoProvider.GetPhotos();
             if (photos.Any() == false) {
-                return null;
+                throw new NoPhotoFound(_flickrParameters.UserId, _flickrParameters.Tags);
             }
-            var photoIndex = _random.RandomInteger(photos.Count);
-            return photos.ElementAt(photoIndex);
+            return photos.ElementAt(_random.RandomInteger(photos.Count));
         }
+
+        private async Task ChangeBackgroundImageToPhotoUrl(string photoUrl)
+        {
+            var localFilePath = await _fileDownloader.Download(photoUrl);
+            _desktopBackgroundImageUpdater.ChangeBackgroundImage(localFilePath, PicturePosition.Fit);
+        }
+
         private void SaveLastUpdateDateToNow()
         {
             _flickrParameters.BackgroundImageLastRefreshDate = _clock.Now();
             _flickrParametersService.Save(_flickrParameters);
-        }
-
-        // ----- Utils
-        private async Task AssertSingleExecution(Func<Task> action)
-        {
-            if (await _semaphoreSlim.WaitAsync(1)) {
-                try {
-                    await action();
-                }
-                finally {
-                    _semaphoreSlim.Release();
-                }
-            }
         }
     }
 }

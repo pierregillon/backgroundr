@@ -14,7 +14,6 @@ namespace backgroundr.daemon
         public static Container BuildContainer()
         {
             return new Container(configuration => {
-                configuration.For<IFileService>().Use<FileService>();
 
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
                     configuration.For<IDesktopBackgroundImageUpdater>().Use<DirectRegistryDesktopBackgroundImageUpdater>();
@@ -33,23 +32,25 @@ namespace backgroundr.daemon
                     .Ctor<string>("apiSecret").Is("ZDFmOTlkOWFhNzQ1Yzg1ZQ==")
                     .Singleton();
 
+                configuration.For<IFileService>().Use<FileService>().Singleton();
+                configuration.For<FlickrParametersService>().Singleton();
+                configuration.For<FlickrParameters>().Singleton();
                 configuration.For<IFileDownloader>().Use<HttpFileDownloader>();
                 configuration.For<IRandom>().Use<PseudoRandom>();
                 configuration.For<IClock>().Use<DefaultClock>();
                 configuration.For<IEncryptor>().Use<AesEncryptor>().Ctor<string>("encryptionKey").Is(Environment.MachineName);
                 configuration.For<ICommandDispatcher>().Use<StructureMapCommandDispatcher>();
-                configuration.For<ICommandHandler<ChangeDesktopBackgroundImageRandomly>>().Use<ChangeDesktopBackgroundImageRandomlyHandler>().Singleton();
+                configuration.For<ICommandHandler<ChangeDesktopBackgroundImageRandomly>>().Use<ChangeDesktopBackgroundImageRandomlyHandler>();
                 configuration.For<ICommandHandler<ScheduleNextDesktopBackgroundImageChange>>().Use<ScheduleNextDesktopBackgroundImageChangeHandler>();
                 configuration.For<ICommandHandler<ReloadFileConfigurationCommand>>().Use<ReloadFileConfigurationCommandHandler>();
                 configuration.For<ICommandDispatchScheduler>().Use<CommandDispatchScheduler>().Singleton();
                 configuration.For<IEventEmitter>().Use<StructureMapEventEmitter>();
                 configuration.For<IEventListener<DesktopBackgroundImageUpdated>>().Use<ProcessManager>();
+                configuration.For<IEventListener<DesktopBackgroundImageUpdateFailed>>().Use<ProcessManager>();
                 configuration.For<IEventListener<FlickrConfigurationFileChanged>>().Use<ProcessManager>();
                 configuration.For<IEventListener<FileConfigurationReloaded>>().Use<ProcessManager>();
-                configuration.For<FlickrParameters>().Singleton();
                 configuration.For<ILogger>().Use<ConsoleLogger>();
                 configuration.For(typeof(ICommandHandler<>)).DecorateAllWith(typeof(LoggerCommandHandlerDecorator<>));
-                configuration.For(typeof(IEventListener<>)).DecorateAllWith(typeof(LoggerEventListenerDecorator<>));
             });
         }
     }

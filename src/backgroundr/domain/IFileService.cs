@@ -1,4 +1,5 @@
 using System;
+using backgroundr.infrastructure;
 
 namespace backgroundr.domain
 {
@@ -8,7 +9,7 @@ namespace backgroundr.domain
         void Serialize<T>(T obj, string filePath);
         bool Exists(string filePath);
         void Append(string fileName, string content);
-        void WhenFileChanged(string fileName, Action action);
+        FileWatcher WhenFileChanged(string fileName, Action action);
         void StopWhenFileChanged(string fileName);
     }
 }
