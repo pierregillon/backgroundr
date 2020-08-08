@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using backgroundr.application.changeDesktopBackgroundImageRandomly;
 using backgroundr.domain;
@@ -27,10 +28,15 @@ namespace backgroundr.application.scheduleNextDesktopBackgroundImageChange
         public async Task Handle(ScheduleNextDesktopBackgroundImageChangeCommand command)
         {
             await _commandDispatcherScheduler.CancelAll();
+
+            if (_flickrParameters.RefreshPeriod <= TimeSpan.Zero) {
+                return;
+            }
+
             if (_flickrParameters.BackgroundImageLastRefreshDate.HasValue) {
                 var nextRefreshDate = _flickrParameters.BackgroundImageLastRefreshDate.Value.Add(_flickrParameters.RefreshPeriod);
+                _logger.Log($"Next background image change planned on {nextRefreshDate}");
                 await _commandDispatcherScheduler.Schedule(new ChangeDesktopBackgroundImageRandomlyCommand(), nextRefreshDate);
-                this._logger.Log($"Next background image change planned on {nextRefreshDate}");
             }
             else {
                 await _commandDispatcher.Dispatch(new ChangeDesktopBackgroundImageRandomlyCommand());
