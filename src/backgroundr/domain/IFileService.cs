@@ -1,15 +1,14 @@
 using System;
-using backgroundr.infrastructure;
 
 namespace backgroundr.domain
 {
     public interface IFileService
     {
-        T Deserialize<T>(string filePath);
-        void Serialize<T>(T obj, string filePath);
+        string Read(string filePath);
+        void Write(string filePath, string content);
+        void Append(string filePath, string content);
         bool Exists(string filePath);
-        void Append(string fileName, string content);
-        FileWatcher WhenFileChanged(string fileName, Action action);
-        void StopWhenFileChanged(string fileName);
+        IFileWatching SubscribeToFileChange(string filePath, Action onModified);
+        void UnsubscribeToFileChange(string filePath);
     }
 }

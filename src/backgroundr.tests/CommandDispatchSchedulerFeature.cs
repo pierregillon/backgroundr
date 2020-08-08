@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Threading.Tasks;
 using backgroundr.application;
+using backgroundr.application.changeDesktopBackgroundImageRandomly;
 using backgroundr.domain;
 using ddd_cqrs;
 using NSubstitute;
@@ -39,12 +40,12 @@ namespace backgroundr.tests
             _clock.Now().Returns(TheDate(now));
 
             // Act
-            await _commandDispatchScheduler.Schedule(new ChangeDesktopBackgroundImageRandomly(), TheDate(nextRefreshDate));
+            await _commandDispatchScheduler.Schedule(new ChangeDesktopBackgroundImageRandomlyCommand(), TheDate(nextRefreshDate));
 
             // Assert
             await _commandDispatcher
                 .Received(1)
-                .Dispatch(Arg.Any<ChangeDesktopBackgroundImageRandomly>());
+                .Dispatch(Arg.Any<ChangeDesktopBackgroundImageRandomlyCommand>());
         }
 
         [Theory]
@@ -55,13 +56,13 @@ namespace backgroundr.tests
             _clock.Now().Returns(TheDate(now));
 
             // Act
-            await _commandDispatchScheduler.Schedule(new ChangeDesktopBackgroundImageRandomly(), TheDate(nextRefreshDate));
+            await _commandDispatchScheduler.Schedule(new ChangeDesktopBackgroundImageRandomlyCommand(), TheDate(nextRefreshDate));
             await Task.Delay(TimeDifferenceBetween(now, nextRefreshDate));
 
             // Assert
             await _commandDispatcher
                 .Received(1)
-                .Dispatch(Arg.Any<ChangeDesktopBackgroundImageRandomly>());
+                .Dispatch(Arg.Any<ChangeDesktopBackgroundImageRandomlyCommand>());
         }
 
         [Theory]
@@ -73,12 +74,12 @@ namespace backgroundr.tests
             _clock.Now().Returns(TheDate(now));
 
             // Act
-            await _commandDispatchScheduler.Schedule(new ChangeDesktopBackgroundImageRandomly(), TheDate(nextRefreshDate));
+            await _commandDispatchScheduler.Schedule(new ChangeDesktopBackgroundImageRandomlyCommand(), TheDate(nextRefreshDate));
 
             // Assert
             await _commandDispatcher
                 .Received(0)
-                .Dispatch(Arg.Any<ChangeDesktopBackgroundImageRandomly>());
+                .Dispatch(Arg.Any<ChangeDesktopBackgroundImageRandomlyCommand>());
         }
 
         [Theory]
@@ -89,14 +90,14 @@ namespace backgroundr.tests
             _clock.Now().Returns(TheDate(now));
 
             // Act
-            await _commandDispatchScheduler.Schedule(new ChangeDesktopBackgroundImageRandomly(), TheDate(nextRefreshDate));
+            await _commandDispatchScheduler.Schedule(new ChangeDesktopBackgroundImageRandomlyCommand(), TheDate(nextRefreshDate));
             await _commandDispatchScheduler.CancelAll();
             await Task.Delay(TimeDifferenceBetween(now, nextRefreshDate));
 
             // Assert
             await _commandDispatcher
                 .Received(0)
-                .Dispatch(Arg.Any<ChangeDesktopBackgroundImageRandomly>());
+                .Dispatch(Arg.Any<ChangeDesktopBackgroundImageRandomlyCommand>());
         }
 
         // ----- Utils

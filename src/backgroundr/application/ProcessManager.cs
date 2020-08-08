@@ -1,5 +1,7 @@
 using System.Threading.Tasks;
-using backgroundr.domain;
+using backgroundr.application.reloadFileConfiguration;
+using backgroundr.application.scheduleNextDesktopBackgroundImageChange;
+using backgroundr.domain.events;
 using ddd_cqrs;
 
 namespace backgroundr.application
@@ -7,7 +9,7 @@ namespace backgroundr.application
     public class ProcessManager :
         IEventListener<DesktopBackgroundImageUpdated>,
         IEventListener<DesktopBackgroundImageUpdateFailed>,
-        IEventListener<FlickrConfigurationFileChanged>,
+        IEventListener<FileConfigurationModified>,
         IEventListener<FileConfigurationReloaded>
     {
         private readonly ICommandDispatcher _commandDispatcher;
@@ -19,22 +21,22 @@ namespace backgroundr.application
 
         public async Task On(DesktopBackgroundImageUpdated @event)
         {
-            await _commandDispatcher.Dispatch(new ScheduleNextDesktopBackgroundImageChange());
+            await _commandDispatcher.Dispatch(new ScheduleNextDesktopBackgroundImageChangeCommand());
         }
 
         public async Task On(DesktopBackgroundImageUpdateFailed @event)
         {
-            await _commandDispatcher.Dispatch(new ScheduleNextDesktopBackgroundImageChange());
+            await _commandDispatcher.Dispatch(new ScheduleNextDesktopBackgroundImageChangeCommand());
         }
 
-        public async Task On(FlickrConfigurationFileChanged @event)
+        public async Task On(FileConfigurationModified @event)
         {
             await _commandDispatcher.Dispatch(new ReloadFileConfigurationCommand());
         }
 
         public async Task On(FileConfigurationReloaded @event)
         {
-            await _commandDispatcher.Dispatch(new ScheduleNextDesktopBackgroundImageChange());
+            await _commandDispatcher.Dispatch(new ScheduleNextDesktopBackgroundImageChangeCommand());
         }
     }
 }

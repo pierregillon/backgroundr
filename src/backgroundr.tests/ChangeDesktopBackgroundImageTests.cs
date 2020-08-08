@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using backgroundr.application;
+using backgroundr.application.changeDesktopBackgroundImageRandomly;
 using backgroundr.domain;
+using backgroundr.domain.events;
 using backgroundr.infrastructure;
 using ddd_cqrs;
 using NSubstitute;
@@ -23,7 +24,7 @@ namespace backgroundr.tests
 
         private readonly IDesktopBackgroundImageUpdater _desktopImageBackgroundUpdater;
         private readonly IPhotoProvider _photoProvider;
-        private readonly ChangeDesktopBackgroundImageRandomlyHandler _handler;
+        private readonly ChangeDesktopBackgroundImageRandomlyCommandHandler _commandHandler;
         private readonly IEventEmitter _eventEmitter;
         private readonly FlickrParameters _flickrParameters;
         private readonly IClock _clock;
@@ -41,7 +42,7 @@ namespace backgroundr.tests
             _clock = Substitute.For<IClock>();
             _fileService = Substitute.For<IFileService>();
 
-            _handler = new ChangeDesktopBackgroundImageRandomlyHandler(
+            _commandHandler = new ChangeDesktopBackgroundImageRandomlyCommandHandler(
                 _desktopImageBackgroundUpdater,
                 _photoProvider,
                 fileDownloader,
@@ -49,7 +50,7 @@ namespace backgroundr.tests
                 _eventEmitter,
                 _flickrParameters,
                 _clock,
-                new FlickrParametersService(_fileService)
+                new FlickrParametersService(_fileService, _eventEmitter)
             );
         }
 
@@ -63,7 +64,7 @@ namespace backgroundr.tests
                     .Returns(x => NO_IMAGES);
 
                 // Acts
-                await _handler.Handle(new ChangeDesktopBackgroundImageRandomly());
+                await _commandHandler.Handle(new ChangeDesktopBackgroundImageRandomlyCommand());
             });
         }
 
@@ -83,7 +84,7 @@ namespace backgroundr.tests
                 .Returns(x => Task.FromResult<IReadOnlyCollection<string>>(availableImages));
 
             // Acts
-            await _handler.Handle(new ChangeDesktopBackgroundImageRandomly());
+            await _commandHandler.Handle(new ChangeDesktopBackgroundImageRandomlyCommand());
 
             // Asserts
             _desktopImageBackgroundUpdater
@@ -100,7 +101,7 @@ namespace backgroundr.tests
                 .Returns(x => SOME_IMAGES);
 
             // Act
-            await _handler.Handle(new ChangeDesktopBackgroundImageRandomly());
+            await _commandHandler.Handle(new ChangeDesktopBackgroundImageRandomlyCommand());
 
             // Assert
             _desktopImageBackgroundUpdater
@@ -122,13 +123,13 @@ namespace backgroundr.tests
             // Act
             var tasks = new[] {
                 Task.Factory.StartNew(async () => {
-                    await _handler.Handle(new ChangeDesktopBackgroundImageRandomly());
+                    await _commandHandler.Handle(new ChangeDesktopBackgroundImageRandomlyCommand());
                 }),
                 Task.Factory.StartNew(async () => {
-                    await _handler.Handle(new ChangeDesktopBackgroundImageRandomly());
+                    await _commandHandler.Handle(new ChangeDesktopBackgroundImageRandomlyCommand());
                 }),
                 Task.Factory.StartNew(async () => {
-                    await _handler.Handle(new ChangeDesktopBackgroundImageRandomly());
+                    await _commandHandler.Handle(new ChangeDesktopBackgroundImageRandomlyCommand());
                 })
             };
 
@@ -149,7 +150,7 @@ namespace backgroundr.tests
                 .Returns(x => SOME_IMAGES);
 
             // Act
-            await _handler.Handle(new ChangeDesktopBackgroundImageRandomly());
+            await _commandHandler.Handle(new ChangeDesktopBackgroundImageRandomlyCommand());
 
             // Assert
             _eventEmitter
@@ -167,7 +168,7 @@ namespace backgroundr.tests
                 .Returns(x => SOME_IMAGES);
 
             // Act
-            await _handler.Handle(new ChangeDesktopBackgroundImageRandomly());
+            await _commandHandler.Handle(new ChangeDesktopBackgroundImageRandomlyCommand());
 
             // Assert
             Assert.Equal(NOW, _flickrParameters.BackgroundImageLastRefreshDate);
@@ -183,10 +184,10 @@ namespace backgroundr.tests
                 .Returns(x => SOME_IMAGES);
 
             // Act
-            await _handler.Handle(new ChangeDesktopBackgroundImageRandomly());
+            await _commandHandler.Handle(new ChangeDesktopBackgroundImageRandomlyCommand());
 
             // Assert
-            _fileService.Received(1).Serialize(Arg.Any<FlickrParameters>(), Arg.Is<string>(x=>x.EndsWith(".backgroundr")));
+            _fileService.Received(1).Write(Arg.Is<string>(x=>x.EndsWith(".backgroundr")), Arg.Any<string>());
         }
     }
 }

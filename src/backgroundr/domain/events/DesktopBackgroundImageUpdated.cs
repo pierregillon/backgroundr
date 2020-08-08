@@ -1,4 +1,4 @@
-namespace backgroundr.domain
+namespace backgroundr.domain.events
 {
     public class DesktopBackgroundImageUpdated { }
 }

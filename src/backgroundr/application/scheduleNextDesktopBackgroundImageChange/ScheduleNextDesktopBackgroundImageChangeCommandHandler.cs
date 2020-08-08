@@ -1,34 +1,39 @@
 using System.Threading.Tasks;
+using backgroundr.application.changeDesktopBackgroundImageRandomly;
 using backgroundr.domain;
 using ddd_cqrs;
 
-namespace backgroundr.application
+namespace backgroundr.application.scheduleNextDesktopBackgroundImageChange
 {
-    public class ScheduleNextDesktopBackgroundImageChangeHandler : ICommandHandler<ScheduleNextDesktopBackgroundImageChange>
+    public class ScheduleNextDesktopBackgroundImageChangeCommandHandler : ICommandHandler<ScheduleNextDesktopBackgroundImageChangeCommand>
     {
         private readonly ICommandDispatchScheduler _commandDispatcherScheduler;
         private readonly ICommandDispatcher _commandDispatcher;
         private readonly FlickrParameters _flickrParameters;
+        private readonly ILogger _logger;
 
-        public ScheduleNextDesktopBackgroundImageChangeHandler(
+        public ScheduleNextDesktopBackgroundImageChangeCommandHandler(
             ICommandDispatchScheduler commandDispatcherScheduler,
             ICommandDispatcher commandDispatcher,
-            FlickrParameters flickrParameters)
+            FlickrParameters flickrParameters,
+            ILogger logger)
         {
             _commandDispatcherScheduler = commandDispatcherScheduler;
             _commandDispatcher = commandDispatcher;
             _flickrParameters = flickrParameters;
+            _logger = logger;
         }
 
-        public async Task Handle(ScheduleNextDesktopBackgroundImageChange command)
+        public async Task Handle(ScheduleNextDesktopBackgroundImageChangeCommand command)
         {
             await _commandDispatcherScheduler.CancelAll();
             if (_flickrParameters.BackgroundImageLastRefreshDate.HasValue) {
                 var nextRefreshDate = _flickrParameters.BackgroundImageLastRefreshDate.Value.Add(_flickrParameters.RefreshPeriod);
-                await _commandDispatcherScheduler.Schedule(new ChangeDesktopBackgroundImageRandomly(), nextRefreshDate);
+                await _commandDispatcherScheduler.Schedule(new ChangeDesktopBackgroundImageRandomlyCommand(), nextRefreshDate);
+                this._logger.Log($"Next background image change planned on {nextRefreshDate}");
             }
             else {
-                await _commandDispatcher.Dispatch(new ChangeDesktopBackgroundImageRandomly());
+                await _commandDispatcher.Dispatch(new ChangeDesktopBackgroundImageRandomlyCommand());
             }
         }
     }

@@ -1,14 +1,13 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using backgroundr.domain;
+using backgroundr.domain.events;
 using backgroundr.infrastructure;
 using ddd_cqrs;
 
-namespace backgroundr.application
+namespace backgroundr.application.changeDesktopBackgroundImageRandomly
 {
-    public class ChangeDesktopBackgroundImageRandomlyHandler : ICommandHandler<ChangeDesktopBackgroundImageRandomly>
+    public class ChangeDesktopBackgroundImageRandomlyCommandHandler : ICommandHandler<ChangeDesktopBackgroundImageRandomlyCommand>
     {
         private readonly IDesktopBackgroundImageUpdater _desktopBackgroundImageUpdater;
         private readonly IPhotoProvider _photoProvider;
@@ -21,7 +20,7 @@ namespace backgroundr.application
 
         // ----- Constructor
 
-        public ChangeDesktopBackgroundImageRandomlyHandler(
+        public ChangeDesktopBackgroundImageRandomlyCommandHandler(
             IDesktopBackgroundImageUpdater desktopBackgroundImageUpdater,
             IPhotoProvider photoProvider,
             IFileDownloader fileDownloader,
@@ -43,7 +42,7 @@ namespace backgroundr.application
 
         // ----- Public methods
 
-        public async Task Handle(ChangeDesktopBackgroundImageRandomly command)
+        public async Task Handle(ChangeDesktopBackgroundImageRandomlyCommand command)
         {
             await UpdateDesktopBackgroundImageToRandomPhoto();
         }

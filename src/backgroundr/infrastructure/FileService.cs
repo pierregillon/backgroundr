@@ -3,23 +3,26 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using backgroundr.domain;
-using Newtonsoft.Json;
 
 namespace backgroundr.infrastructure
 {
     public class FileService : IFileService
     {
-        private readonly IDictionary<string, FileWatcher> _dictionary = new Dictionary<string, FileWatcher>();
+        private readonly IDictionary<string, FileWatching> _dictionary = new Dictionary<string, FileWatching>();
 
-        public T Deserialize<T>(string filePath)
+        public string Read(string filePath)
         {
-            return JsonConvert.DeserializeObject<T>(SafeReadAllText(filePath));
+            return SafeReadAllText(filePath);
         }
 
-        public void Serialize<T>(T obj, string filePath)
+        public void Write(string filePath, string content)
         {
-            var json = JsonConvert.SerializeObject(obj, Formatting.Indented);
-            File.WriteAllText(filePath, json);
+            File.WriteAllText(filePath, content);
+        }
+
+        public void Append(string filePath, string content)
+        {
+            File.AppendAllText(filePath, content);
         }
 
         public bool Exists(string filePath)
@@ -27,30 +30,25 @@ namespace backgroundr.infrastructure
             return File.Exists(filePath);
         }
 
-        public void Append(string fileName, string content)
-        {
-            File.AppendAllText(fileName, content);
-        }
-
-        public FileWatcher WhenFileChanged(string fileName, Action action)
+        public IFileWatching SubscribeToFileChange(string fileName, Action onModified)
         {
             if (_dictionary.ContainsKey(fileName)) {
                 throw new InvalidOperationException("File already watched.");
             }
 
-            _dictionary.Add(fileName, new FileWatcher(fileName, action));
+            _dictionary.Add(fileName, new FileWatching(fileName, onModified));
             _dictionary[fileName].Start();
             return _dictionary[fileName];
         }
 
-        public void StopWhenFileChanged(string fileName)
+        public void UnsubscribeToFileChange(string filePath)
         {
-            if (!_dictionary.ContainsKey(fileName)) {
+            if (!_dictionary.ContainsKey(filePath)) {
                 throw new InvalidOperationException("File not watched.");
             }
 
-            _dictionary[fileName].Stop();
-            _dictionary.Remove(fileName);
+            _dictionary[filePath].Stop();
+            _dictionary.Remove(filePath);
         }
 
         private static string SafeReadAllText(string filePath, int attempt = 10)
@@ -58,9 +56,9 @@ namespace backgroundr.infrastructure
             try {
                 return File.ReadAllText(filePath);
             }
-            catch (IOException ex) {
+            catch (IOException) {
                 if (attempt == 0) {
-                    throw ex;
+                    throw;
                 }
 
                 Thread.Sleep(10);

@@ -1,21 +1,23 @@
 ﻿using System;
 using System.IO;
-using backgroundr.infrastructure;
+using backgroundr.domain.events;
+using ddd_cqrs;
+using Newtonsoft.Json;
 
 namespace backgroundr.domain
 {
     public class FlickrParametersService
     {
         private static readonly string FILE_NAME = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".backgroundr");
-        
+
         private readonly IFileService _fileService;
-        private FileWatcher _fileWatching;
+        private readonly IEventEmitter _eventEmitter;
+        private IFileWatching _fileWatching;
 
-        public event Action FlickrConfigurationFileChanged;
-
-        public FlickrParametersService(IFileService fileService)
+        public FlickrParametersService(IFileService fileService, IEventEmitter eventEmitter)
         {
             _fileService = fileService;
+            _eventEmitter = eventEmitter;
         }
 
         public bool ConfigurationExists()
@@ -25,26 +27,25 @@ namespace backgroundr.domain
 
         public FlickrParameters Read()
         {
-            return _fileService.Deserialize<FlickrParameters>(FILE_NAME);
+            return JsonConvert.DeserializeObject<FlickrParameters>(_fileService.Read(FILE_NAME));
         }
 
         public void Save(FlickrParameters parameters)
         {
             _fileWatching?.Pause();
-            _fileService.Serialize(parameters, FILE_NAME);
+            _fileService.Write(FILE_NAME, JsonConvert.SerializeObject(parameters, Formatting.Indented));
             _fileWatching?.Start();
         }
 
         public void SubscribeToChange()
         {
-            _fileWatching = _fileService.WhenFileChanged(FILE_NAME, () => {
-                FlickrConfigurationFileChanged?.Invoke();
-            });
+            _fileWatching = _fileService.SubscribeToFileChange(FILE_NAME, () => _eventEmitter.Emit(new FileConfigurationModified()));
         }
 
         public void UnsubscribeToChange()
         {
-            _fileService.StopWhenFileChanged(FILE_NAME);
+            _fileService.UnsubscribeToFileChange(FILE_NAME);
+            _fileWatching = null;
         }
     }
 }

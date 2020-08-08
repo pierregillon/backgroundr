@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using backgroundr.application;
+using backgroundr.application.changeDesktopBackgroundImageRandomly;
+using backgroundr.application.scheduleNextDesktopBackgroundImageChange;
 using backgroundr.domain;
 using ddd_cqrs;
 using NSubstitute;
@@ -12,7 +14,7 @@ namespace backgroundr.tests
     {
         private static readonly DateTime SOME_DATE = new DateTime(2019, 04, 07);
 
-        private readonly ScheduleNextDesktopBackgroundImageChangeHandler _handler;
+        private readonly ScheduleNextDesktopBackgroundImageChangeCommandHandler _commandHandler;
         private readonly ICommandDispatcher _commandDispatcher;
         private readonly FlickrParameters _parameters;
         private readonly ICommandDispatchScheduler _commandDispatcherScheduler;
@@ -22,10 +24,11 @@ namespace backgroundr.tests
             _parameters = new FlickrParameters();
             _commandDispatcher = Substitute.For<ICommandDispatcher>();
             _commandDispatcherScheduler = Substitute.For<ICommandDispatchScheduler>();
-            _handler = new ScheduleNextDesktopBackgroundImageChangeHandler(
+            _commandHandler = new ScheduleNextDesktopBackgroundImageChangeCommandHandler(
                 _commandDispatcherScheduler,
                 _commandDispatcher,
-                _parameters
+                _parameters,
+                Substitute.For<ILogger>()
             );
         }
 
@@ -36,10 +39,10 @@ namespace backgroundr.tests
             _parameters.BackgroundImageLastRefreshDate = null;
 
             // Act
-            await _handler.Handle(new ScheduleNextDesktopBackgroundImageChange());
+            await _commandHandler.Handle(new ScheduleNextDesktopBackgroundImageChangeCommand());
 
             // Arrange
-            await _commandDispatcher.Received(1).Dispatch(Arg.Any<ChangeDesktopBackgroundImageRandomly>());
+            await _commandDispatcher.Received(1).Dispatch(Arg.Any<ChangeDesktopBackgroundImageRandomlyCommand>());
         }
 
         [Fact]
@@ -50,10 +53,10 @@ namespace backgroundr.tests
             _parameters.RefreshPeriod = TimeSpan.FromHours(1);
 
             // Act
-            await _handler.Handle(new ScheduleNextDesktopBackgroundImageChange());
+            await _commandHandler.Handle(new ScheduleNextDesktopBackgroundImageChangeCommand());
 
             // Arrange
-            await _commandDispatcherScheduler.Received(1).Schedule(Arg.Any<ChangeDesktopBackgroundImageRandomly>(), SOME_DATE.Add(TimeSpan.FromHours(1)));
+            await _commandDispatcherScheduler.Received(1).Schedule(Arg.Any<ChangeDesktopBackgroundImageRandomlyCommand>(), SOME_DATE.Add(TimeSpan.FromHours(1)));
         }
     }
 }

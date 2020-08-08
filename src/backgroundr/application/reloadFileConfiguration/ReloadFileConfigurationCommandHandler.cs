@@ -1,9 +1,10 @@
 using System.Threading.Tasks;
 using backgroundr.domain;
+using backgroundr.domain.events;
 using ddd_cqrs;
 using StructureMap;
 
-namespace backgroundr.application
+namespace backgroundr.application.reloadFileConfiguration
 {
     public class ReloadFileConfigurationCommandHandler : ICommandHandler<ReloadFileConfigurationCommand>
     {
