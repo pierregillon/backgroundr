@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using ddd_cqrs;
 
 namespace backgroundr.daemon
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             var exitEvent = new ManualResetEvent(false);
 
@@ -19,7 +20,7 @@ namespace backgroundr.daemon
             var logger = container.GetInstance<ILogger>();
             logger.Log("Starting daemon ...");
             var daemon = container.GetInstance<Daemon>();
-            container.Inject(daemon.ReadFileConfiguration());
+            container.Inject(await daemon.ReadFileConfiguration());
             daemon.Start();
             exitEvent.WaitOne();
             logger.Log("Exiting daemon ...");

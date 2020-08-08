@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using backgroundr.domain;
 
 namespace backgroundr.infrastructure
@@ -10,19 +11,19 @@ namespace backgroundr.infrastructure
     {
         private readonly IDictionary<string, FileWatching> _dictionary = new Dictionary<string, FileWatching>();
 
-        public string Read(string filePath)
+        public Task<string> Read(string filePath)
         {
             return SafeReadAllText(filePath);
         }
 
-        public void Write(string filePath, string content)
+        public Task Write(string filePath, string content)
         {
-            File.WriteAllText(filePath, content);
+            return File.WriteAllTextAsync(filePath, content);
         }
 
-        public void Append(string filePath, string content)
+        public Task Append(string filePath, string content)
         {
-            File.AppendAllText(filePath, content);
+            return File.AppendAllTextAsync(filePath, content);
         }
 
         public bool Exists(string filePath)
@@ -51,10 +52,10 @@ namespace backgroundr.infrastructure
             _dictionary.Remove(filePath);
         }
 
-        private static string SafeReadAllText(string filePath, int attempt = 10)
+        private static async Task<string> SafeReadAllText(string filePath, int attempt = 10)
         {
             try {
-                return File.ReadAllText(filePath);
+                return await File.ReadAllTextAsync(filePath);
             }
             catch (IOException) {
                 if (attempt == 0) {
@@ -62,7 +63,7 @@ namespace backgroundr.infrastructure
                 }
 
                 Thread.Sleep(10);
-                return SafeReadAllText(filePath, attempt - 1);
+                return await SafeReadAllText(filePath, attempt - 1);
             }
         }
     }

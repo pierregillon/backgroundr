@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using backgroundr.application.scheduleNextDesktopBackgroundImageChange;
 using backgroundr.domain;
 using backgroundr.infrastructure;
@@ -25,13 +26,13 @@ namespace backgroundr.daemon
             _commandDispatcher = commandDispatcher;
         }
 
-        public FlickrParameters ReadFileConfiguration()
+        public async Task<FlickrParameters> ReadFileConfiguration()
         {
             if (!_flickrParametersService.ConfigurationExists()) {
-                return InitializeNewConfiguration();
+                return await InitializeNewConfiguration();
             }
             else {
-                return ReadExistingConfiguration();
+                return await ReadExistingConfiguration();
             }
         }
 
@@ -46,32 +47,32 @@ namespace backgroundr.daemon
             _flickrParametersService.UnsubscribeToChange();
         }
 
-        private FlickrParameters ReadExistingConfiguration()
+        private async Task<FlickrParameters> ReadExistingConfiguration()
         {
             _logger.Log("Configuration file found");
-            return _flickrParametersService.Read();
+            return await _flickrParametersService.Read();
         }
 
-        private FlickrParameters InitializeNewConfiguration()
+        private async Task<FlickrParameters> InitializeNewConfiguration()
         {
             _logger.Log("No configuration file found");
             
-            var token = GetFlickrToken();
+            var token = await GetFlickrToken();
             var flickrParameters = new FlickrParameters {
                 PrivateAccess = token,
                 RefreshPeriod = TimeSpan.FromHours(1),
                 UserId = token.UserId
             };
-            _flickrParametersService.Save(flickrParameters);
+            await _flickrParametersService.Save(flickrParameters);
             return flickrParameters;
         }
 
-        private FlickrPrivateAccess GetFlickrToken()
+        private async Task<FlickrPrivateAccess> GetFlickrToken()
         {
-            _authenticationService.AuthenticateUserInBrowser();
+            await _authenticationService.AuthenticateUserInBrowser();
             Console.Write("Flickr code : ");
             var flickrCode = Console.ReadLine();
-            return _authenticationService.FinalizeAuthentication(flickrCode);
+            return await _authenticationService.FinalizeAuthentication(flickrCode);
         }
     }
 }

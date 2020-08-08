@@ -19,11 +19,10 @@ namespace backgroundr.application.reloadFileConfiguration
             _eventEmitter = eventEmitter;
         }
 
-        public Task Handle(ReloadFileConfigurationCommand command)
+        public async Task Handle(ReloadFileConfigurationCommand command)
         {
-            _container.Inject(_flickrParametersService.Read());
+            _container.Inject(await _flickrParametersService.Read());
             _eventEmitter.Emit(new FileConfigurationReloaded());
-            return Task.CompletedTask;
         }
     }
 }

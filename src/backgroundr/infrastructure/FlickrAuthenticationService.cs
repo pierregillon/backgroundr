@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using backgroundr.domain;
 using FlickrNet;
 
@@ -17,16 +18,16 @@ namespace backgroundr.infrastructure
             _encryptor = encryptor;
         }
 
-        public void AuthenticateUserInBrowser()
+        public async Task AuthenticateUserInBrowser()
         {
-            _requestToken = _flickr.OAuthGetRequestToken("oob");
+            _requestToken = await _flickr.OAuthRequestTokenAsync("oob");
             var url = _flickr.OAuthCalculateAuthorizationUrl(_requestToken.Token, AuthLevel.Read);
             OpenBrowser(url);
         }
 
-        public FlickrPrivateAccess FinalizeAuthentication(string verifier)
+        public async Task<FlickrPrivateAccess> FinalizeAuthentication(string verifier)
         {
-            var accessToken = _flickr.OAuthGetAccessToken(_requestToken, verifier);
+            var accessToken = await _flickr.OAuthAccessTokenAsync(_requestToken.Token, _requestToken.TokenSecret, verifier);
             return new FlickrPrivateAccess {
                 UserId = accessToken.UserId,
                 UserName = accessToken.FullName,

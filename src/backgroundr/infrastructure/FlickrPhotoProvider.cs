@@ -21,30 +21,29 @@ namespace backgroundr.infrastructure
 
         public async Task<IReadOnlyCollection<string>> GetPhotos()
         {
-            return await Task.Run(() => {
-                var flickr = new Flickr(_apiCredentials.ApiToken, _apiCredentials.ApiSecret);
-                if (_flickrParameters.PrivateAccess != null) {
-                    flickr.OAuthAccessToken = _flickrParameters.PrivateAccess.OAuthAccessToken;
-                    flickr.OAuthAccessTokenSecret = _encryptor.Decrypt(_flickrParameters.PrivateAccess.OAuthAccessTokenSecret);
-                    flickr.AuthOAuthCheckToken();
-                }
+            var flickr = new Flickr(_apiCredentials.ApiToken, _apiCredentials.ApiSecret);
+            if (_flickrParameters.PrivateAccess != null)
+            {
+                flickr.OAuthAccessToken = _flickrParameters.PrivateAccess.OAuthAccessToken;
+                flickr.OAuthAccessTokenSecret = _encryptor.Decrypt(_flickrParameters.PrivateAccess.OAuthAccessTokenSecret);
+            }
 
-                var photoCollection = flickr.PhotosSearch(new PhotoSearchOptions {
-                    Tags = _flickrParameters.Tags,
-                    UserId = _flickrParameters.UserId,
-                    PerPage = 500,
-                    ContentType = ContentTypeSearch.PhotosOnly,
-                    MediaType = MediaType.Photos,
-                    SortOrder = PhotoSearchSortOrder.Relevance,
-                    Extras = PhotoSearchExtras.Large2048Url | PhotoSearchExtras.Large1600Url | PhotoSearchExtras.LargeUrl
-                });
-
-                return photoCollection
-                    .Where(x => x.LargeWidth > x.LargeHeight)
-                    .Select(x => x.Large2048Url ?? x.Large1600Url ?? x.LargeUrl)
-                    .Where(x => string.IsNullOrEmpty(x) == false)
-                    .ToArray();
+            var photoCollection = await flickr.PhotosSearchAsync(new PhotoSearchOptions
+            {
+                Tags = _flickrParameters.Tags,
+                UserId = _flickrParameters.UserId,
+                PerPage = 500,
+                ContentType = ContentTypeSearch.PhotosOnly,
+                MediaType = MediaType.Photos,
+                SortOrder = PhotoSearchSortOrder.Relevance,
+                Extras = PhotoSearchExtras.Large2048Url | PhotoSearchExtras.Large1600Url | PhotoSearchExtras.LargeUrl
             });
+
+            return photoCollection
+                .Where(x => x.LargeWidth > x.LargeHeight)
+                .Select(x => x.Large2048Url ?? x.Large1600Url ?? x.LargeUrl)
+                .Where(x => string.IsNullOrEmpty(x) == false)
+                .ToArray();
         }
     }
 }

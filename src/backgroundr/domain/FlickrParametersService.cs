@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 using backgroundr.domain.events;
 using ddd_cqrs;
 using Newtonsoft.Json;
@@ -25,15 +26,15 @@ namespace backgroundr.domain
             return _fileService.Exists(FILE_NAME);
         }
 
-        public FlickrParameters Read()
+        public async Task<FlickrParameters> Read()
         {
-            return JsonConvert.DeserializeObject<FlickrParameters>(_fileService.Read(FILE_NAME));
+            return JsonConvert.DeserializeObject<FlickrParameters>(await _fileService.Read(FILE_NAME));
         }
 
-        public void Save(FlickrParameters parameters)
+        public async Task Save(FlickrParameters parameters)
         {
             _fileWatching?.Pause();
-            _fileService.Write(FILE_NAME, JsonConvert.SerializeObject(parameters, Formatting.Indented));
+            await _fileService.Write(FILE_NAME, JsonConvert.SerializeObject(parameters, Formatting.Indented));
             _fileWatching?.Start();
         }
 

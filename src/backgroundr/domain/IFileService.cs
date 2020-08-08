@@ -1,12 +1,13 @@
 using System;
+using System.Threading.Tasks;
 
 namespace backgroundr.domain
 {
     public interface IFileService
     {
-        string Read(string filePath);
-        void Write(string filePath, string content);
-        void Append(string filePath, string content);
+        Task<string> Read(string filePath);
+        Task Write(string filePath, string content);
+        Task Append(string filePath, string content);
         bool Exists(string filePath);
         IFileWatching SubscribeToFileChange(string filePath, Action onModified);
         void UnsubscribeToFileChange(string filePath);
