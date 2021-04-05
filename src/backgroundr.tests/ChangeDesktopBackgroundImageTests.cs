@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -46,6 +47,7 @@ namespace backgroundr.tests
                 _desktopImageBackgroundUpdater,
                 _photoProvider,
                 fileDownloader,
+                _fileService,
                 new PseudoRandom(),
                 _eventEmitter,
                 _flickrParameters,
@@ -87,9 +89,9 @@ namespace backgroundr.tests
             await _commandHandler.Handle(new ChangeDesktopBackgroundImageRandomlyCommand());
 
             // Asserts
-            _desktopImageBackgroundUpdater
+            await _desktopImageBackgroundUpdater
                 .Received(1)
-                .ChangeBackgroundImage(Arg.Is<string>(value => availableImages.Contains(value)), Arg.Any<PicturePosition>());
+                .ChangeBackgroundImage(Arg.Is<string>(value => availableImages.Select(Path.GetFileName).Contains(Path.GetFileName(value))), Arg.Any<PicturePosition>());
         }
 
         [Fact]

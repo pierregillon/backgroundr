@@ -11,25 +11,19 @@ namespace backgroundr.infrastructure
     {
         private readonly IDictionary<string, FileWatching> _dictionary = new Dictionary<string, FileWatching>();
 
-        public Task<string> Read(string filePath)
+        public Task<string> Read(string filePath) => SafeReadAllText(filePath);
+
+        public Task Write(string filePath, string content) => File.WriteAllTextAsync(filePath, content);
+
+        public Task Append(string filePath, string content) => File.AppendAllTextAsync(filePath, content);
+
+        public Task Move(string source, string destination)
         {
-            return SafeReadAllText(filePath);
+            File.Move(source, destination);
+            return Task.CompletedTask;
         }
 
-        public Task Write(string filePath, string content)
-        {
-            return File.WriteAllTextAsync(filePath, content);
-        }
-
-        public Task Append(string filePath, string content)
-        {
-            return File.AppendAllTextAsync(filePath, content);
-        }
-
-        public bool Exists(string filePath)
-        {
-            return File.Exists(filePath);
-        }
+        public bool Exists(string filePath) => File.Exists(filePath);
 
         public IFileWatching SubscribeToFileChange(string fileName, Action onModified)
         {
