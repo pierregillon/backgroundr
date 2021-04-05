@@ -1,9 +1,10 @@
+using System.Threading.Tasks;
 using backgroundr.infrastructure;
 
 namespace backgroundr.domain
 {
     public interface IDesktopBackgroundImageUpdater
     {
-        void ChangeBackgroundImage(string backgroundPath, PicturePosition picturePosition);
+        Task ChangeBackgroundImage(string backgroundPath, PicturePosition picturePosition);
     }
 }

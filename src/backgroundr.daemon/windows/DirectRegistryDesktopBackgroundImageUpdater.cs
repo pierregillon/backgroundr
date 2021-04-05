@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using backgroundr.domain;
 using backgroundr.infrastructure;
 using Microsoft.Win32;
@@ -15,7 +16,7 @@ namespace backgroundr.daemon.windows
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         private static extern int SystemParametersInfo(int uAction, int uParam, string lpvParam, int fuWinIni);
 
-        public void ChangeBackgroundImage(string backgroundPath, PicturePosition picturePosition)
+        public Task ChangeBackgroundImage(string backgroundPath, PicturePosition picturePosition)
         {
             SystemParametersInfo(SetDesktopWallpaper, 0, backgroundPath, UpdateIniFile | SendWinIniChange);
 
@@ -47,6 +48,8 @@ namespace backgroundr.daemon.windows
             }
 
             key.Close();
+
+            return Task.CompletedTask;
         }
     }
 }

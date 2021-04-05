@@ -4,6 +4,7 @@ using backgroundr.application;
 using backgroundr.application.changeDesktopBackgroundImageRandomly;
 using backgroundr.application.reloadFileConfiguration;
 using backgroundr.application.scheduleNextDesktopBackgroundImageChange;
+using backgroundr.daemon.linux;
 using backgroundr.daemon.windows;
 using backgroundr.domain;
 using backgroundr.domain.events;
@@ -21,6 +22,9 @@ namespace backgroundr.daemon
 
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
                     configuration.For<IDesktopBackgroundImageUpdater>().Use<DirectRegistryDesktopBackgroundImageUpdater>();
+                }
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) {
+                    configuration.For<IDesktopBackgroundImageUpdater>().Use<LinuxCommandLineDesktopBackgroundImageUpdater>();
                 }
                 else {
                     throw new Exception("This os version is not supported.");

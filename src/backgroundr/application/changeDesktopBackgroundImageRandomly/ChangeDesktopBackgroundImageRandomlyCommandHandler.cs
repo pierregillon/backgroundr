@@ -53,11 +53,11 @@ namespace backgroundr.application.changeDesktopBackgroundImageRandomly
             try {
                 var photoUrl = await SelectRandomPhotoUrl();
                 await ChangeBackgroundImageToPhotoUrl(photoUrl);
-                SaveLastUpdateDateToNow();
+                await SaveLastUpdateDateToNow();
                 _eventEmitter.Emit(new DesktopBackgroundImageUpdated());
             }
             catch {
-                SaveLastUpdateDateToNow();
+                await SaveLastUpdateDateToNow();
                 _eventEmitter.Emit(new DesktopBackgroundImageUpdateFailed());
                 throw;
             }
@@ -75,13 +75,13 @@ namespace backgroundr.application.changeDesktopBackgroundImageRandomly
         private async Task ChangeBackgroundImageToPhotoUrl(string photoUrl)
         {
             var localFilePath = await _fileDownloader.Download(photoUrl);
-            _desktopBackgroundImageUpdater.ChangeBackgroundImage(localFilePath, PicturePosition.Fit);
+            await _desktopBackgroundImageUpdater.ChangeBackgroundImage(localFilePath, PicturePosition.Fit);
         }
 
-        private void SaveLastUpdateDateToNow()
+        private async Task SaveLastUpdateDateToNow()
         {
             _flickrParameters.BackgroundImageLastRefreshDate = _clock.Now();
-            _flickrParametersService.Save(_flickrParameters);
+            await _flickrParametersService.Save(_flickrParameters);
         }
     }
 }

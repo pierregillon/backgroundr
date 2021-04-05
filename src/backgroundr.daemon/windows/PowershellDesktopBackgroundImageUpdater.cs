@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using backgroundr.domain;
 using backgroundr.infrastructure;
 
@@ -8,10 +9,10 @@ namespace backgroundr.daemon.windows
 {
     public class PowershellDesktopBackgroundImageUpdater : IDesktopBackgroundImageUpdater
     {
-        public void ChangeBackgroundImage(string backgroundPath, PicturePosition picturePosition)
+        public async Task ChangeBackgroundImage(string backgroundPath, PicturePosition picturePosition)
         {
             try {
-                RunPowershellScript(GetScript(backgroundPath, picturePosition));
+                await RunPowershellScript(GetScript(backgroundPath, picturePosition));
             }
             catch (Exception ex) {
                 Console.WriteLine(ex);
@@ -19,7 +20,7 @@ namespace backgroundr.daemon.windows
             }
         }
 
-        private static void RunPowershellScript(string script)
+        private static async Task RunPowershellScript(string script)
         {
             var arguments = script;
             var process = new Process {
@@ -33,7 +34,7 @@ namespace backgroundr.daemon.windows
             process.WaitForExit();
 
             if (process.ExitCode != 0) {
-                throw new Exception("An error occurred when changing background image : " + process.StandardError.ReadToEnd());
+                throw new Exception("An error occurred when changing background image : " + await process.StandardError.ReadToEndAsync());
             }
         }
 
