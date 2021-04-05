@@ -67,7 +67,7 @@ namespace backgroundr.application
                 await _commandDispatcher.Dispatch(command);
             }
             catch (Exception ex) {
-                _fileService.Append("logs.txt", $"{DateTime.Now} - ERROR : " + ex + Environment.NewLine);
+                await _fileService.Append("logs.txt", $"{DateTime.Now} - ERROR : " + ex + Environment.NewLine);
             }
         }
 
